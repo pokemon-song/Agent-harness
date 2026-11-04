@@ -1,0 +1,479 @@
+{
+  "schema_version": 1,
+  "dataset_id": "go2-composite-drawers-gate-b-v1",
+  "source": "local_composite_mujoco",
+  "is_official_quard_dataset": false,
+  "purpose": "Local MuJoCo compound-task definition; this file contains evaluator truth and is not model input.",
+  "model_evaluation_performed": false,
+  "task": {
+    "task_id": "composite_drawers_gate_b",
+    "category": "composite",
+    "instruction": "按顺序完成三个阶段：先绕过前方的抽屉柜，让机身base原点通过柜体后方并留出机身余量；再从绿色矩形门框的开口中穿过，机身base原点跨过门框平面时必须在开口内，沿穿门方向继续前进至少0.8米；最后从门后的A、B、C三块白色字母标牌中选中B，移动到距离B标牌中心约1米处，面向B并停止，然后调用finish。全程不得接触柜体、门框、标牌或其他场景物体。阶段必须按顺序完成，不能绕过门框直接前往B。前置相机位于机身base原点前方0.32米，门框移出画面不代表机身已经穿过。趁门框仍可见时选取可靠表面点，结合local_odometry与实际运动反馈确认机身过门和完成余量，不要累加请求移动距离代替实测位移。",
+    "evaluation": {
+      "goal_kind": "composite",
+      "standoff_m": 1.0,
+      "distance_tolerance_m": 0.18,
+      "heading_tolerance_rad": 0.25,
+      "max_speed_mps": 0.12,
+      "max_yaw_rate_radps": 0.25,
+      "requires_finish": true,
+      "no_collision_or_fall": true,
+      "passage_x_m": 3.4,
+      "passage_center_y_m": 0.0,
+      "passage_half_width_m": 0.6,
+      "finish_x_min_m": 4.2,
+      "requires_forward_crossing": true,
+      "cabinet_exit_x_m": 2.3,
+      "requires_stage_order": true
+    },
+    "path_reference": {
+      "goal_kind": "standoff",
+      "target_xy_m": [
+        5.6,
+        0.0
+      ],
+      "standoff_m": 1.0,
+      "distance_tolerance_m": 0.18
+    }
+  },
+  "public_completion_requirements": {
+    "goal_kind": "composite",
+    "reference_body": "base",
+    "stop_required": true,
+    "collision_free_required": true,
+    "max_stopped_speed_mps": 0.12,
+    "max_stopped_yaw_rate_radps": 0.25,
+    "standoff_m": 1.0,
+    "distance_tolerance_m": 0.18,
+    "heading_tolerance_rad": 0.25,
+    "stages_ordered": true,
+    "stage_rules": [
+      {
+        "stage_id": "avoid_drawers",
+        "instruction": "先绕过抽屉柜，让机身base原点通过柜体后方并留出机身余量。"
+      },
+      {
+        "stage_id": "pass_gate",
+        "instruction": "随后让机身base原点从绿色门框开口内向前穿过，继续前进规定余量。",
+        "required_clearance_m": 0.8
+      },
+      {
+        "stage_id": "approach_b",
+        "instruction": "最后接近字母B至公开的目标距离与朝向容差内，停稳后调用finish。"
+      }
+    ]
+  },
+  "scene": {
+    "task_id": "composite_drawers_gate_b",
+    "title": "绕过抽屉柜、穿过绿门并接近字母B",
+    "category": "composite",
+    "instruction": "按顺序完成三个阶段：先绕过前方的抽屉柜，让机身base原点通过柜体后方并留出机身余量；再从绿色矩形门框的开口中穿过，机身base原点跨过门框平面时必须在开口内，沿穿门方向继续前进至少0.8米；最后从门后的A、B、C三块白色字母标牌中选中B，移动到距离B标牌中心约1米处，面向B并停止，然后调用finish。全程不得接触柜体、门框、标牌或其他场景物体。阶段必须按顺序完成，不能绕过门框直接前往B。前置相机位于机身base原点前方0.32米，门框移出画面不代表机身已经穿过。趁门框仍可见时选取可靠表面点，结合local_odometry与实际运动反馈确认机身过门和完成余量，不要累加请求移动距离代替实测位移。",
+    "target": {
+      "kind": "sign",
+      "color": "white",
+      "xy": [
+        5.6,
+        0.0
+      ],
+      "z": 0.65,
+      "half_size": [
+        0.025,
+        0.2,
+        0.25
+      ],
+      "letter": "B"
+    },
+    "objects": [
+      {
+        "name": "drawers_body",
+        "kind": "box",
+        "position": [
+          1.65,
+          0.0,
+          0.28
+        ],
+        "size": [
+          0.22,
+          0.33,
+          0.28
+        ],
+        "rgba": [
+          0.55,
+          0.33,
+          0.14,
+          1.0
+        ],
+        "role": "obstacle",
+        "euler": null,
+        "letter": null
+      },
+      {
+        "name": "drawer_handle_0",
+        "kind": "box",
+        "position": [
+          1.42,
+          0.0,
+          0.12
+        ],
+        "size": [
+          0.02,
+          0.14,
+          0.02
+        ],
+        "rgba": [
+          0.06,
+          0.07,
+          0.08,
+          1.0
+        ],
+        "role": "obstacle",
+        "euler": null,
+        "letter": null
+      },
+      {
+        "name": "drawer_handle_1",
+        "kind": "box",
+        "position": [
+          1.42,
+          0.0,
+          0.29000000000000004
+        ],
+        "size": [
+          0.02,
+          0.14,
+          0.02
+        ],
+        "rgba": [
+          0.06,
+          0.07,
+          0.08,
+          1.0
+        ],
+        "role": "obstacle",
+        "euler": null,
+        "letter": null
+      },
+      {
+        "name": "drawer_handle_2",
+        "kind": "box",
+        "position": [
+          1.42,
+          0.0,
+          0.46
+        ],
+        "size": [
+          0.02,
+          0.14,
+          0.02
+        ],
+        "rgba": [
+          0.06,
+          0.07,
+          0.08,
+          1.0
+        ],
+        "role": "obstacle",
+        "euler": null,
+        "letter": null
+      },
+      {
+        "name": "gate_post_0",
+        "kind": "box",
+        "position": [
+          3.4,
+          -0.7,
+          0.65
+        ],
+        "size": [
+          0.1,
+          0.1,
+          0.65
+        ],
+        "rgba": [
+          0.04,
+          0.75,
+          0.1,
+          1.0
+        ],
+        "role": "obstacle",
+        "euler": null,
+        "letter": null
+      },
+      {
+        "name": "gate_post_1",
+        "kind": "box",
+        "position": [
+          3.4,
+          0.7,
+          0.65
+        ],
+        "size": [
+          0.1,
+          0.1,
+          0.65
+        ],
+        "rgba": [
+          0.04,
+          0.75,
+          0.1,
+          1.0
+        ],
+        "role": "obstacle",
+        "euler": null,
+        "letter": null
+      },
+      {
+        "name": "gate_top",
+        "kind": "box",
+        "position": [
+          3.4,
+          0.0,
+          1.35
+        ],
+        "size": [
+          0.1,
+          0.8,
+          0.08
+        ],
+        "rgba": [
+          0.04,
+          0.75,
+          0.1,
+          1.0
+        ],
+        "role": "obstacle",
+        "euler": null,
+        "letter": null
+      },
+      {
+        "name": "sign_A",
+        "kind": "sign",
+        "position": [
+          5.6,
+          -1.0,
+          0.65
+        ],
+        "size": [
+          0.025,
+          0.2,
+          0.25
+        ],
+        "rgba": [
+          0.95,
+          0.95,
+          0.95,
+          1.0
+        ],
+        "role": "distractor",
+        "euler": null,
+        "letter": "A"
+      },
+      {
+        "name": "sign_C",
+        "kind": "sign",
+        "position": [
+          5.6,
+          1.0,
+          0.65
+        ],
+        "size": [
+          0.025,
+          0.2,
+          0.25
+        ],
+        "rgba": [
+          0.95,
+          0.95,
+          0.95,
+          1.0
+        ],
+        "role": "distractor",
+        "euler": null,
+        "letter": "C"
+      },
+      {
+        "name": "sign_support_A",
+        "kind": "box",
+        "position": [
+          5.6,
+          -1.0,
+          0.2
+        ],
+        "size": [
+          0.025,
+          0.025,
+          0.2
+        ],
+        "rgba": [
+          0.32,
+          0.36,
+          0.42,
+          1.0
+        ],
+        "role": "obstacle",
+        "euler": null,
+        "letter": null
+      },
+      {
+        "name": "sign_support_B",
+        "kind": "box",
+        "position": [
+          5.6,
+          0.0,
+          0.2
+        ],
+        "size": [
+          0.025,
+          0.025,
+          0.2
+        ],
+        "rgba": [
+          0.32,
+          0.36,
+          0.42,
+          1.0
+        ],
+        "role": "obstacle",
+        "euler": null,
+        "letter": null
+      },
+      {
+        "name": "sign_support_C",
+        "kind": "box",
+        "position": [
+          5.6,
+          1.0,
+          0.2
+        ],
+        "size": [
+          0.025,
+          0.025,
+          0.2
+        ],
+        "rgba": [
+          0.32,
+          0.36,
+          0.42,
+          1.0
+        ],
+        "role": "obstacle",
+        "euler": null,
+        "letter": null
+      }
+    ],
+    "goal_kind": "composite",
+    "standoff_m": 1.0,
+    "distance_tolerance_m": 0.18,
+    "passage_x": 3.4,
+    "passage_center_y": 0.0,
+    "passage_half_width": 0.6,
+    "finish_x_min": 4.2,
+    "cabinet_exit_x": 2.3,
+    "target_jitter_m": 0.0,
+    "unsupported_reason": null,
+    "source": "local_composite_mujoco"
+  },
+  "cases": [
+    {
+      "case_id": "composite_drawers_gate_b-r01",
+      "task_id": "composite_drawers_gate_b",
+      "category": "composite",
+      "repeat_id": 1,
+      "seed": 0,
+      "run_dir": "episodes/composite_drawers_gate_b/repeat-01"
+    },
+    {
+      "case_id": "composite_drawers_gate_b-r02",
+      "task_id": "composite_drawers_gate_b",
+      "category": "composite",
+      "repeat_id": 2,
+      "seed": 0,
+      "run_dir": "episodes/composite_drawers_gate_b/repeat-02"
+    },
+    {
+      "case_id": "composite_drawers_gate_b-r03",
+      "task_id": "composite_drawers_gate_b",
+      "category": "composite",
+      "repeat_id": 3,
+      "seed": 0,
+      "run_dir": "episodes/composite_drawers_gate_b/repeat-03"
+    },
+    {
+      "case_id": "composite_drawers_gate_b-r04",
+      "task_id": "composite_drawers_gate_b",
+      "category": "composite",
+      "repeat_id": 4,
+      "seed": 0,
+      "run_dir": "episodes/composite_drawers_gate_b/repeat-04"
+    },
+    {
+      "case_id": "composite_drawers_gate_b-r05",
+      "task_id": "composite_drawers_gate_b",
+      "category": "composite",
+      "repeat_id": 5,
+      "seed": 0,
+      "run_dir": "episodes/composite_drawers_gate_b/repeat-05"
+    }
+  ],
+  "repetition": {
+    "scene_seed": 0,
+    "target_jitter_m": 0.0,
+    "fixed_layout": true,
+    "distinct_layouts": 1,
+    "repeats": 5
+  },
+  "full_evaluation_protocol": {
+    "id": "go2-model-eval-v3",
+    "tasks": 14,
+    "episodes_per_model": 70,
+    "group_weights": {
+      "go_to": 0.2,
+      "distinguish": 0.2,
+      "go_avoid": 0.2,
+      "go_through": 0.2,
+      "composite": 0.2
+    },
+    "budgets": {
+      "max_model_calls": 30,
+      "max_wall_seconds": 300,
+      "max_sim_seconds": 120,
+      "history_turns": 6
+    },
+    "scoring": {
+      "weights": {
+        "completion": 60,
+        "path_efficiency": 20,
+        "wall_time": 10,
+        "sim_time": 5,
+        "model_calls": 5
+      },
+      "formula": "strict_success * (60 + 20*P + 10*W + 5*T + 5*C)",
+      "failure_score": 0,
+      "normalization": {
+        "wall_time": "clip(1 - wall_elapsed_s / 300, 0, 1)",
+        "sim_time": "clip(1 - sim_elapsed_s / 120, 0, 1)",
+        "model_calls": "clip((30 - model_calls) / 29, 0, 1)",
+        "path_efficiency": "min(1, reference_distance_m / max(path_length_m, reference_distance_m))",
+        "zero_path": "P=1 if L=D=0; P=0 if exactly one of L,D is zero",
+        "standoff_reference": "max(0, distance(start_xy, target_xy) - standoff_m - distance_tolerance_m)",
+        "passage_reference": "max(0, finish_x_min_m - start_x)",
+        "path_reference_kind": "straight_line_lower_bound_not_obstacle_aware_shortest_path_or_SPL"
+      },
+      "trajectory": {
+        "nominal_sample_period_s": 0.02,
+        "maximum_sample_gap_s": 0.020001,
+        "final_time_tolerance_s": 1e-05,
+        "final_xy_tolerance_m": 1e-05,
+        "start": "prepend the exact episode-start XY pose after controller warmup",
+        "length": "sum of successive world-XY Euclidean distances, including all settling and zero-command drift",
+        "time": "strictly increasing from episode start through the final recorded simulation state",
+        "yaw": "sum of absolute wrapped successive yaw changes including start; null if any yaw is missing",
+        "noise_filtering": "none"
+      }
+    }
+  },
+  "definition_sources_sha256": {
+    "go2_demo/scenarios.py": "7fa3936286a3719a24813acd00fdb402fc660172e89f82dc4a9c86b5af6a4389",
+    "go2_demo/composite.py": "9c3da67e26a663ec35e4d045d05d150f759d48b4a215c683a84804cbf71e42f1"
+  }
+}

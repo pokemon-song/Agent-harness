@@ -21,6 +21,8 @@ import torch
 
 from .types import SensorFrame
 from .scenarios import COLORS, LETTER_PATTERNS
+from .posture import StaticPostureController, validate_posture
+from .composite import evaluate_composite_trajectory
 
 
 def wrap_angle(angle: float) -> float:
@@ -45,8 +47,12 @@ def crossed_passage(trajectory: list[dict], gate_x: float, center_y: float, half
 
 
 class MujocoGo2Backend:
-    """Synchronous, bounded plane motion; posture control is unsupported."""
+    """Bounded locomotion and a separate, stationary joint posture controller."""
 
+    posture_control_supported = True
+    moving_posture_control_supported = False
+    posture_height_tolerance_m = 0.02
+    posture_pitch_tolerance_rad = 0.04
     width = 640
     height = 360
     dt = 0.002
@@ -79,6 +85,13 @@ class MujocoGo2Backend:
             result.update(standoff_m=scenario.standoff_m if scenario is not None else 1.0,
                           distance_tolerance_m=scenario.distance_tolerance_m if scenario is not None else 0.18,
                           heading_tolerance_rad=0.25)
+        if goal_kind == "composite":
+            result.update(stages_ordered=True, stage_rules=[
+                {"stage_id": "avoid_drawers", "instruction": "先绕过抽屉柜，让机身base原点通过柜体后方并留出机身余量。"},
+                {"stage_id": "pass_gate", "instruction": "随后让机身base原点从绿色门框开口内向前穿过，继续前进规定余量。",
+                 "required_clearance_m": scenario.passage_clearance_m},
+                {"stage_id": "approach_b", "instruction": "最后接近字母B至公开的目标距离与朝向容差内，停稳后调用finish。"},
+            ])
         return result
 
     @staticmethod
@@ -121,6 +134,9 @@ class MujocoGo2Backend:
         self._collided_geom_ids: set[int] = set()
         self.default_angles = np.array([0.1, 0.8, -1.5, -0.1, 0.8, -1.5, 0.1, 1.0, -1.5, -0.1, 1.0, -1.5], dtype=np.float32)
         self.last_action = np.zeros(12, dtype=np.float32)
+        self._posture_controller: StaticPostureController | None = None
+        self._posture_reference: np.ndarray | None = None
+        self._posture_target: np.ndarray | None = None
         self._verify_assets()
         rng = np.random.default_rng(seed)
         self._target_xy = (np.asarray(scenario.target.xy, dtype=float).copy() if scenario is not None else
@@ -148,6 +164,8 @@ class MujocoGo2Backend:
         self._advance_zero(1.0, record=False)
         if self._fallen():
             raise RuntimeError("Go2 fell while initializing the pretrained controller")
+        position, _, rotation = self._base_pose()
+        self._nominal_posture = np.array([position[2], self._pitch(rotation)])
         self._fallen_ever = False
         self._collision_steps = 0
         self.trajectory.clear()
@@ -248,25 +266,38 @@ class MujocoGo2Backend:
         # This state enters API observations and must remain a native JSON bool.
         return bool(not np.isfinite(self.data.qpos).all() or position[2] < 0.16 or rotation[2, 2] < 0.55)
 
+    @staticmethod
+    def _pitch(rotation: np.ndarray) -> float:
+        return float(math.asin(np.clip(rotation[2, 0], -1, 1)))
+
+    @property
+    def control_mode(self) -> str:
+        return "posture" if self._posture_controller is not None else "locomotion"
+
     def _step_control(self, command: np.ndarray, *, record: bool = True) -> None:
         started = time.monotonic()
-        _, _, rotation = self._base_pose()
-        observation = np.concatenate((
-            self.data.qvel[3:6] * 0.25,
-            rotation.T @ np.array([0.0, 0.0, -1.0]),
-            command * np.array([2.0, 2.0, 0.25]),
-            self.data.qpos[self._qpos_ids] - self.default_angles,
-            self.data.qvel[self._dof_ids] * 0.05,
-            self.last_action,
-        )).astype(np.float32)
-        with torch.inference_mode():
-            action = self.policy(torch.from_numpy(observation).unsqueeze(0))
-            if isinstance(action, tuple):
-                action = action[0]
-            self.last_action = action.detach().cpu().numpy().reshape(12)
-        target = self.default_angles + 0.25 * self.last_action
+        if self._posture_controller is not None:
+            target = self._posture_controller.target(*self._posture_reference)
+            kp, kd = 120.0, 2.0
+        else:
+            _, _, rotation = self._base_pose()
+            observation = np.concatenate((
+                self.data.qvel[3:6] * 0.25,
+                rotation.T @ np.array([0.0, 0.0, -1.0]),
+                command * np.array([2.0, 2.0, 0.25]),
+                self.data.qpos[self._qpos_ids] - self.default_angles,
+                self.data.qvel[self._dof_ids] * 0.05,
+                self.last_action,
+            )).astype(np.float32)
+            with torch.inference_mode():
+                action = self.policy(torch.from_numpy(observation).unsqueeze(0))
+                if isinstance(action, tuple):
+                    action = action[0]
+                self.last_action = action.detach().cpu().numpy().reshape(12)
+            target = self.default_angles + 0.25 * self.last_action
+            kp, kd = 20.0, 0.5
         for _ in range(self.decimation):
-            self.data.ctrl[:] = 20.0 * (target - self.data.qpos[self._qpos_ids]) - 0.5 * self.data.qvel[self._dof_ids]
+            self.data.ctrl[:] = kp * (target - self.data.qpos[self._qpos_ids]) - kd * self.data.qvel[self._dof_ids]
             mujoco.mj_step(self.model, self.data)
             if record:
                 touched = False
@@ -278,8 +309,8 @@ class MujocoGo2Backend:
                 self._collision_steps += int(touched)
         if record:
             self._fallen_ever |= self._fallen()
-            position, yaw, _ = self._base_pose()
-            self.trajectory.append({"sim_time_s": float(self.data.time), "base_xyz_m": position.tolist(), "yaw_rad": yaw, "velocity_world_mps": self.data.qvel[:3].tolist(), "command": command.tolist(), "fallen": self._fallen_ever, "collision_steps": self._collision_steps})
+            position, yaw, rotation = self._base_pose()
+            self.trajectory.append({"sim_time_s": float(self.data.time), "base_xyz_m": position.tolist(), "yaw_rad": yaw, "body_pitch_rad": self._pitch(rotation), "control_mode": self.control_mode, "posture_reference": self._posture_values(self._posture_reference), "posture_target": self._posture_values(self._posture_target), "velocity_world_mps": self.data.qvel[:3].tolist(), "command": command.tolist(), "fallen": self._fallen_ever, "collision_steps": self._collision_steps})
         if self._viewer is not None:
             if not self._viewer.is_running():
                 closed_viewer, self._viewer = self._viewer, None
@@ -310,7 +341,7 @@ class MujocoGo2Backend:
         focal = 0.5 * self.height / math.tan(math.radians(float(self.model.cam_fovy[self._camera_id])) / 2)
         intrinsics = np.array([[focal, 0., (self.width-1)/2], [0., focal, (self.height-1)/2], [0., 0., 1.]])
         position, yaw, rotation = self._base_pose()
-        state = {"motion_state": "idle", "body_height_m": float(position[2]), "body_pitch_rad": float(math.asin(np.clip(rotation[2, 0], -1, 1))), "pitch_convention": "nose_up_positive", "body_roll_rad": float(math.atan2(rotation[2, 1], rotation[2, 2])), "speed_mps": float(np.linalg.norm(self.data.qvel[:2])), "yaw_rate_radps": float(self.data.qvel[5]), "fallen": self._fallen_ever, "posture_control_supported": False, "source": "simulated_proprioception", "time_mode": "paused_between_tools"}
+        state = {"motion_state": "idle", "body_height_m": float(position[2]), "body_pitch_rad": self._pitch(rotation), "pitch_convention": "nose_up_positive", "body_roll_rad": float(math.atan2(rotation[2, 1], rotation[2, 2])), "speed_mps": float(np.linalg.norm(self.data.qvel[:2])), "yaw_rate_radps": float(self.data.qvel[5]), "fallen": self._fallen_ever, "posture_control_supported": True, "control_mode": self.control_mode, "posture_target": self._posture_values(self._posture_target), "source": "simulated_proprioception", "time_mode": "paused_between_tools"}
         return SensorFrame(frame_id=f"frame-{self._frame_counter:05d}", sim_time_s=float(self.data.time), rgb=rgb, depth_m=depth, intrinsics=intrinsics, camera_to_world=camera_to_world, base_xy_yaw=np.array([position[0], position[1], yaw]), robot_state=state)
 
     def _motion(self, translation: np.ndarray, turn_rad: float, timeout_s: float) -> dict:
@@ -361,15 +392,169 @@ class MujocoGo2Backend:
         values = np.array([forward_m, lateral_m], dtype=float)
         if not np.isfinite(values).all() or np.linalg.norm(values) > 1.0 or not 0 < timeout_s <= 20:
             return {"status": "failed", "error_code": "INVALID_MOTION"}
+        if self._posture_controller is not None:
+            return {"status": "failed", "error_code": "POSTURE_MODE_ACTIVE",
+                    "message": "Call reset_posture before locomotion; moving posture control is unsupported."}
         return self._motion(values, 0., timeout_s)
 
     def turn(self, yaw_rad: float, timeout_s: float = 6.0) -> dict:
         if not math.isfinite(yaw_rad) or abs(yaw_rad) > math.pi/2 or not 0 < timeout_s <= 20:
             return {"status": "failed", "error_code": "INVALID_MOTION"}
+        if self._posture_controller is not None:
+            return {"status": "failed", "error_code": "POSTURE_MODE_ACTIVE",
+                    "message": "Call reset_posture before locomotion; moving posture control is unsupported."}
         return self._motion(np.zeros(2), yaw_rad, timeout_s)
 
+    @staticmethod
+    def _posture_values(values: np.ndarray | None) -> dict | None:
+        if values is None:
+            return None
+        return {"body_height_m": float(values[0]), "body_pitch_rad": float(values[1])}
+
+    def _posture_error(self) -> str | None:
+        if self._fallen_ever or self._fallen():
+            return "ROBOT_FELL"
+        if self._collision_steps:
+            return "COLLISION"
+        if self.deadline_monotonic is not None and time.monotonic() >= self.deadline_monotonic:
+            return "EPISODE_DEADLINE"
+        if self.sim_deadline_s is not None and self.data.time >= self.sim_deadline_s:
+            return "SIMULATION_DEADLINE"
+        return None
+
+    def set_posture(self, body_height_m: float, body_pitch_rad: float, timeout_s: float = 8.0) -> dict:
+        """Smoothly reach a stationary absolute posture through joint torques."""
+        try:
+            validate_posture(body_height_m, body_pitch_rad)
+            if isinstance(timeout_s, bool) or not math.isfinite(timeout_s) or not 0 < timeout_s <= 20:
+                raise ValueError("timeout_s must be a finite number in (0, 20]")
+        except (ValueError, TypeError, OverflowError) as exc:
+            return {"status": "failed", "error_code": "INVALID_POSTURE", "message": str(exc)}
+        error = self._posture_error()
+        if error:
+            return {"status": "failed", "error_code": error}
+        started = float(self.data.time)
+        requested = np.array([body_height_m, body_pitch_rad], dtype=float)
+        if self._posture_controller is None:
+            stopped = self.stop()
+            if stopped["status"] != "succeeded":
+                return {"status": "failed", "error_code": "STOP_NOT_CONFIRMED", "stop": stopped}
+            error = self._posture_error()
+            if error:
+                return {"status": "failed", "error_code": error}
+            controller = StaticPostureController(self.model, self._qpos_ids, self._dof_ids, self._base_id)
+            controller.begin(self.data)
+            position, _, rotation = self._base_pose()
+            reference = np.array([position[2], self._pitch(rotation)])
+            try:
+                controller.target(*reference)
+                controller.target(*requested)
+            except ValueError as exc:
+                return {"status": "failed", "error_code": "INFEASIBLE_POSTURE", "message": str(exc),
+                        "control_mode": self.control_mode}
+            self._posture_reference = reference
+            self._posture_controller = controller
+        else:
+            # Failed scratch IK leaves both the live pose and the old hold target intact.
+            try:
+                self._posture_controller.target(*requested)
+            except ValueError as exc:
+                return {"status": "failed", "error_code": "INFEASIBLE_POSTURE", "message": str(exc),
+                        "control_mode": self.control_mode}
+        self._posture_target = requested.copy()
+        period = self.dt * self.decimation
+        rates = np.array([0.06, 0.15])
+        initial_reference = self._posture_reference.copy()
+        transition_s = float(np.max(np.abs(requested - initial_reference) / rates))
+        transition_started = float(self.data.time)
+        stable_s = 0.0
+        error, status = "POSTURE_TIMEOUT", "timed_out"
+        while self.data.time - started < timeout_s:
+            problem = self._posture_error()
+            if problem:
+                error, status = problem, "failed"
+                break
+            fraction = min(1.0, (self.data.time - transition_started + period) / max(transition_s, period))
+            next_reference = initial_reference + fraction * (requested - initial_reference)
+            previous_reference = self._posture_reference.copy()
+            self._posture_reference = next_reference
+            try:
+                self._step_control(np.zeros(3, dtype=np.float32))
+            except ValueError:
+                self._posture_reference = previous_reference
+                error, status = "INFEASIBLE_POSTURE", "failed"
+                break
+            position, _, rotation = self._base_pose()
+            within_target = (abs(position[2] - body_height_m) <= self.posture_height_tolerance_m
+                             and abs(self._pitch(rotation) - body_pitch_rad) <= self.posture_pitch_tolerance_rad)
+            still = (np.linalg.norm(self.data.qvel[:3]) < 0.06
+                     and np.linalg.norm(self.data.qvel[3:6]) < 0.15)
+            stable_s = stable_s + period if within_target and still and np.allclose(next_reference, requested) else 0.0
+            if stable_s >= 0.3:
+                status, error = "succeeded", None
+                break
+        # On interruption/timeout keep the last feasible reference, never continue a transition in stop().
+        if status != "succeeded":
+            self._posture_target = self._posture_reference.copy()
+        stop_result = self.stop()
+        position, _, rotation = self._base_pose()
+        measured = np.array([position[2], self._pitch(rotation)])
+        problem = self._posture_error()
+        if problem:
+            status, error = "failed", problem
+        elif status == "succeeded" and (stop_result["status"] != "succeeded"
+                or abs(measured[0] - requested[0]) > self.posture_height_tolerance_m
+                or abs(measured[1] - requested[1]) > self.posture_pitch_tolerance_rad):
+            status, error = "failed", "POSTURE_NOT_CONFIRMED"
+        return {"status": status, "error_code": error, "requested": self._posture_values(requested),
+                "measured": {**self._posture_values(measured), "height_error_m": float(measured[0] - requested[0]),
+                             "pitch_error_rad": float(measured[1] - requested[1]),
+                             "elapsed_sim_s": float(self.data.time - started), "stable_duration_s": stable_s},
+                "control_mode": self.control_mode, "stop": stop_result}
+
+    def reset_posture(self) -> dict:
+        """Explicitly restore the initial standing posture before resuming the gait."""
+        error = self._posture_error()
+        if error:
+            return {"status": "failed", "error_code": error}
+        started = float(self.data.time)
+        if self._posture_controller is None:
+            result = {**self.stop(), "control_mode": self.control_mode}
+            position, _, rotation = self._base_pose()
+            result["measured"] = {"body_height_m": float(position[2]), "body_pitch_rad": self._pitch(rotation),
+                                  "elapsed_sim_s": float(self.data.time - started)}
+            error = self._posture_error()
+            if error:
+                result.update(status="failed", error_code=error)
+            return result
+        result = self.set_posture(*self._nominal_posture)
+        if result["status"] != "succeeded":
+            return result
+        error = self._posture_error()
+        if error:
+            return {**result, "status": "failed", "error_code": error}
+        self._posture_controller = None
+        self._posture_reference = self._posture_target = None
+        self.last_action[:] = 0
+        stopped = self.stop()
+        position, _, rotation = self._base_pose()
+        measured = np.array([position[2], self._pitch(rotation)])
+        result = {**result, **stopped, "control_mode": self.control_mode, "stop": stopped,
+                  "measured": {**result["measured"], **self._posture_values(measured),
+                               "height_error_m": float(measured[0] - self._nominal_posture[0]),
+                               "pitch_error_rad": float(measured[1] - self._nominal_posture[1]),
+                               "elapsed_sim_s": float(self.data.time - started)}}
+        error = self._posture_error()
+        if error:
+            result.update(status="failed", error_code=error)
+        elif result["status"] == "succeeded" and (
+                abs(measured[0] - self._nominal_posture[0]) > self.posture_height_tolerance_m
+                or abs(measured[1] - self._nominal_posture[1]) > self.posture_pitch_tolerance_rad):
+            result.update(status="failed", error_code="POSTURE_NOT_CONFIRMED")
+        return result
+
     def stop(self) -> dict:
-        # Keep the locomotion controller active under zero velocity. No stand-up command.
+        # Keep the active controller/reference; stopping never restores a standing posture.
         if self._viewer is not None and not self._viewer.is_running():
             closed_viewer, self._viewer = self._viewer, None
             closed_viewer.close()
@@ -406,6 +591,21 @@ class MujocoGo2Backend:
             goal_reached = crossed and beyond_exit
             passage = {"passage_crossed": crossed, "beyond_exit": beyond_exit,
                        "gate_x_m": scenario.passage_x, "finish_x_min_m": scenario.finish_x_min}
+        elif goal_kind == "composite":
+            measured_path = evaluate_composite_trajectory(
+                self.trajectory, cabinet_exit_x_m=scenario.cabinet_exit_x,
+                passage_x_m=scenario.passage_x, passage_center_y_m=scenario.passage_center_y,
+                passage_half_width_m=scenario.passage_half_width, finish_x_min_m=scenario.finish_x_min)
+            # Use the measured current position as well as the recorded path.
+            measured_path["beyond_exit"] = bool(measured_path["beyond_exit"] and position[0] >= scenario.finish_x_min)
+            stages = {"avoid_drawers": measured_path["cabinet_cleared"],
+                      "pass_gate": (measured_path["passage_crossed"] and measured_path["beyond_exit"]
+                                    and measured_path["stages_in_order"]),
+                      "approach_b": bool(goal_reached and stopped)}
+            goal_reached = all(stages.values())
+            passage = {**measured_path, "cabinet_exit_x_m": scenario.cabinet_exit_x,
+                       "gate_x_m": scenario.passage_x, "finish_x_min_m": scenario.finish_x_min,
+                       "stages": stages, "stage_completion_rate": sum(stages.values()) / len(stages)}
         return {"success": bool(goal_reached and stopped and not self._fallen_ever and not self._collision_steps),
                 "goal_kind": goal_kind, "distance_to_target_center_m": distance,
                 "distance_error_m": abs(distance-standoff_m), "heading_error_rad": heading_error,

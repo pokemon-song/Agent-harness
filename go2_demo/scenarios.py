@@ -53,6 +53,7 @@ class Scenario:
     passage_center_y: float = 0.0
     passage_half_width: float = 0.65
     finish_x_min: float | None = None
+    cabinet_exit_x: float | None = None
     target_jitter_m: float = 0.0
     unsupported_reason: str | None = None
     source: str = "local_mujoco_adaptation_not_official_QUARD_environment"
@@ -64,7 +65,7 @@ class Scenario:
     @property
     def passage_clearance_m(self) -> float | None:
         """Declared forward clearance, derived from the unchanged scoring bounds."""
-        if self.goal_kind != "passage" or self.passage_x is None or self.finish_x_min is None:
+        if self.goal_kind not in {"passage", "composite"} or self.passage_x is None or self.finish_x_min is None:
             return None
         return round(self.finish_x_min - self.passage_x, 6)
 
@@ -148,6 +149,35 @@ for suffix in ("2", "3"):
     _SCENARIOS.append(Scenario("crawl_red_gate" + suffix, "低姿态穿过红色横杆 " + suffix, "crawl",
         "降低机身并从低矮横杆下爬过。", TargetSpec("box", "red", (3.0, 0.0)),
         unsupported_reason="当前预训练步态不支持行走中保持高度／俯仰目标，不能执行低姿态爬行。"))
+
+
+_composite_gate = tuple(SceneObject(f"gate_post_{i}", "box", (3.4, y, 0.65),
+                                   (0.10, 0.10, 0.65), COLORS["green"])
+                        for i, y in enumerate((-0.70, 0.70)))
+_composite_gate += (SceneObject("gate_top", "box", (3.4, 0.0, 1.35),
+                               (0.10, 0.80, 0.08), COLORS["green"]),)
+_composite_signs = tuple(SceneObject("sign_" + letter, "sign", (5.6, y, 0.65),
+                                    (0.025, 0.20, 0.25), COLORS["white"], "distractor", letter=letter)
+                         for letter, y in (("A", -1.0), ("C", 1.0)))
+_composite_signs += tuple(SceneObject("sign_support_" + letter, "box", (5.6, y, 0.20),
+                                     (0.025, 0.025, 0.20), _GRAY)
+                          for letter, y in (("A", -1.0), ("B", 0.0), ("C", 1.0)))
+_SCENARIOS.append(Scenario(
+    "composite_drawers_gate_b", "绕过抽屉柜、穿过绿门并接近字母B", "composite",
+    "按顺序完成三个阶段：先绕过前方的抽屉柜，让机身base原点通过柜体后方并留出机身余量；"
+    "再从绿色矩形门框的开口中穿过，机身base原点跨过门框平面时必须在开口内，"
+    "沿穿门方向继续前进至少0.8米；最后从门后的A、B、C三块白色字母标牌中选中B，"
+    "移动到距离B标牌中心约1米处，面向B并停止，然后调用finish。"
+    "全程不得接触柜体、门框、标牌或其他场景物体。阶段必须按顺序完成，不能绕过门框直接前往B。"
+    "前置相机位于机身base原点前方0.32米，门框移出画面不代表机身已经穿过。"
+    "趁门框仍可见时选取可靠表面点，结合local_odometry与实际运动反馈确认机身过门和完成余量，"
+    "不要累加请求移动距离代替实测位移。",
+    TargetSpec("sign", "white", (5.6, 0.0), z=0.65,
+               half_size=(0.025, 0.20, 0.25), letter="B"),
+    _PROPS["drawers"] + _composite_gate + _composite_signs,
+    goal_kind="composite", passage_x=3.4, passage_center_y=0.0, passage_half_width=0.60,
+    finish_x_min=4.2, cabinet_exit_x=2.3, source="local_composite_mujoco",
+))
 
 
 def list_scenarios() -> tuple[Scenario, ...]:

@@ -5,6 +5,8 @@ import json
 import math
 
 from .perception import PerceptionError, PointTracker
+from .posture import (HALF_BODY_LENGTH_M, MAX_END_HEIGHT_M, MAX_HEIGHT_M,
+                      MAX_PITCH_RAD, MIN_HEIGHT_M, validate_posture)
 from .types import ToolCall
 
 
@@ -20,11 +22,16 @@ TOOLS = [
     _tool("track_point", "Select a static visible point in the latest RGB image. Pixels use origin top-left, u right, v down. Depth gives geometry at the selected pixel, not semantic object identity. Valid tracked points update automatically after motion; lost points have null current geometry. Select a reliable visible feature, not empty background.",
           {"image_id": {"type": "string"}, "u": {"type": "number"}, "v": {"type": "number"}}, ["image_id", "u", "v"]),
     _tool("get_geometry", "Read current tracked points. Invalid points have no current metric position; reselect if needed."),
-    _tool("move_relative", "Command a displacement in the base horizontal frame at action start: forward positive, left positive, metres; length at most 0.6 m. The command is a target, not measured travel. Settling starts within 0.06 m of the target; final acceptance tolerance is 0.10 m, so a very small command can succeed with almost no motion. Use result.measured.translation_start_frame_m and observation.local_odometry to measure progress; do not sum requested distances. No path planning or obstacle avoidance.",
+    _tool("move_relative", "Command a displacement in the base horizontal frame at action start: forward positive, left positive, metres; length at most 0.6 m. The command is a target, not measured travel. Settling starts within 0.06 m of the target; final acceptance tolerance is 0.10 m, so a very small command can succeed with almost no motion. Use result.measured.translation_start_frame_m and observation.local_odometry to measure progress; do not sum requested distances. No path planning or obstacle avoidance. In static posture mode, explicitly call reset_posture before moving.",
           {"forward_m": {"type": "number"}, "lateral_m": {"type": "number"}}, ["forward_m", "lateral_m"]),
-    _tool("turn", "Relative yaw in radians, positive left. Absolute angle at most 0.6 rad.",
+    _tool("turn", "Relative yaw in radians, positive left. Absolute angle at most 0.6 rad. In static posture mode, explicitly call reset_posture before turning.",
           {"yaw_rad": {"type": "number"}}, ["yaw_rad"]),
-    _tool("stop", "Set locomotion commands to zero and let the controller settle."),
+    _tool("set_posture", f"Adjust the stationary body to absolute height above the flat support floor in metres and pitch in radians (zero horizontal, positive nose up). This is a physical target, not a measurement. The static controller holds posture after stop; walking or turning requires an explicit reset_posture. Check measured execution feedback. Height and pitch must satisfy body_height_m + {HALF_BODY_LENGTH_M} * abs(body_pitch_rad) <= {MAX_END_HEIGHT_M}, plus foot stance reachability.",
+          {"body_height_m": {"type": "number", "minimum": MIN_HEIGHT_M, "maximum": MAX_HEIGHT_M},
+           "body_pitch_rad": {"type": "number", "minimum": -MAX_PITCH_RAD, "maximum": MAX_PITCH_RAD}},
+          ["body_height_m", "body_pitch_rad"]),
+    _tool("reset_posture", "Explicitly recover the standard standing posture and resume the pretrained planar locomotion controller. Check overhead clearance before requesting recovery and inspect the measured result before moving."),
+    _tool("stop", "Set locomotion commands to zero and let the controller settle; in static posture mode keep the current posture without automatically raising the body."),
     _tool("finish", "Declare the task finished only after verifying the task and public completion_requirements using current geometry and measured body progress. The camera image alone does not prove that the base has crossed or cleared a passage. Independent evaluation decides success."),
     _tool("abort", "Stop the episode without claiming success.", {"reason": {"type": "string"}}, ["reason"]),
 ]
@@ -35,7 +42,7 @@ _ROBOT_FIELDS = {"body_height_m", "body_pitch_rad", "body_roll_rad", "speed_mps"
 
 _CALIBRATION_TEXT_FIELDS = {"camera_frame", "body_frame", "optical_axes", "body_axes"}
 _COMPLETION_TEXT_FIELDS = {"goal_kind", "reference_body"}
-_COMPLETION_BOOL_FIELDS = {"stop_required", "collision_free_required"}
+_COMPLETION_BOOL_FIELDS = {"stop_required", "collision_free_required", "stages_ordered"}
 _COMPLETION_NUMBER_FIELDS = {
     "required_clearance_m", "standoff_m", "distance_tolerance_m",
     "heading_tolerance_rad", "max_stopped_speed_mps", "max_stopped_yaw_rate_radps",
@@ -67,11 +74,42 @@ def _public_completion_requirements(value) -> dict:
     """Expose declared tolerances, never gate locations or evaluator state."""
     if not isinstance(value, dict):
         return {}
-    return {key: float(item) if key in _COMPLETION_NUMBER_FIELDS else item
+    result = {key: float(item) if key in _COMPLETION_NUMBER_FIELDS else item
             for key, item in value.items()
             if ((key in _COMPLETION_TEXT_FIELDS and isinstance(item, str))
                 or (key in _COMPLETION_BOOL_FIELDS and isinstance(item, bool))
                 or (key in _COMPLETION_NUMBER_FIELDS and _finite_number(item) and item >= 0))}
+    rules = value.get("stage_rules")
+    if isinstance(rules, (list, tuple)):
+        public_rules = []
+        for rule in rules:
+            if not isinstance(rule, dict):
+                continue
+            if not all(isinstance(rule.get(key), str) and rule[key].strip()
+                       for key in ("stage_id", "instruction")):
+                continue
+            public_rule = {key: rule[key] for key in ("stage_id", "instruction")}
+            clearance = rule.get("required_clearance_m")
+            if _finite_number(clearance) and clearance >= 0:
+                public_rule["required_clearance_m"] = float(clearance)
+            public_rules.append(public_rule)
+        if public_rules:
+            result["stage_rules"] = public_rules
+    return result
+
+
+def _public_robot_state(value: dict) -> dict:
+    result = {key: item for key, item in value.items() if key in _ROBOT_FIELDS}
+    if value.get("pitch_convention") == "nose_up_positive":
+        result["pitch_convention"] = "nose_up_positive"
+    mode = value.get("control_mode")
+    if isinstance(mode, str) and mode in {"locomotion", "posture"}:
+        result["control_mode"] = mode
+    target = value.get("posture_target")
+    if (isinstance(target, dict)
+            and all(_finite_number(target.get(key)) for key in ("body_height_m", "body_pitch_rad"))):
+        result["posture_target"] = {key: float(target[key]) for key in ("body_height_m", "body_pitch_rad")}
+    return result
 
 
 class Harness:
@@ -108,10 +146,23 @@ class Harness:
                     "reference": "episode_start_body_horizontal",
                     "source": "simulated_proprioception",
                 },
-                "robot_state": {k: v for k, v in frame.robot_state.items() if k in _ROBOT_FIELDS},
+                "robot_state": _public_robot_state(frame.robot_state),
                 "tracked_points": self.tracker.geometry(),
-                "capabilities": {"planar_motion": True, "height_pitch_control": False},
+                "capabilities": {
+                    "planar_motion": True,
+                    "height_pitch_control": self._posture_supported(),
+                    "moving_height_pitch_control": (self._posture_supported()
+                        and getattr(self.backend, "moving_posture_control_supported", False) is True),
+                },
                 "simulation_mode": "paused_during_model_inference"}
+        if self._posture_supported():
+            observation["posture_limits"] = {
+                "body_height_m": {"minimum": MIN_HEIGHT_M, "maximum": MAX_HEIGHT_M},
+                "body_pitch_rad": {"minimum": -MAX_PITCH_RAD, "maximum": MAX_PITCH_RAD},
+                "height_reference": "base_above_flat_ground",
+                "pitch_convention": "nose_up_positive",
+                "combined_constraint": f"body_height_m + {HALF_BODY_LENGTH_M} * abs(body_pitch_rad) <= {MAX_END_HEIGHT_M}",
+            }
         calibration = _public_calibration(getattr(self.backend, "sensor_calibration", None))
         if calibration:
             observation["sensor_calibration"] = calibration
@@ -119,6 +170,11 @@ class Harness:
         if requirements:
             observation["completion_requirements"] = requirements
         return observation
+
+    def _posture_supported(self) -> bool:
+        return (getattr(self.backend, "posture_control_supported", False) is True
+                and callable(getattr(self.backend, "set_posture", None))
+                and callable(getattr(self.backend, "reset_posture", None)))
 
     @staticmethod
     def _result(call, status="succeeded", **kwargs):
@@ -147,6 +203,8 @@ class Harness:
             raise ValueError("Translation length exceeds 0.6 m")
         if call.name == "turn" and abs(call.arguments["yaw_rad"]) > 0.6:
             raise ValueError("Yaw exceeds 0.6 rad")
+        if call.name == "set_posture":
+            validate_posture(**call.arguments)
 
     def dispatch_many(self, calls: list[ToolCall]) -> list[dict]:
         if len(calls) != 1:
@@ -157,9 +215,6 @@ class Harness:
     def dispatch(self, call: ToolCall) -> dict:
         if self.termination is not None:
             return self._result(call, "failed", error_code="EPISODE_ENDED")
-        if call.name == "set_posture":
-            return self._result(call, "failed", error_code="UNSUPPORTED_CAPABILITY",
-                                message="The installed policy only supports planar velocity commands.")
         try:
             self._validate(call)
             fingerprint = json.dumps([call.name, call.arguments], sort_keys=True, allow_nan=False)
@@ -171,14 +226,17 @@ class Harness:
                 return self._result(call, "failed", error_code="CALL_ID_REUSED")
             return {**deepcopy(result), "deduplicated": True}
         try:
-            if call.name == "track_point":
+            if call.name in {"set_posture", "reset_posture"} and not self._posture_supported():
+                result = self._result(call, "failed", error_code="UNSUPPORTED_CAPABILITY",
+                                      message="This backend does not support static height and pitch control.")
+            elif call.name == "track_point":
                 result = self._result(call, point=self.tracker.add(**call.arguments))
             elif call.name == "get_geometry":
                 result = self._result(call, points=self.tracker.geometry())
             elif call.name == "observe":
                 self.refresh()
                 result = self._result(call, image_id=self.frame.frame_id)
-            elif call.name in {"move_relative", "turn", "stop"}:
+            elif call.name in {"move_relative", "turn", "stop", "set_posture", "reset_posture"}:
                 data = getattr(self.backend, call.name)(**call.arguments)
                 result = {**self._result(call), **data}
                 self.refresh()

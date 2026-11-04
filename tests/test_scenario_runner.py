@@ -84,3 +84,37 @@ def test_passage_manifest_records_crossing_instead_of_standoff_requirements():
     assert criteria["passage_x_m"] == backend.scenario.passage_x
     assert criteria["finish_x_min_m"] == backend.scenario.finish_x_min
     assert criteria["heading_tolerance_rad"] is None and criteria["standoff_m"] is None
+
+
+def test_composite_manifest_records_ordered_planes_and_final_standoff():
+    from go2_demo.benchmark import COMPOSITE_PROTOCOL_ID, create_plan
+
+    backend = ScenarioBackend()
+    backend.scenario = get_scenario("composite_drawers_gate_b")
+    backend.task_instruction = backend.scenario.instruction
+    criteria = build_manifest("api", 0, {}, backend, FinishModel())["evaluation"]
+    assert criteria["goal_kind"] == "composite"
+    assert criteria["cabinet_exit_x_m"] == 2.3
+    assert criteria["passage_x_m"] == 3.4
+    assert criteria["passage_center_y_m"] == 0.
+    assert criteria["passage_half_width_m"] == .6
+    assert criteria["finish_x_min_m"] == 4.2
+    assert criteria["requires_stage_order"] and criteria["requires_forward_crossing"]
+    assert criteria["standoff_m"] == 1.
+    assert criteria["distance_tolerance_m"] == .18
+    assert criteria["heading_tolerance_rad"] == .25
+    plan = create_plan(label="test", model_name="test", provider="compatible", protocol_id=COMPOSITE_PROTOCOL_ID)
+    expected = next(task["evaluation"] for task in plan["protocol"]["tasks"] if task["category"] == "composite")
+    assert criteria == expected
+
+
+def test_composite_instruction_reaches_model_without_privileged_stage_planes(tmp_path):
+    backend, model = ScenarioBackend(), FinishModel()
+    backend.scenario = get_scenario("composite_drawers_gate_b")
+    backend.task_instruction = backend.scenario.instruction
+    result = run_episode(backend, model, mode="api", run_dir=tmp_path)
+    assert result["task_id"] == "composite_drawers_gate_b"
+    assert model.observations[0]["task"] == backend.scenario.instruction
+    encoded = json.dumps(model.observations)
+    assert "cabinet_exit_x" not in encoded and "target_xy" not in encoded
+    assert backend.evaluation_arguments == {"standoff_m": 1., "tolerance_m": .18}

@@ -35,6 +35,11 @@ progress when landmarks leave view. Valid tracked_points are refreshed
 automatically: reuse them instead of repeatedly selecting new pixels. Confirm
 that a selected pixel belongs to the intended object; tracking confidence alone
 does not establish its meaning. A lost point has unknown current geometry.
+Use set_posture only when height_pitch_control is supported. Body height is an
+absolute target above the flat support floor; pitch is positive nose up. Static
+posture control cannot preserve that target while walking or turning. stop,
+finish and abort preserve static posture. Before moving again, explicitly call
+reset_posture after checking room to raise the body, then verify its result.
 Declare finish only when the task's public completion requirements are supported
 by measured evidence and the robot has stopped. A front camera crossing a gate,
 or a gate disappearing from the image, does not prove the base has crossed it.
@@ -154,6 +159,7 @@ class APIModel:
         extra_body: dict | None = None,
         trust_env: bool = True,
         max_output_tokens: int = 8192,
+        wire_protocol: str = "deepseek",
     ) -> None:
         try:
             parsed = urlsplit(base_url)
@@ -177,6 +183,8 @@ class APIModel:
             raise ModelError("trust_env must be a boolean.", "MODEL_CONFIG_ERROR")
         if type(max_output_tokens) is not int or not 1 <= max_output_tokens <= 65536:
             raise ModelError("max_output_tokens must be an integer from 1 to 65536.", "MODEL_CONFIG_ERROR")
+        if not isinstance(wire_protocol, str) or wire_protocol not in {"deepseek", "qwen"}:
+            raise ModelError("Unknown thinking wire protocol.", "MODEL_CONFIG_ERROR")
         self.endpoint = base_url.rstrip("/")
         if not self.endpoint.endswith("/chat/completions"):
             self.endpoint += "/chat/completions"
@@ -187,19 +195,30 @@ class APIModel:
         self._transport = transport
         self.trust_env = trust_env
         self.max_output_tokens = max_output_tokens
-        self.requires_reasoning_content = parsed.hostname == "api.deepseek.com"
+        self.wire_protocol = wire_protocol
+        self.thinking_mode = {"type": "enabled"}
+        self.token_budget_field = "max_completion_tokens" if wire_protocol == "qwen" else "max_tokens"
+        self.requires_reasoning_content = wire_protocol == "qwen" or parsed.hostname == "api.deepseek.com"
         self.extra_body = dict(extra_body or {})
         forbidden = {"model", "messages", "tools", "tool_choice", "stream", "max_tokens", "max_completion_tokens"}
         if forbidden.intersection(self.extra_body):
             raise ModelError("extra_body cannot replace request fields or token limits.", "MODEL_CONFIG_ERROR")
-        if "enable_thinking" in self.extra_body:
-            raise ModelError("Use thinking={type: enabled}; the enable_thinking override is not supported.", "MODEL_CONFIG_ERROR")
-        thinking = self.extra_body.get("thinking", {"type": "enabled"})
-        if thinking != {"type": "enabled"}:
-            raise ModelError("Only thinking-enabled API requests are supported.", "MODEL_CONFIG_ERROR")
+        if wire_protocol == "qwen":
+            if "thinking" in self.extra_body:
+                raise ModelError("Qwen requires enable_thinking and preserve_thinking, not a thinking object.", "MODEL_CONFIG_ERROR")
+            if (self.extra_body.get("enable_thinking", True) is not True
+                    or self.extra_body.get("preserve_thinking", True) is not True):
+                raise ModelError("Qwen thinking and reasoning preservation must both remain enabled.", "MODEL_CONFIG_ERROR")
+            self.extra_body.update(enable_thinking=True, preserve_thinking=True)
+        else:
+            if {"enable_thinking", "preserve_thinking"}.intersection(self.extra_body):
+                raise ModelError("Use thinking={type: enabled}; Qwen thinking overrides are not supported by this protocol.", "MODEL_CONFIG_ERROR")
+            thinking = self.extra_body.get("thinking", {"type": "enabled"})
+            if thinking != {"type": "enabled"}:
+                raise ModelError("Only thinking-enabled API requests are supported.", "MODEL_CONFIG_ERROR")
+            self.extra_body["thinking"] = {"type": "enabled"}
         if self.extra_body.get("reasoning_effort") == "none":
             raise ModelError("Reasoning effort cannot disable thinking.", "MODEL_CONFIG_ERROR")
-        self.extra_body["thinking"] = {"type": "enabled"}
         _json_text(self.extra_body)
         if self._api_key:
             _REGISTERED_API_KEYS.add(self._api_key)
@@ -207,16 +226,25 @@ class APIModel:
     @classmethod
     def from_env(cls, *, provider: str = "compatible", api_key_file: Path | None = None,
                  model_name: str | None = None, **kwargs: Any) -> "APIModel":
-        """Resolve explicit key files, environment settings, or the DeepSeek profile.
+        """Resolve explicit key files, environment settings, or provider profiles.
 
         No shell code or dotenv files are evaluated. The DeepSeek profile pins
-        its official endpoint. All profiles enable thinking; DeepSeek reasoning
-        state is retained intact in the in-memory tool-call history.
+        its official endpoint; Qwen defaults to the Bailian China endpoint.
+        All profiles enable thinking and retain complete reasoning in memory.
         """
-        if provider not in {"compatible", "deepseek"}:
+        if provider not in {"compatible", "deepseek", "qwen"}:
             raise ModelError("Unknown model provider profile.", "MODEL_CONFIG_ERROR")
-        base_url = "https://api.deepseek.com" if provider == "deepseek" else os.environ.get("MODEL_BASE_URL")
-        model = model_name or os.environ.get("MODEL_NAME") or ("deepseek-flash" if provider == "deepseek" else None)
+        if provider in {"deepseek", "qwen"}:
+            if kwargs.get("wire_protocol", provider) != provider:
+                raise ModelError("Thinking wire protocol does not match the provider profile.", "MODEL_CONFIG_ERROR")
+            kwargs["wire_protocol"] = provider
+        if provider == "deepseek":
+            base_url = "https://api.deepseek.com"
+        else:
+            base_url = os.environ.get("MODEL_BASE_URL") or (
+                "https://dashscope.aliyuncs.com/compatible-mode/v1" if provider == "qwen" else None)
+        default_model = {"deepseek": "deepseek-flash", "qwen": "qwen3.8-max"}.get(provider)
+        model = model_name or os.environ.get("MODEL_NAME") or default_model
         if not base_url or not model:
             raise ModelError("Set MODEL_BASE_URL and MODEL_NAME before using the compatible API profile.", "MODEL_CONFIG_ERROR")
         if api_key_file is not None:
@@ -272,7 +300,8 @@ class APIModel:
             if reasoning is not None and not isinstance(reasoning, str):
                 raise ModelProtocolError("History reasoning content must be text or null.")
             if self.requires_reasoning_content and not isinstance(reasoning, str):
-                raise ModelProtocolError("DeepSeek thinking history requires complete reasoning_content.")
+                provider_name = "Qwen" if self.wire_protocol == "qwen" else "DeepSeek"
+                raise ModelProtocolError(f"{provider_name} thinking history requires complete reasoning_content.")
             if reasoning is not None and len(reasoning.encode("utf-8")) > MAX_RESPONSE_BYTES:
                 raise ModelProtocolError("History reasoning content exceeded the allowed size.")
             assistant = {"role": "assistant", "content": content, "tool_calls": wire_calls}
@@ -322,7 +351,7 @@ class APIModel:
             "tools": tools,
             "tool_choice": "auto",
             "stream": False,
-            "max_tokens": self.max_output_tokens,
+            self.token_budget_field: self.max_output_tokens,
         }
         payload.update(self.extra_body)
         _json_text(payload)
@@ -347,7 +376,8 @@ class APIModel:
         if reasoning is not None and not isinstance(reasoning, str):
             raise ModelProtocolError("Model reasoning_content must be text or null.")
         if self.requires_reasoning_content and not isinstance(reasoning, str):
-            raise ModelProtocolError("DeepSeek thinking response requires reasoning_content.")
+            provider_name = "Qwen" if self.wire_protocol == "qwen" else "DeepSeek"
+            raise ModelProtocolError(f"{provider_name} thinking response requires reasoning_content.")
         content = message.get("content")
         if content is not None and not isinstance(content, str):
             raise ModelProtocolError("Model assistant content must be text or null.")

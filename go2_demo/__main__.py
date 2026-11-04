@@ -8,7 +8,6 @@ import sys
 import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
-SCENARIO_SOURCE = "local_mujoco_adaptation_not_official_QUARD_environment"
 
 
 def positive_number(value):
@@ -95,9 +94,11 @@ def _suite_summary(args, scenarios, results) -> dict:
             if isinstance(value, (int, float)):
                 usage[key] = usage.get(key, 0) + value
     runnable = sum(scenario.supported for scenario in scenarios)
+    sources = sorted({scenario.source for scenario in scenarios})
     return {
         "suite": args.suite, "mode": args.mode, "seed": args.seed,
-        "scenario_source": SCENARIO_SOURCE, "is_official_quard_benchmark": False,
+        "scenario_source": sources[0] if len(sources) == 1 else "mixed_local_mujoco_scenarios",
+        "scenario_sources": sources, "is_official_quard_benchmark": False,
         "is_llm_result": args.mode == "api", "total_cases": len(scenarios),
         "runnable_cases": runnable, "completed_cases": len(completed),
         "successes": successes, "failures": len(completed) - successes,
@@ -150,9 +151,10 @@ def main(argv=None) -> int:
     parser.add_argument("--mode", choices=("api",), default="api", help="API is the only runtime mode")
     selection = parser.add_mutually_exclusive_group()
     selection.add_argument("--task", help="scenario ID; default: go_to_blue_ball; see --list-tasks")
-    selection.add_argument("--suite", choices=("quard-planar",), help="run 13 local adaptations and report two unsupported crawl cases")
+    selection.add_argument("--suite", choices=("quard-planar", "composite", "extended-planar"),
+                           help="quard-planar: 13 tasks plus two unsupported crawl cases; composite: one compound task; extended-planar: all 14 runnable tasks plus crawl cases")
     parser.add_argument("--list-tasks", action="store_true", help="list visible scenarios without loading credentials or the simulator")
-    parser.add_argument("--provider", choices=("compatible", "deepseek"), default="deepseek")
+    parser.add_argument("--provider", choices=("compatible", "deepseek", "qwen"), default="deepseek")
     parser.add_argument("--api-key-file", type=Path)
     parser.add_argument("--model-name")
     parser.add_argument("--no-env-proxy", action="store_true")
@@ -181,7 +183,12 @@ def main(argv=None) -> int:
         print("Source: local MuJoCo adaptations, not the original QUARD simulator or published evaluation split.")
         return 0
     if args.suite:
-        return _run_suite(args, [scenario for scenario in list_scenarios() if scenario.task_id != "red_marker"])
+        scenarios = [scenario for scenario in list_scenarios() if scenario.task_id != "red_marker"]
+        if args.suite == "quard-planar":
+            scenarios = [scenario for scenario in scenarios if scenario.category != "composite"]
+        elif args.suite == "composite":
+            scenarios = [scenario for scenario in scenarios if scenario.category == "composite"]
+        return _run_suite(args, scenarios)
     try:
         scenario = get_scenario(args.task or "go_to_blue_ball")
     except ValueError as exc:

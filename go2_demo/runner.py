@@ -95,6 +95,7 @@ def build_manifest(mode, seed, budgets, backend, model, *, task: str | None = No
         except importlib.metadata.PackageNotFoundError:
             versions[package] = "not_recorded"
     context = _task_context(backend, task)
+    posture_supported = getattr(backend, "posture_control_supported", False) is True
     passage = context["goal_kind"] == "passage"
     evaluation = {"goal_kind": context["goal_kind"],
                   "standoff_m": None if passage else context["standoff_m"],
@@ -102,13 +103,16 @@ def build_manifest(mode, seed, budgets, backend, model, *, task: str | None = No
                   "heading_tolerance_rad": None if passage else 0.25,
                   "max_speed_mps": 0.12, "max_yaw_rate_radps": 0.25,
                   "requires_finish": True, "no_collision_or_fall": True}
-    if passage:
+    if passage or context["goal_kind"] == "composite":
         scenario = backend.scenario
         evaluation.update({"passage_x_m": scenario.passage_x,
                            "passage_center_y_m": scenario.passage_center_y,
                            "passage_half_width_m": scenario.passage_half_width,
                            "finish_x_min_m": scenario.finish_x_min,
                            "requires_forward_crossing": True})
+    if context["goal_kind"] == "composite":
+        evaluation.update(cabinet_exit_x_m=backend.scenario.cabinet_exit_x,
+                          requires_stage_order=True)
     return {
         "created_utc": datetime.now(timezone.utc).isoformat(), "mode": mode, "seed": seed,
         "task": context["instruction"], "task_id": context["task_id"],
@@ -116,14 +120,24 @@ def build_manifest(mode, seed, budgets, backend, model, *, task: str | None = No
         "model": getattr(model, "model", "unknown_api_model"),
         "simulation_mode": "paused_during_model_inference", "backend": type(backend).__name__,
         "observation_protocol": "rgb_tracked_geometry_local_odometry_v2",
-        "action_protocol": "bounded_relative_planar_motion_v1",
+        "action_protocol": ("bounded_relative_motion_static_posture_v2" if posture_supported
+                            else "bounded_relative_planar_motion_v1"),
         "completion_contract": "public_body_reference_and_clearance_v2",
         "odometry_source": "idealized_simulated_proprioception_relative_to_episode_start",
-        "posture_control_supported": False, "task_agent": False, "external_memory": False,
+        "posture_control_supported": posture_supported,
+        "moving_posture_control_supported": (posture_supported
+                                             and getattr(backend, "moving_posture_control_supported", False) is True),
+        "task_agent": False, "external_memory": False,
         "budgets": budgets, "package_versions": versions, "code_sha256": code_hashes,
         "api_settings": {"timeout_s": getattr(model, "timeout_s", None),
                          "max_output_tokens": getattr(model, "max_output_tokens", 8192),
-                         "thinking": getattr(model, "extra_body", {}).get("thinking"),
+                         "thinking": getattr(model, "thinking_mode",
+                                             getattr(model, "extra_body", {}).get("thinking")),
+                         "wire_protocol": getattr(model, "wire_protocol", None),
+                         "token_budget_field": getattr(model, "token_budget_field", None),
+                         "wire_parameters": {k: v for k, v in getattr(model, "extra_body", {}).items()
+                                             if k in {"thinking", "enable_thinking", "preserve_thinking"}},
+                         "endpoint": getattr(model, "endpoint", None),
                          "reasoning_history": "complete_retained_assistant_turns_in_memory",
                          "reasoning_logged": False},
         "asset_lock_sha256": hashlib.sha256((root / "assets.lock.json").read_bytes()).hexdigest()
@@ -144,7 +158,7 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                "max_sim_seconds": max_sim_seconds, "history_turns": history_turns}
     termination, error, final_stop = "runtime_error", None, None
     history, usage = [], {}
-    calls_made, motion_calls = 0, 0
+    calls_made, motion_calls, posture_calls = 0, 0, 0
     reasoning_responses, reasoning_characters = 0, 0
     harness = None
     deadline = time.monotonic() + max_wall_seconds
@@ -159,6 +173,11 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
         (run_dir / "system_prompt.txt").write_text(SYSTEM_PROMPT, encoding="utf-8")
         harness = Harness(backend, context["instruction"])
         start_sim = harness.frame.sim_time_s
+        # Privileged scoring anchor, archived separately from model observations.
+        # The physics trace starts after the first control step; keep its exact origin.
+        log.write("episode_start", sim_time_s=start_sim,
+                  base_xy_m=[float(v) for v in harness.frame.base_xy_yaw[:2]],
+                  yaw_rad=float(harness.frame.base_xy_yaw[2]))
         backend.sim_deadline_s = start_sim + max_sim_seconds
         for index in range(max_model_calls):
             remaining = deadline - time.monotonic()
@@ -192,6 +211,10 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
             motion_calls += sum(c.name in {"move_relative", "turn"} and not r.get("deduplicated")
                                 and r.get("error_code") not in {"INVALID_ARGUMENTS", "ONE_TOOL_PER_TURN", "CALL_ID_REUSED"}
                                 for c, r in zip(decision.calls, results))
+            posture_calls += sum(c.name in {"set_posture", "reset_posture"} and not r.get("deduplicated")
+                                 and r.get("error_code") not in {"INVALID_ARGUMENTS", "ONE_TOOL_PER_TURN", "CALL_ID_REUSED",
+                                                                 "UNSUPPORTED_CAPABILITY", "EPISODE_ENDED"}
+                                 for c, r in zip(decision.calls, results))
             history.append({"observation": observation, "calls": calls, "results": results,
                             "reasoning_content": reasoning,
                             "assistant_content": getattr(decision, "assistant_content", None)})
@@ -244,7 +267,8 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                                 and sim_elapsed <= max_sim_seconds
                                 and time.monotonic() <= deadline),
                 "error": error, "final_stop": final_stop,
-                "model_calls": calls_made, "motion_calls": motion_calls, "usage": usage,
+                "model_calls": calls_made, "motion_calls": motion_calls,
+                "posture_calls": posture_calls, "usage": usage,
                 "reasoning_responses": reasoning_responses, "reasoning_characters": reasoning_characters,
                 "wall_elapsed_s": time.monotonic()-log.started, "sim_elapsed_s": sim_elapsed,
                 "evaluation": evaluation,

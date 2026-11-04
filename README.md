@@ -2,15 +2,15 @@
 
 一个在 **MuJoCo 中运行真实 Go2 关节动力学**的最小闭环：观察机载 RGB 图像 → 选取目标像素 → RGB-D 几何跟踪 → 调用短程移动工具 → 接收执行反馈 → 独立评分。
 
-现在可选择 **13 个新闭环场景**：接近不同颜色物体、辨别 A/B/C、绕过家具、穿过矩形或三角形门框。原始红色标记任务保留为 `red_marker`；两项低姿态爬行任务明确标为当前不支持。
+现有13个导航场景涵盖接近不同颜色物体、辨别 A/B/C、绕过家具、穿过矩形或三角形门框；新增 **`composite_drawers_gate_b` 复合任务**，依次绕过抽屉柜、穿过绿色矩形门、从 A/B/C 中接近 B 并停稳。原始红色标记任务保留为 `red_marker`；两项低姿态爬行任务明确标为当前不支持。
 
 机器人闭环只通过 **开启思考的模型 API** 决策。默认使用支持图片与工具调用的 DeepSeek；模型自行选点、选择动作并声明完成。多轮工具调用保留并回传完整的 `reasoning_content`。
 
-低层复用固定版本的 Go2 预训练步态策略；无需安装 ROS、Isaac Sim，也无需先训练策略。首版只支持平地移动与转向，**不支持机身高度／俯仰控制**，不包含独立任务 Agent 或长期记忆模块。
+低层复用固定版本的 Go2 预训练步态策略，并新增基于逆运动学和关节 PD 的**静止机身高度／仰角调整**；无需安装 ROS、Isaac Sim，也无需先训练策略。`set_posture(body_height_m, body_pitch_rad)` 使用绝对高度（米）和抬头为正的仰角（弧度），`reset_posture()` 显式恢复标准站姿及行走模式。当前尚不支持保持指定姿态行走，低姿态爬行仍不可运行；不包含独立任务 Agent 或长期记忆模块。
 
 当前入口和场景说明见 [新场景测试](docs/scenarios.md)，实测记录见 [验证记录](docs/validation.md)。此前规则策略和非思考 API 的结果保留为历史记录，不作为当前思考模式的成绩。
 
-穿门任务已补齐相机／机身标定、实际累计里程计和公开完成余量。保持原评分后，本轮红色三角、绿色矩形和黄色三角三项思考 API 验证均通过，自动测试为 230 项通过；方法、协议变化及适用范围见 [穿门修复说明](docs/passage-solution.md)。
+穿门任务已补齐相机／机身标定、实际累计里程计和公开完成余量。保持原评分后，既有红色三角、绿色矩形和黄色三角三项思考 API 验证均通过；方法、当时的测试记录及适用范围见 [穿门修复说明](docs/passage-solution.md)。当前测试总数以本次 `pytest` 输出为准。
 
 ## 当前 WSL 工作区
 
@@ -35,6 +35,16 @@ unset MUJOCO_GL
 ```
 
 `run_deepseek.sh --viewer` 默认运行新的蓝色球体任务。原始场景需显式选择 `--task red_marker`。完整列表、逐项结果和评分说明见 [新场景测试](docs/scenarios.md)；QUARD 离线文件检查使用下方独立入口。
+
+新增复合任务可单独运行，下面的命令会调用思考模型 API：
+
+```bash
+./scripts/run_deepseek.sh --task composite_drawers_gate_b --viewer --seed 0
+# 只运行复合类；extended-planar 则运行原13项＋复合1项，另列2项爬行跳过
+./scripts/run_deepseek.sh --suite composite --viewer --seed 0
+```
+
+复合任务的顺序验收、无付费API验证与v3评测入口见 [复合测试说明](docs/composite-tests.md)。`--suite quard-planar` 保留原13项范围；新增任务不会自动混入已有成绩。
 
 ## 快速开始：Ubuntu
 
@@ -108,6 +118,10 @@ runs/<运行标识>/
 
 API Key 与认证头不写入日志。仿真目标真值用于独立评分，不作为目标坐标直接提供给模型。`finish()` 只是完成声明，最终成绩以 `metrics.json` 为准。
 
+比较不同大模型时，使用 [固定模型评测规则](docs/model-evaluation.md)：默认v2为13任务×5次＝65回合，四类各25%；显式选择v3后为原13项＋复合1项，共14任务×5次＝70回合，五类各20%。两版均按严格成功60分、实际路径效率20分、墙钟效率10分、仿真效率5分和调用效率5分评分，有效失败各项为0。`python -m go2_demo.benchmark_cli` 提供冻结计划、执行、离线评分和比较入口；不同协议或缺失／无效回合不生成正式跨模型排名。
+
+已有v2真实思考API评测中，DeepSeek完成65回合，严格成功60次，综合分 **82.96**；Qwen因账号服务阻塞保留阶段结果，不能据此宣布总体赢家。原始 [阶段报告](runs/model-eval/20261103-deepseek-flash-vs-qwen-max/REPORT.zh-CN.md) 和 [DeepSeek评分JSON](runs/model-eval/20261103-deepseek-flash-vs-qwen-max/deepseek/report.json) 保持原协议与成绩。新增复合任务本轮只做不调用付费模型API的实现与可达性验证，尚无v3模型成绩。
+
 ```bash
 python -m pytest -q
 python scripts/fetch_assets.py --verify
@@ -134,7 +148,7 @@ python -m go2_demo.quard --report runs/quard/report.json
 - 模型思考期间暂停仿真，日志标记为 `paused_during_model_inference`；不代表实时机器人已验证。
 - 关键点跟踪面向静态场景，丢点后返回失效状态，由决策方重新选点；没有自动全局寻路与绕障。
 - 使用仿真提供的相机标定和本体位姿，尚未验证真实传感器噪声、里程计漂移或实机迁移。
-- 动作按预训练策略驱动关节，不通过瞬移机身完成移动；高度／俯仰能力不做假实现。
+- 移动由预训练步态驱动关节，静止调姿由逆运动学与关节 PD 驱动，均通过物理仿真执行。调姿模式中 `stop` 保持姿态；移动或转向前须显式调用 `reset_posture`，不会自动起立。
 - 本项目是受 RoboHarness 启发的最小 Go2 demo，不是论文全部功能或成绩的复现。
 
 详细接口、指标和排错见 [docs/demo.md](docs/demo.md)。原有完整研究设计保存在 [docs/design-plan.md](docs/design-plan.md)，其中的后续模块仍是计划，不等同于已实现功能。

@@ -6,7 +6,8 @@ import math
 import numpy as np
 import pytest
 
-from go2_demo.harness import Harness
+from go2_demo.harness import Harness, TOOLS
+from go2_demo.posture import MAX_HEIGHT_M, MAX_PITCH_RAD, MIN_HEIGHT_M
 from go2_demo.types import SensorFrame, ToolCall
 
 
@@ -124,6 +125,51 @@ def test_no_target_truth_or_evaluator_score_in_observation(setup_harness):
     assert backend.evaluations == 0
 
 
+def test_composite_rules_expose_instructions_without_private_stage_state(setup_harness):
+    harness, backend = setup_harness
+    backend.public_task_spec = {
+        "goal_kind": "composite", "stages_ordered": True,
+        "target_xy_m": [5.6, 0.0], "success": True,
+        "stage_rules": [
+            {"stage_id": "avoid_drawers", "instruction": "先安全绕过抽屉柜。",
+             "cabinet_exit_x_m": 2.3, "completed": True},
+            {"stage_id": "pass_gate", "instruction": "从门内穿过并留出余量。",
+             "required_clearance_m": .8, "passage_x_m": 3.4,
+             "events": {"success": True}},
+            {"stage_id": "approach_b", "instruction": "找到B并在指定距离停稳。",
+             "target_xy_m": [5.6, 0.0]},
+        ],
+    }
+    result = harness.observation()["completion_requirements"]
+    assert result == {
+        "goal_kind": "composite", "stages_ordered": True,
+        "stage_rules": [
+            {"stage_id": "avoid_drawers", "instruction": "先安全绕过抽屉柜。"},
+            {"stage_id": "pass_gate", "instruction": "从门内穿过并留出余量。",
+             "required_clearance_m": .8},
+            {"stage_id": "approach_b", "instruction": "找到B并在指定距离停稳。"},
+        ],
+    }
+    result["stage_rules"][0]["instruction"] = "changed"
+    assert backend.public_task_spec["stage_rules"][0]["instruction"] == "先安全绕过抽屉柜。"
+    assert backend.evaluations == 0
+
+
+@pytest.mark.parametrize("clearance", [True, float("nan"), float("inf"), -.1, "0.8"])
+def test_composite_rule_sanitizer_rejects_invalid_clearances_and_records(setup_harness, clearance):
+    harness, backend = setup_harness
+    backend.public_task_spec = {
+        "goal_kind": "composite", "stages_ordered": "true",
+        "stage_rules": [None, {"stage_id": "missing_instruction"},
+                        {"stage_id": "", "instruction": "invalid"},
+                        {"stage_id": "pass_gate", "instruction": "穿门。",
+                         "required_clearance_m": clearance}],
+    }
+    result = harness.observation()["completion_requirements"]
+    assert result == {"goal_kind": "composite",
+                      "stage_rules": [{"stage_id": "pass_gate", "instruction": "穿门。"}]}
+
+
 def test_finish_stops_but_does_not_claim_independent_success(setup_harness):
     harness, backend = setup_harness
     result = harness.dispatch(ToolCall("finish", "finish", {}))
@@ -146,9 +192,179 @@ def test_abort_stops_without_claiming_finish(setup_harness):
 
 def test_unimplemented_posture_is_explicitly_rejected(setup_harness):
     harness, backend = setup_harness
-    result = harness.dispatch(ToolCall("posture", "set_posture", {"body_height_m": 0.2, "body_pitch_rad": 0.0}))
+    result = harness.dispatch(ToolCall("posture", "set_posture", {"body_height_m": 0.3, "body_pitch_rad": 0.0}))
     assert result["error_code"] == "UNSUPPORTED_CAPABILITY"
     assert backend.moves == [] and backend.stops == 0
+
+
+class PostureBackend(RecordingBackend):
+    posture_control_supported = True
+    moving_posture_control_supported = False
+
+    def __init__(self):
+        super().__init__()
+        self.postures = []
+        self.resets = 0
+        self.control_mode = "locomotion"
+        self.target = None
+        self.posture_result = {"status": "succeeded", "measured": {"body_height_m": .3, "body_pitch_rad": .1}}
+
+    def capture(self):
+        frame = super().capture()
+        frame.robot_state.update(control_mode=self.control_mode, pitch_convention="nose_up_positive")
+        if self.target is not None:
+            frame.robot_state["posture_target"] = dict(self.target)
+        return frame
+
+    def set_posture(self, body_height_m, body_pitch_rad):
+        self.postures.append((body_height_m, body_pitch_rad))
+        self.control_mode = "posture"
+        self.target = {"body_height_m": body_height_m, "body_pitch_rad": body_pitch_rad}
+        return self.posture_result
+
+    def reset_posture(self):
+        self.resets += 1
+        self.control_mode = "locomotion"
+        self.target = None
+        return {"status": "succeeded"}
+
+
+@pytest.mark.parametrize("field,value", [
+    ("body_height_m", True), ("body_height_m", "0.3"),
+    ("body_height_m", float("nan")), ("body_height_m", float("inf")),
+    ("body_height_m", MIN_HEIGHT_M - .001), ("body_height_m", MAX_HEIGHT_M + .001),
+    ("body_pitch_rad", True), ("body_pitch_rad", float("nan")),
+    ("body_pitch_rad", float("inf")), ("body_pitch_rad", -float("inf")),
+    ("body_pitch_rad", MAX_PITCH_RAD + .001), ("body_pitch_rad", -MAX_PITCH_RAD - .001),
+])
+def test_invalid_posture_is_rejected_before_physics(field, value):
+    backend = PostureBackend()
+    harness = Harness(backend, "Adjust posture.")
+    arguments = {"body_height_m": .3, "body_pitch_rad": .1, field: value}
+    result = harness.dispatch(ToolCall("bad-posture", "set_posture", arguments))
+    assert result["error_code"] == "INVALID_ARGUMENTS"
+    assert backend.postures == [] and backend.stops == 0
+    assert backend.capture_count == 1
+    assert harness.termination is None
+
+
+@pytest.mark.parametrize("tool,arguments", [
+    ("set_posture", {"body_height_m": .3}),
+    ("set_posture", {"body_height_m": .3, "body_pitch_rad": .1, "speed": 1.}),
+    ("reset_posture", {"height": .3}),
+])
+def test_posture_schema_requires_exact_arguments(tool, arguments):
+    backend = PostureBackend()
+    harness = Harness(backend, "Adjust posture.")
+    result = harness.dispatch(ToolCall("schema-posture", tool, arguments))
+    assert result["error_code"] == "INVALID_ARGUMENTS"
+    assert backend.postures == [] and backend.resets == 0
+
+
+def test_individually_bounded_but_jointly_infeasible_posture_is_rejected():
+    backend = PostureBackend()
+    harness = Harness(backend, "Adjust posture.")
+    result = harness.dispatch(ToolCall("jointly-infeasible", "set_posture", {
+        "body_height_m": MAX_HEIGHT_M, "body_pitch_rad": MAX_PITCH_RAD,
+    }))
+    assert result["error_code"] == "INVALID_ARGUMENTS"
+    assert backend.postures == [] and backend.capture_count == 1
+
+
+def test_posture_dispatch_refreshes_observation_and_deduplicates_without_ending_episode():
+    backend = PostureBackend()
+    harness = Harness(backend, "Adjust posture.")
+    initial_image = harness.observation()["image_id"]
+    call = ToolCall("posture-1", "set_posture", {"body_height_m": .3, "body_pitch_rad": .1})
+    first = harness.dispatch(call)
+    second = harness.dispatch(call)
+    assert first["status"] == "succeeded"
+    assert first["measured"] == backend.posture_result["measured"]
+    assert second == {**first, "deduplicated": True}
+    assert backend.postures == [(.3, .1)] and backend.capture_count == 2
+    assert harness.observation()["image_id"] != initial_image
+    assert harness.observation()["robot_state"]["control_mode"] == "posture"
+    assert harness.observation()["robot_state"]["posture_target"] == call.arguments
+    assert harness.termination is None and backend.stops == 0 and backend.evaluations == 0
+    reused = harness.dispatch(ToolCall("posture-1", "set_posture", {"body_height_m": .31, "body_pitch_rad": .1}))
+    assert reused["error_code"] == "CALL_ID_REUSED"
+    assert backend.postures == [(.3, .1)]
+
+
+def test_failed_posture_feedback_is_preserved_and_observation_refreshed():
+    backend = PostureBackend()
+    backend.posture_result = {"status": "timed_out", "error_code": "POSTURE_TIMEOUT"}
+    harness = Harness(backend, "Adjust posture.")
+    result = harness.dispatch(ToolCall("posture-fail", "set_posture", {"body_height_m": .3, "body_pitch_rad": .1}))
+    assert result["status"] == "timed_out" and result["error_code"] == "POSTURE_TIMEOUT"
+    assert backend.capture_count == 2
+    assert harness.termination is None and backend.resets == 0
+
+
+def test_reset_posture_is_explicit_and_deduplicated():
+    backend = PostureBackend()
+    harness = Harness(backend, "Adjust posture.")
+    harness.dispatch(ToolCall("posture", "set_posture", {"body_height_m": .3, "body_pitch_rad": .1}))
+    harness.dispatch(ToolCall("stop", "stop", {}))
+    assert backend.control_mode == "posture" and backend.resets == 0
+    call = ToolCall("reset", "reset_posture", {})
+    assert harness.dispatch(call)["status"] == "succeeded"
+    assert harness.dispatch(call)["deduplicated"] is True
+    assert backend.resets == 1 and backend.capture_count == 4
+    assert harness.observation()["robot_state"]["control_mode"] == "locomotion"
+    assert "posture_target" not in harness.observation()["robot_state"]
+    assert harness.termination is None
+
+
+def test_posture_capabilities_require_backend_support_and_callable_methods():
+    backend = PostureBackend()
+    observation = Harness(backend, "Adjust posture.").observation()
+    assert observation["capabilities"]["height_pitch_control"] is True
+    assert observation["capabilities"]["moving_height_pitch_control"] is False
+    assert observation["posture_limits"] == {
+        "body_height_m": {"minimum": MIN_HEIGHT_M, "maximum": MAX_HEIGHT_M},
+        "body_pitch_rad": {"minimum": -MAX_PITCH_RAD, "maximum": MAX_PITCH_RAD},
+        "height_reference": "base_above_flat_ground", "pitch_convention": "nose_up_positive",
+        "combined_constraint": "body_height_m + 0.1934 * abs(body_pitch_rad) <= 0.38",
+    }
+    backend.reset_posture = None
+    harness = Harness(backend, "Adjust posture.")
+    assert harness.observation()["capabilities"]["height_pitch_control"] is False
+    assert "posture_limits" not in harness.observation()
+    result = harness.dispatch(ToolCall("no-reset", "reset_posture", {}))
+    assert result["error_code"] == "UNSUPPORTED_CAPABILITY"
+    assert backend.resets == 0
+
+
+def test_unsupported_posture_is_cached_and_does_not_bypass_validation(setup_harness):
+    harness, backend = setup_harness
+    call = ToolCall("unsupported", "reset_posture", {})
+    first = harness.dispatch(call)
+    assert first["error_code"] == "UNSUPPORTED_CAPABILITY"
+    assert harness.dispatch(call) == {**first, "deduplicated": True}
+    result = harness.dispatch(ToolCall("invalid", "set_posture", {"body_height_m": True, "body_pitch_rad": .1}))
+    assert result["error_code"] == "INVALID_ARGUMENTS"
+    assert backend.stops == 0
+
+
+def test_posture_target_only_exposes_finite_public_fields():
+    backend = PostureBackend()
+    backend.target = {"body_height_m": .3, "body_pitch_rad": .1, "hidden_target": [99., 99.]}
+    harness = Harness(backend, "Adjust posture.")
+    target = harness.observation()["robot_state"]["posture_target"]
+    assert target == {"body_height_m": .3, "body_pitch_rad": .1}
+    target["body_height_m"] = 99.
+    assert backend.target["body_height_m"] == .3
+    backend.target["body_pitch_rad"] = float("nan")
+    assert "posture_target" not in harness.refresh()["robot_state"]
+
+
+def test_posture_tools_publish_strict_absolute_target_schema():
+    specs = {tool["function"]["name"]: tool["function"]["parameters"] for tool in TOOLS}
+    assert specs["set_posture"]["required"] == ["body_height_m", "body_pitch_rad"]
+    assert specs["set_posture"]["additionalProperties"] is False
+    assert specs["reset_posture"]["properties"] == {}
+    assert specs["reset_posture"]["additionalProperties"] is False
 
 
 def test_stale_image_cannot_register_a_point(setup_harness):

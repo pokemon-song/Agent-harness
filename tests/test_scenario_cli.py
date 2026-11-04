@@ -21,6 +21,7 @@ def test_list_new_tasks_does_not_load_credentials_or_run_backend(monkeypatch, tm
     output = capsys.readouterr().out
     assert "go_to_blue_ball" in output and "distinguish_texture_a" in output
     assert "go_through_green_rectangle_tunnel" in output
+    assert "composite_drawers_gate_b | composite | supported" in output
     assert "crawl_red_gate2 | crawl | unsupported" in output
 
 
@@ -86,3 +87,22 @@ def test_task_and_suite_cannot_accidentally_override_each_other():
     with pytest.raises(SystemExit) as error:
         cli.main(["--task", "red_marker", "--suite", "quard-planar"])
     assert error.value.code == 2
+
+
+@pytest.mark.parametrize("suite,runnable,skipped", [("composite", 1, 0), ("extended-planar", 14, 2)])
+def test_new_suites_include_composite_task_and_account_for_skipped_cases(monkeypatch, tmp_path, suite, runnable, skipped):
+    seen = []
+
+    def run(args, scenario, run_dir):
+        seen.append(scenario.task_id)
+        return {"success": True, "termination": "finish", "model_calls": 2}, 0
+
+    monkeypatch.setattr(cli, "_run_single", run)
+    assert cli.main(["--suite", suite, "--runs-dir", str(tmp_path)]) == 0
+    report = _summary(tmp_path)
+    assert len(seen) == runnable and "composite_drawers_gate_b" in seen
+    assert "red_marker" not in seen
+    assert report["completed_cases"] == report["runnable_cases"] == runnable
+    assert report["skipped_cases"] == skipped and report["not_run_cases"] == 0
+    assert report["successes"] == runnable and not report["is_official_quard_benchmark"]
+    assert "local_composite_mujoco" in report["scenario_sources"]

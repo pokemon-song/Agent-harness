@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from go2_demo.models import ModelError
-from go2_demo.runner import run_episode
+from go2_demo.runner import build_manifest, run_episode
 from go2_demo.types import Decision, SensorFrame, ToolCall
 
 
@@ -93,6 +93,25 @@ def test_premature_finish_still_fails_independent_evaluation(tmp_path):
     assert metrics["success"] is False
     assert backend.stops >= 1
     assert backend.closed and model.closed
+
+
+def test_exact_scoring_origin_is_archived_without_exposing_world_pose_to_model(tmp_path):
+    class OffsetBackend(EpisodeBackend):
+        def capture(self):
+            frame = super().capture()
+            frame.base_xy_yaw = np.array([4.5, -2., .3])
+            return frame
+
+    run_episode(OffsetBackend(), EpisodeModel(), mode="api", run_dir=tmp_path)
+    events = [json.loads(line) for line in (tmp_path / "events.jsonl").read_text().splitlines()]
+    starts = [event for event in events if event["event"] == "episode_start"]
+    assert len(starts) == 1
+    assert starts[0]["base_xy_m"] == [4.5, -2.]
+    assert starts[0]["yaw_rad"] == .3 and starts[0]["sim_time_s"] == .01
+    model_input = next(event for event in events if event["event"] == "model_input")
+    assert events.index(starts[0]) < events.index(model_input)
+    assert model_input["observation"]["local_odometry"]["translation_m"] == [0., 0.]
+    assert "base_xy_m" not in model_input["observation"]
 
 
 @pytest.mark.parametrize("final_stop", [
@@ -183,3 +202,72 @@ def test_non_api_mode_is_rejected_before_any_decision_or_motion(tmp_path):
     with pytest.raises(ValueError, match="Only API"):
         run_episode(backend, EpisodeModel(), mode="scripted", run_dir=tmp_path)
     assert backend.stops == 0 and backend.moves == []
+
+
+def test_manifest_reports_backend_posture_capabilities_without_assuming_support():
+    backend = EpisodeBackend()
+    manifest = build_manifest("api", 0, {}, backend, EpisodeModel())
+    assert manifest["posture_control_supported"] is False
+    assert manifest["moving_posture_control_supported"] is False
+    assert manifest["action_protocol"] == "bounded_relative_planar_motion_v1"
+
+    backend.posture_control_supported = True
+    backend.moving_posture_control_supported = False
+    manifest = build_manifest("api", 0, {}, backend, EpisodeModel())
+    assert manifest["posture_control_supported"] is True
+    assert manifest["moving_posture_control_supported"] is False
+    assert manifest["action_protocol"] == "bounded_relative_motion_static_posture_v2"
+
+
+def test_qwen_manifest_records_common_thinking_semantics_and_actual_wire_budget(tmp_path, monkeypatch):
+    from go2_demo.models import APIModel
+    monkeypatch.delenv("MODEL_BASE_URL", raising=False)
+    keyfile = tmp_path / "test.key"
+    keyfile.write_text("mock-qwen-key", encoding="utf-8")
+    model = APIModel.from_env(provider="qwen", model_name="qwen3.8-max", api_key_file=keyfile)
+    settings = build_manifest("api", 0, {}, EpisodeBackend(), model)["api_settings"]
+    assert settings["thinking"] == {"type": "enabled"}
+    assert settings["max_output_tokens"] == 8192
+    assert settings["token_budget_field"] == "max_completion_tokens"
+    assert settings["wire_parameters"] == {"enable_thinking": True, "preserve_thinking": True}
+    assert settings["endpoint"] == "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
+    assert "mock-qwen-key" not in json.dumps(settings)
+
+
+def test_posture_actions_are_counted_separately_without_counting_cached_retries(tmp_path):
+    class PostureBackend(EpisodeBackend):
+        posture_control_supported = True
+        moving_posture_control_supported = False
+
+        def __init__(self):
+            super().__init__()
+            self.postures = []
+            self.resets = 0
+
+        def set_posture(self, body_height_m, body_pitch_rad):
+            self.postures.append((body_height_m, body_pitch_rad))
+            return {"status": "succeeded"}
+
+        def reset_posture(self):
+            self.resets += 1
+            return {"status": "succeeded"}
+
+    class PostureModel:
+        def __init__(self):
+            posture = ToolCall("posture", "set_posture", {"body_height_m": .28, "body_pitch_rad": .1})
+            self.calls = iter([posture, posture, ToolCall("reset", "reset_posture", {}),
+                               ToolCall("finish", "finish", {})])
+
+        def decide(self, *args, **kwargs):
+            return Decision([next(self.calls)])
+
+    backend = PostureBackend()
+    metrics = run_episode(backend, PostureModel(), mode="api", run_dir=tmp_path)
+    assert metrics["success"]
+    assert metrics["posture_calls"] == 2
+    assert metrics["motion_calls"] == 0
+    assert backend.postures == [(.28, .1)]
+    assert backend.resets == 1
+    manifest = json.loads((tmp_path / "manifest.json").read_text())
+    assert manifest["posture_control_supported"] is True
+    assert manifest["moving_posture_control_supported"] is False

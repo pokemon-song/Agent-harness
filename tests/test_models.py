@@ -8,7 +8,7 @@ import time
 import httpx
 import pytest
 
-from go2_demo.models import APIModel, MAX_RESPONSE_BYTES, ModelError, ModelProtocolError, redact_message
+from go2_demo.models import APIModel, MAX_RESPONSE_BYTES, ModelError, ModelProtocolError, SYSTEM_PROMPT, redact_message
 
 
 IMAGE = "data:image/png;base64,aW1hZ2U="
@@ -246,6 +246,50 @@ def test_deepseek_profile_uses_its_official_endpoint_and_default_key_file(clean_
     assert client.model == "deepseek-flash"
     assert client._api_key == "DEFAULT-DEEPSEEK-CREDENTIAL"
     assert client.extra_body == {"thinking": {"type": "enabled"}}
+    assert client.thinking_mode == {"type": "enabled"}
+    assert client.wire_protocol == "deepseek"
+    assert client.token_budget_field == "max_tokens"
+
+
+def test_qwen_profile_defaults_to_bailian_china_and_explicit_model(clean_api_environment):
+    clean_api_environment.write_text("MOCK-QWEN-CREDENTIAL")
+    client = APIModel.from_env(provider="qwen", api_key_file=clean_api_environment)
+    assert client.endpoint == "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
+    assert client.model == "qwen3.8-max"
+    assert client.wire_protocol == "qwen"
+    assert client.token_budget_field == "max_completion_tokens"
+    assert client.thinking_mode == {"type": "enabled"}
+    assert client.extra_body == {"enable_thinking": True, "preserve_thinking": True}
+
+
+def test_qwen_profile_allows_explicit_endpoint_and_model(clean_api_environment, monkeypatch):
+    clean_api_environment.write_text("MOCK-QWEN-CREDENTIAL")
+    monkeypatch.setenv("MODEL_BASE_URL", "https://example.invalid/compatible-mode/v1")
+    monkeypatch.setenv("MODEL_NAME", "environment-model")
+    client = APIModel.from_env(provider="qwen", api_key_file=clean_api_environment,
+                               model_name="explicit-qwen-model")
+    assert client.endpoint == "https://example.invalid/compatible-mode/v1/chat/completions"
+    assert client.model == "explicit-qwen-model"
+
+
+def test_qwen_profile_sends_images_tools_and_total_thinking_token_budget(clean_api_environment):
+    clean_api_environment.write_text("MOCK-QWEN-CREDENTIAL")
+    seen = []
+    client = APIModel.from_env(provider="qwen", api_key_file=clean_api_environment,
+                               max_output_tokens=16384,
+                               transport=httpx.MockTransport(lambda request: seen.append(request) or httpx.Response(200, json=response())))
+    decision = client.decide(OBS, IMAGE, TOOLS, [])
+    payload = json.loads(seen[0].content)
+    assert payload["model"] == "qwen3.8-max"
+    assert payload["enable_thinking"] is True
+    assert payload["preserve_thinking"] is True
+    assert payload["max_completion_tokens"] == 16384
+    assert "thinking" not in payload and "max_tokens" not in payload
+    assert payload["tool_choice"] == "auto" and payload["stream"] is False
+    assert payload["tools"] == TOOLS
+    assert payload["messages"][0]["content"] == SYSTEM_PROMPT
+    assert payload["messages"][-1]["content"][1]["image_url"]["url"] == IMAGE
+    assert decision.reasoning_content == "synthetic reasoning state"
 
 
 def test_deepseek_profile_sends_images_and_tools_with_thinking_enabled(clean_api_environment):
@@ -265,7 +309,8 @@ def test_deepseek_profile_sends_images_and_tools_with_thinking_enabled(clean_api
     assert payload["temperature"] == 0
 
 
-def test_reasoning_and_assistant_content_survive_a_second_tool_request_without_truncation(clean_api_environment):
+@pytest.mark.parametrize("provider", ["deepseek", "qwen"])
+def test_reasoning_and_assistant_content_survive_a_second_tool_request_without_truncation(clean_api_environment, provider):
     clean_api_environment.write_text("THINKING-HISTORY-CREDENTIAL")
     seen = []
     reasoning = "synthetic state " * 1000
@@ -286,7 +331,8 @@ def test_reasoning_and_assistant_content_survive_a_second_tool_request_without_t
         body["choices"][0]["message"].update(reasoning_content=reasoning, content=assistant_content)
         return httpx.Response(200, json=body)
 
-    client = APIModel.from_env(provider="deepseek", transport=httpx.MockTransport(handler))
+    client = APIModel.from_env(provider=provider, api_key_file=clean_api_environment,
+                               transport=httpx.MockTransport(handler))
     first = client.decide(OBS, IMAGE, TOOLS, [])
     assert first.reasoning_content == reasoning and first.assistant_content == assistant_content
     assert len(first.raw_text) == 4096
@@ -337,13 +383,55 @@ def test_generic_thinking_api_can_omit_provider_specific_reasoning_field():
     assert decision.reasoning_content is None
 
 
+def test_qwen_missing_reasoning_history_is_rejected_before_http():
+    client = model(lambda request: pytest.fail("network"), wire_protocol="qwen")
+    with pytest.raises(ModelProtocolError, match="Qwen thinking history requires complete reasoning_content"):
+        client.decide(OBS, IMAGE, TOOLS, [history_turn(0)])
+
+
+@pytest.mark.parametrize("reasoning", [None, 17, {"text": "bad"}])
+def test_qwen_rejects_missing_or_malformed_response_reasoning(reasoning):
+    body = response()
+    body["choices"][0]["message"]["reasoning_content"] = reasoning
+    client = model(lambda request: httpx.Response(200, json=body), wire_protocol="qwen")
+    with pytest.raises(ModelProtocolError, match="reasoning_content"):
+        client.decide(OBS, IMAGE, TOOLS, [])
+
+
 @pytest.mark.parametrize("extra", [
     {"thinking": {"type": "disabled"}}, {"thinking": {}}, {"enable_thinking": False},
-    {"reasoning_effort": "none"}, {"max_tokens": 1},
+    {"enable_thinking": True}, {"preserve_thinking": True},
+    {"reasoning_effort": "none"}, {"max_tokens": 1}, {"max_completion_tokens": 1},
 ])
 def test_non_thinking_or_token_limit_overrides_are_rejected(extra):
     with pytest.raises(ModelError):
         APIModel("https://example.invalid", "vision-test", "mock-key", extra_body=extra)
+
+
+@pytest.mark.parametrize("extra", [
+    {"thinking": {"type": "enabled"}}, {"thinking": {"type": "disabled"}},
+    {"enable_thinking": False}, {"enable_thinking": 1}, {"enable_thinking": None},
+    {"preserve_thinking": False}, {"preserve_thinking": 1}, {"preserve_thinking": None},
+    {"enable_thinking": True, "preserve_thinking": False},
+    {"reasoning_effort": "none"}, {"max_tokens": 1}, {"max_completion_tokens": 1},
+])
+def test_qwen_rejects_disabled_mixed_or_overridden_thinking_settings(extra):
+    with pytest.raises(ModelError) as error:
+        APIModel("https://example.invalid", "vision-test", "mock-key", wire_protocol="qwen", extra_body=extra)
+    assert error.value.code == "MODEL_CONFIG_ERROR"
+
+
+@pytest.mark.parametrize("protocol", ["unknown", None, []])
+def test_invalid_thinking_wire_protocol_is_rejected(protocol):
+    with pytest.raises(ModelError) as error:
+        APIModel("https://example.invalid", "vision-test", "mock-key", wire_protocol=protocol)
+    assert error.value.code == "MODEL_CONFIG_ERROR"
+
+
+@pytest.mark.parametrize("provider,protocol", [("qwen", "deepseek"), ("deepseek", "qwen")])
+def test_provider_protocol_mismatch_is_rejected_before_credentials(clean_api_environment, provider, protocol):
+    with pytest.raises(ModelError, match="does not match the provider"):
+        APIModel.from_env(provider=provider, wire_protocol=protocol)
 
 
 @pytest.mark.parametrize("limit", [0, -1, True, 1.5, 65537])
