@@ -3,4 +3,4 @@
 The historical package name and go2-demo command remain compatibility entry points.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

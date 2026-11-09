@@ -4,6 +4,17 @@
 
 项目已拆分为通用 Harness、机器人能力配置与接口、Go2 适配器、MuJoCo 场景和独立任务评估器。当前只实现 `go2 + mujoco`；其他型号与实机执行器尚未实现。旧 `python -m go2_demo`、`go2-demo` 和脚本入口继续可用，安装后新增 `robot-harness` 命令。实现结构与扩展步骤见 [机器人适配架构](docs/robot-architecture.md)。
 
+**v0.2.0 新增可选 MemoryAgent demo**：同一个主模型自主选择记忆检索、阅读、保存、修订和工作笔记工具，动作继续经过 Harness。长期经验保存在本地 SQLite，按机器人／控制器／配置隔离；工作笔记只属于本回合。默认 `--memory off`，详细用法与证据边界见 [记忆 Agent 演示](docs/memory-agent-demo.md)。
+
+```bash
+# 不调用 API 的持久化接口演示（合成模型和后端，无机器人性能成绩）
+.venv/bin/python scripts/validate_memory_demo.py
+# 真实 DeepSeek + Go2 两回合：保存经验，再只读检索（会调用 API）
+MUJOCO_GL=egl .venv/bin/python scripts/run_memory_trial.py
+# 一般任务按需开启记忆
+.venv/bin/python -m go2_demo --memory read_write --no-env-proxy --task go_avoid_texture_drawers
+```
+
 ```bash
 # 不读密钥、不启动仿真
 python -m go2_demo --list-robots
@@ -18,7 +29,7 @@ python -m go2_demo --robot go2 --backend mujoco --task go_avoid_texture_drawers
 
 机器人闭环只通过 **开启思考的模型 API** 决策。默认使用支持图片与工具调用的 DeepSeek；模型自行选点、选择动作并声明完成。多轮工具调用保留并回传完整的 `reasoning_content`。
 
-低层复用固定版本的 Go2 预训练步态策略，并新增基于逆运动学和关节 PD 的**静止机身高度／仰角调整**；无需安装 ROS、Isaac Sim，也无需先训练策略。`set_posture(body_height_m, body_pitch_rad)` 使用绝对高度（米）和抬头为正的仰角（弧度），`reset_posture()` 显式恢复标准站姿及行走模式。当前尚不支持保持指定姿态行走，低姿态爬行仍不可运行；不包含独立任务 Agent 或长期记忆模块。
+低层复用固定版本的 Go2 预训练步态策略，并新增基于逆运动学和关节 PD 的**静止机身高度／仰角调整**；无需安装 ROS、Isaac Sim，也无需先训练策略。`set_posture(body_height_m, body_pitch_rad)` 使用绝对高度（米）和抬头为正的仰角（弧度），`reset_posture()` 显式恢复标准站姿及行走模式。当前尚不支持保持指定姿态行走，低姿态爬行仍不可运行。上层可选择启用 MemoryAgent，由同一个主模型决定动作和记忆操作。
 
 当前入口和场景说明见 [新场景测试](docs/scenarios.md)，实测记录见 [验证记录](docs/validation.md)。此前规则策略和非思考 API 的结果保留为历史记录，不作为当前思考模式的成绩。
 

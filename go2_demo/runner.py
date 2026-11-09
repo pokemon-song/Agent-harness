@@ -10,12 +10,14 @@ import json
 import math
 from pathlib import Path
 import time
+import uuid
 
 from PIL import Image
 
 from .harness import Harness
 from .models import ModelError, build_system_prompt, redact_message
-from .provenance import runtime_identity, source_hashes
+from .provenance import digest, git_identity, runtime_identity, source_hashes
+from . import __version__
 from .robots.contracts import IndependentTaskEvaluator, SimulationEpisodeBackend
 
 
@@ -103,6 +105,7 @@ def build_manifest(mode, seed, budgets, backend, model, *, task: str | None = No
                                             tolerance_m=context["distance_tolerance_m"])
     return {
         "created_utc": datetime.now(timezone.utc).isoformat(), "mode": mode, "seed": seed,
+        "application_version": __version__, "git": git_identity(root),
         "task": context["instruction"], "task_id": context["task_id"],
         "scenario_source": context["source"], "category": context["category"],
         "model": getattr(model, "model", "unknown_api_model"),
@@ -132,7 +135,8 @@ def build_manifest(mode, seed, budgets, backend, model, *, task: str | None = No
 def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 max_model_calls: int = 30, max_wall_seconds: float = 300,
                 max_sim_seconds: float = 120, history_turns: int = 6,
-                task: str | None = None) -> dict:
+                task: str | None = None, memory_mode: str = "off",
+                memory_dir: Path | None = None) -> dict:
     """Run an evaluated, paused simulation episode and always close owned resources.
 
     Harness itself accepts the smaller RobotBackend contract. This benchmark runner
@@ -142,6 +146,8 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
     """
     if mode != "api":
         raise ValueError("Only API-driven episodes are supported")
+    if memory_mode not in {"off", "read_only", "read_write"}:
+        raise ValueError("memory_mode must be off, read_only or read_write")
     log = RunLog(run_dir)
     budgets = {"max_model_calls": max_model_calls, "max_wall_seconds": max_wall_seconds,
                "max_sim_seconds": max_sim_seconds, "history_turns": history_turns}
@@ -151,6 +157,9 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
     reasoning_responses, reasoning_characters = 0, 0
     model_wait_s, action_wall_s = 0.0, 0.0
     harness = None
+    memory_agent, memory_store = None, None
+    memory_initial = None
+    memory_tool_calls, memory_io_wall_s = 0, 0.0
     deadline = time.monotonic() + max_wall_seconds
     start_sim = None
     metrics = {}
@@ -170,9 +179,31 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 or not all(math.isfinite(float(value)) for value in frame.base_xy_yaw)):
             raise ValueError("Simulation benchmark requires a finite simulation timestamp and measured base pose")
         model.system_prompt = build_system_prompt(backend.profile)
+        if memory_mode != "off":
+            from .agent import MemoryAgent
+            from .memory import MemoryScope, MemoryStore
+            identity = runtime_identity(backend.profile)
+            scope = MemoryScope(backend.profile.robot_id, backend.profile.controller_id,
+                                identity["robot_profile_sha256"])
+            directory = Path(memory_dir) if memory_dir is not None else Path(__file__).resolve().parents[1] / "memory"
+            episode_id = uuid.uuid4().hex
+            memory_store = MemoryStore(directory / "memory.sqlite3", scope=scope,
+                                       mode=memory_mode, episode_id=episode_id)
+            memory_agent = MemoryAgent(harness, memory_store, episode_id)
+            memory_initial = memory_agent.snapshot()
+            (run_dir / "memory-initial.json").write_text(json_text(memory_initial), encoding="utf-8")
+            model.system_prompt = memory_agent.system_prompt
+        tools = memory_agent.tools if memory_agent is not None else harness.tools
         manifest = build_manifest(mode, seed, budgets, backend, model, task=context["instruction"])
+        if memory_agent is not None:
+            manifest.update(task_agent=True, external_memory=True, experiment_kind="memory-demo-v1",
+                            memory_mode=memory_mode, memory_episode_id=episode_id,
+                            memory_initial_sha256=memory_initial["sha256"],
+                            memory_info=memory_store.info())
+        manifest.update(system_prompt_sha256=hashlib.sha256(model.system_prompt.encode()).hexdigest(),
+                        tools_sha256=digest(tools))
         (run_dir / "manifest.json").write_text(json_text(manifest), encoding="utf-8")
-        (run_dir / "tools.json").write_text(json_text(harness.tools), encoding="utf-8")
+        (run_dir / "tools.json").write_text(json_text(tools), encoding="utf-8")
         (run_dir / "system_prompt.txt").write_text(model.system_prompt, encoding="utf-8")
         (run_dir / "robot_profile.json").write_text(json_text(backend.profile.to_dict()), encoding="utf-8")
         start_sim = harness.frame.sim_time_s
@@ -187,14 +218,16 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
             if remaining <= 0 or harness.frame.sim_time_s-start_sim >= max_sim_seconds:
                 termination = "budget_exhausted"
                 break
-            observation = harness.observation()
+            observation = (memory_agent.observation(remaining_wall_s=remaining,
+                                                    remaining_calls=max_model_calls - calls_made)
+                           if memory_agent is not None else harness.observation())
             frame_path = log.save_frame(harness.frame, f"{index:03d}")
             log.write("model_input", turn=index, observation=observation, image_path=frame_path,
                       history_turns=min(len(history), history_turns))
             calls_made += 1
             started = time.monotonic()
             try:
-                decision = model.decide(observation, image_data_url(harness.frame.rgb), harness.tools,
+                decision = model.decide(observation, image_data_url(harness.frame.rgb), tools,
                                         history, timeout_s=remaining)
             finally:
                 model_wait_s += time.monotonic() - started
@@ -214,10 +247,19 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 log.write("discarded_response", reason="wall_deadline_exceeded")
                 break
             action_started = time.monotonic()
+            memory_turn = memory_agent is not None and any(call.name.startswith("memory_") for call in decision.calls)
             try:
-                results = harness.dispatch_many(decision.calls)
+                results = (memory_agent.dispatch_many(decision.calls) if memory_agent is not None
+                           else harness.dispatch_many(decision.calls))
             finally:
-                action_wall_s += time.monotonic() - action_started
+                elapsed = time.monotonic() - action_started
+                if memory_turn:
+                    memory_io_wall_s += elapsed
+                else:
+                    action_wall_s += elapsed
+            memory_tool_calls += sum(call.name.startswith("memory_") for call in decision.calls) if memory_agent else 0
+            evidence_ref = (memory_agent.record_public_turn(observation, decision.calls, results)
+                            if memory_agent is not None else None)
             motion_calls += sum(c.name in {"move_relative", "turn"} and not r.get("deduplicated")
                                 and r.get("error_code") not in {"INVALID_ARGUMENTS", "ONE_TOOL_PER_TURN", "CALL_ID_REUSED",
                                                                 "UNSUPPORTED_CAPABILITY", "EPISODE_ENDED"}
@@ -231,6 +273,7 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                             "assistant_content": getattr(decision, "assistant_content", None)})
             history = history[-history_turns:] if history_turns else []
             log.write("tool_results", turn=index, results=results,
+                      **({"public_evidence_ref": evidence_ref} if memory_agent is not None else {}),
                       next_observation=harness.observation())
             print(f"[{index+1:02d}] " + ", ".join(f"{r['tool']}: {r['status']}" for r in results), flush=True)
             if time.monotonic() >= deadline or harness.frame.sim_time_s-start_sim >= max_sim_seconds:
@@ -293,6 +336,17 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 "robot_profile_sha256": runtime_identity(backend.profile)["robot_profile_sha256"],
                 "is_llm_result": mode == "api",
             }
+            if memory_mode != "off":
+                metrics.update(external_memory=True, experiment_kind="memory-demo-v1", memory_mode=memory_mode,
+                               memory_tool_calls=memory_tool_calls, memory_io_wall_s=memory_io_wall_s,
+                               memory_initial_sha256=memory_initial["sha256"] if memory_initial else None)
+            if memory_agent is not None:
+                try:
+                    final_memory = memory_agent.snapshot()
+                    (run_dir / "memory-final.json").write_text(json_text(final_memory), encoding="utf-8")
+                    metrics.update(memory_final_sha256=final_memory["sha256"], memory_info=memory_store.info())
+                except Exception as exc:
+                    metrics["memory_archive_error"] = _safe_error(exc)
             (run_dir / "metrics.json").write_text(json_text(metrics), encoding="utf-8")
             with (run_dir / "trajectory.jsonl").open("w", encoding="utf-8") as stream:
                 for row in getattr(backend, "trajectory", []):
@@ -302,6 +356,8 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
             metrics = {"success": False, "termination": "evaluation_error", "original_termination": termination,
                        "task_id": context["task_id"], "scenario_source": context["source"],
                        "error": _safe_error(exc), "final_stop": final_stop, "is_llm_result": mode == "api"}
+            if memory_mode != "off":
+                metrics.update(external_memory=True, experiment_kind="memory-demo-v1", memory_mode=memory_mode)
             (run_dir / "metrics.json").write_text(json_text(metrics), encoding="utf-8")
             log.write("episode_end", metrics=metrics)
         finally:
@@ -312,5 +368,9 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 try:
                     backend.close()
                 finally:
-                    log.close()
+                    try:
+                        if memory_store is not None:
+                            memory_store.close()
+                    finally:
+                        log.close()
     return metrics

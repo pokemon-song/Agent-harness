@@ -56,7 +56,8 @@ def _run_single(args, scenario, run_dir: Path) -> tuple[dict, int]:
         metrics = run_episode(backend, model, mode=args.mode, run_dir=run_dir, seed=args.seed,
                               max_model_calls=args.max_model_calls, max_wall_seconds=args.max_wall_seconds,
                               max_sim_seconds=args.max_sim_seconds, history_turns=args.history_turns,
-                              task=scenario.instruction)
+                              task=scenario.instruction, memory_mode=getattr(args, "memory", "off"),
+                              memory_dir=getattr(args, "memory_dir", None))
         backend, model = None, None  # run_episode closed both owned resources.
         print(f"Success: {metrics['success']} | Termination: {metrics['termination']}", flush=True)
         if metrics.get("error"):
@@ -105,6 +106,7 @@ def _suite_summary(args, scenarios, results) -> dict:
     return {
         "suite": args.suite, "mode": args.mode, "seed": args.seed,
         "robot_id": args.robot, "backend_id": args.backend,
+        "memory_mode": getattr(args, "memory", "off"),
         "scenario_source": sources[0] if len(sources) == 1 else "mixed_local_mujoco_scenarios",
         "scenario_sources": sources, "is_official_quard_benchmark": False,
         "is_llm_result": args.mode == "api", "total_cases": len(scenarios),
@@ -174,6 +176,10 @@ def main(argv=None) -> int:
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--assets-dir", type=Path, default=ROOT / "assets")
     parser.add_argument("--runs-dir", type=Path, default=ROOT / "runs")
+    parser.add_argument("--memory", choices=("off", "read_only", "read_write"), default="off",
+                        help="opt-in agent memory; memory episodes are separate from the frozen model benchmark")
+    parser.add_argument("--memory-dir", type=Path, default=ROOT / "memory",
+                        help="local memory workspace (memory.sqlite3); ignored when memory is off")
     parser.add_argument("--max-model-calls", type=int, default=30)
     parser.add_argument("--max-wall-seconds", type=positive_number, default=300)
     parser.add_argument("--max-sim-seconds", type=positive_number, default=120)

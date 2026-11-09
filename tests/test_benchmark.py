@@ -94,6 +94,28 @@ def test_robot_identity_is_frozen_and_tampered_profile_invalidates_episode(tmp_p
     assert report["invalid_episodes"] == 1
 
 
+@pytest.mark.parametrize("where,field,value", [
+    ("manifest", "external_memory", True), ("metrics", "external_memory", True),
+    ("manifest", "memory_mode", "read_only"), ("metrics", "memory_mode", "read_write"),
+    ("manifest", "experiment_kind", "memory-demo-v1"),
+])
+def test_memory_runs_cannot_enter_frozen_no_memory_scores(tmp_path, where, field, value):
+    path, plan = plan_at(tmp_path)
+    def mutate(manifest, metrics):
+        (manifest if where == "manifest" else metrics)[field] = value
+    record(path, plan, plan["cases"][0], mutation=mutate)
+    assert score_plan(path)["invalid_episodes"] == 1
+
+
+def test_memory_plan_cannot_reuse_the_no_memory_protocol_id(tmp_path):
+    path, plan = plan_at(tmp_path)
+    plan["protocol"]["external_memory"] = True
+    plan["protocol_sha256"] = _digest(plan["protocol"])
+    write_json(path, plan)
+    with pytest.raises(ValueError, match="Memory-enabled"):
+        load_plan(path)
+
+
 def test_frozen_grid_has_65_trials_without_unsupported_or_baseline_tasks(tmp_path):
     path, plan = plan_at(tmp_path)
     assert len(plan["cases"]) == 65

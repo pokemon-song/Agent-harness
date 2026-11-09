@@ -3,6 +3,7 @@
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 
 
 def digest(value) -> str:
@@ -15,6 +16,18 @@ def source_hashes(root: Path) -> dict[str, str]:
     # would silently leave their implementation outside the frozen experiment.
     return {path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
             for path in sorted((root / "go2_demo").rglob("*.py"))}
+
+
+def git_identity(root: Path) -> dict:
+    """Archive local revision identity, without exposing remotes or credentials."""
+    try:
+        revision = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root,
+                                  capture_output=True, text=True, check=True, timeout=5).stdout.strip()
+        status = subprocess.run(["git", "status", "--porcelain"], cwd=root,
+                                capture_output=True, text=True, check=True, timeout=5).stdout
+        return {"commit": revision, "dirty": bool(status)}
+    except (OSError, subprocess.SubprocessError):
+        return {"commit": None, "dirty": None}
 
 
 def runtime_identity(profile) -> dict:

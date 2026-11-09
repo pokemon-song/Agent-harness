@@ -169,6 +169,9 @@ def load_plan(plan_path: Path) -> dict:
     protocol = plan.get("protocol", {})
     if not isinstance(protocol, dict):
         raise ValueError("Invalid protocol object")
+    if (protocol.get("external_memory") or protocol.get("memory_mode", "off") != "off"
+            or protocol.get("experiment_kind") == "memory-demo-v1"):
+        raise ValueError("Memory-enabled plans require a separate experiment protocol")
     repeats = protocol.get("repeat_count")
     if (plan.get("schema_version") != 1
             or protocol.get("id") not in {PROTOCOL_ID, LEGACY_PROTOCOL_ID, COMPOSITE_PROTOCOL_ID}
@@ -212,6 +215,10 @@ def _manifest_issues(manifest, metrics, case, plan, directory):
         if key in protocol:
             expected[key] = protocol[key]
     issues = [f"manifest.{key} mismatch" for key, value in expected.items() if manifest.get(key) != value]
+    if (manifest.get("external_memory") or metrics.get("external_memory")
+            or manifest.get("memory_mode", "off") != "off" or metrics.get("memory_mode", "off") != "off"
+            or manifest.get("experiment_kind") == "memory-demo-v1" or metrics.get("experiment_kind") == "memory-demo-v1"):
+        issues.append("memory-enabled episodes are not part of the frozen no-memory benchmark")
     if any(manifest.get("api_settings", {}).get(k) != v for k, v in protocol["api_settings"].items()):
         issues.append("API settings mismatch")
     if metrics.get("mode") != "api" or metrics.get("is_llm_result") is not True:

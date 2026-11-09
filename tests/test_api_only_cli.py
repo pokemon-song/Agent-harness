@@ -20,8 +20,19 @@ def test_default_entry_uses_deepseek_api_and_new_scene_without_reading_credentia
     assert cli.main([]) == 0
     args, scenario = seen[0]
     assert args.mode == "api" and args.provider == "deepseek"
+    assert args.memory == "off"
     assert args.max_output_tokens == 8192 and args.api_timeout == 90
     assert scenario.task_id == "go_to_blue_ball"
+
+
+def test_memory_options_reach_selected_episode_without_extra_api_mode(monkeypatch, tmp_path):
+    seen = []
+    def run(args, scenario, run_dir):
+        seen.append(args)
+        return {"success": True, "termination": "finish"}, 0
+    monkeypatch.setattr(cli, "_run_single", run)
+    assert cli.main(["--memory", "read_write", "--memory-dir", str(tmp_path / "mem")]) == 0
+    assert seen[0].memory == "read_write" and seen[0].memory_dir == tmp_path / "mem"
 
 
 @pytest.mark.parametrize("arguments", [["--mode", "scripted"], ["--disable-thinking"]])
