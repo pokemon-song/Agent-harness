@@ -6,6 +6,8 @@
 
 **v0.2.0 新增可选 MemoryAgent demo**：同一个主模型自主选择记忆检索、阅读、保存、修订和工作笔记工具，动作继续经过 Harness。长期经验保存在本地 SQLite，按机器人／控制器／配置隔离；工作笔记只属于本回合。默认 `--memory off`，详细用法与证据边界见 [记忆 Agent 演示](docs/memory-agent-demo.md)。
 
+**v0.3.0 增加依赖记忆的跨班次任务**：第一班次接收随机目的地与六位回执码并完成复合巡检；重启全部短期上下文后，根据长期记忆交付。真实实验同时运行有记忆与空记忆对照，第二班次的世界、起点、工具、提示词和预算相同。设计与验收见 [长时记忆任务](docs/long-memory-mission.md)，入口为 `.venv/bin/python scripts/run_long_memory_mission.py`（会调用真实 API）。
+
 ```bash
 # 不调用 API 的持久化接口演示（合成模型和后端，无机器人性能成绩）
 .venv/bin/python scripts/validate_memory_demo.py

@@ -14,11 +14,12 @@ from go2_demo.types import ToolCall
 from test_robot_harness import MockBackend, mock_profile
 
 
-def make_agent(tmp_path, *, mode="read_write", episode_id="test-episode", filename="memory.sqlite"):
+def make_agent(tmp_path, *, mode="read_write", episode_id="test-episode", filename="memory.sqlite",
+               task_extension=None):
     harness = Harness(MockBackend(mock_profile()), "Approach a visible object safely.")
     store = MemoryStore(tmp_path / filename, scope=MemoryScope.from_profile(harness.profile),
                         mode=mode, episode_id=episode_id)
-    return MemoryAgent(harness, store, episode_id)
+    return MemoryAgent(harness, store, episode_id, task_extension=task_extension)
 
 
 def observation(agent):

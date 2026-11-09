@@ -136,7 +136,7 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 max_model_calls: int = 30, max_wall_seconds: float = 300,
                 max_sim_seconds: float = 120, history_turns: int = 6,
                 task: str | None = None, memory_mode: str = "off",
-                memory_dir: Path | None = None) -> dict:
+                memory_dir: Path | None = None, task_extension=None) -> dict:
     """Run an evaluated, paused simulation episode and always close owned resources.
 
     Harness itself accepts the smaller RobotBackend contract. This benchmark runner
@@ -148,6 +148,8 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
         raise ValueError("Only API-driven episodes are supported")
     if memory_mode not in {"off", "read_only", "read_write"}:
         raise ValueError("memory_mode must be off, read_only or read_write")
+    if task_extension is not None and memory_mode == "off":
+        raise ValueError("Task extensions require memory_mode read_only or read_write")
     log = RunLog(run_dir)
     budgets = {"max_model_calls": max_model_calls, "max_wall_seconds": max_wall_seconds,
                "max_sim_seconds": max_sim_seconds, "history_turns": history_turns}
@@ -160,6 +162,7 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
     memory_agent, memory_store = None, None
     memory_initial = None
     memory_tool_calls, memory_io_wall_s = 0, 0.0
+    task_tool_calls = 0
     deadline = time.monotonic() + max_wall_seconds
     start_sim = None
     metrics = {}
@@ -189,7 +192,7 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
             episode_id = uuid.uuid4().hex
             memory_store = MemoryStore(directory / "memory.sqlite3", scope=scope,
                                        mode=memory_mode, episode_id=episode_id)
-            memory_agent = MemoryAgent(harness, memory_store, episode_id)
+            memory_agent = MemoryAgent(harness, memory_store, episode_id, task_extension=task_extension)
             memory_initial = memory_agent.snapshot()
             (run_dir / "memory-initial.json").write_text(json_text(memory_initial), encoding="utf-8")
             model.system_prompt = memory_agent.system_prompt
@@ -200,6 +203,8 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                             memory_mode=memory_mode, memory_episode_id=episode_id,
                             memory_initial_sha256=memory_initial["sha256"],
                             memory_info=memory_store.info())
+            if task_extension is not None:
+                manifest["task_extension_id"] = task_extension.extension_id
         manifest.update(system_prompt_sha256=hashlib.sha256(model.system_prompt.encode()).hexdigest(),
                         tools_sha256=digest(tools))
         (run_dir / "manifest.json").write_text(json_text(manifest), encoding="utf-8")
@@ -247,7 +252,10 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 log.write("discarded_response", reason="wall_deadline_exceeded")
                 break
             action_started = time.monotonic()
-            memory_turn = memory_agent is not None and any(call.name.startswith("memory_") for call in decision.calls)
+            task_names = memory_agent.task_tool_names if memory_agent is not None else frozenset()
+            memory_turn = (memory_agent is not None
+                           and any(call.name.startswith("memory_") and call.name not in task_names
+                                   for call in decision.calls))
             try:
                 results = (memory_agent.dispatch_many(decision.calls) if memory_agent is not None
                            else harness.dispatch_many(decision.calls))
@@ -257,7 +265,9 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                     memory_io_wall_s += elapsed
                 else:
                     action_wall_s += elapsed
-            memory_tool_calls += sum(call.name.startswith("memory_") for call in decision.calls) if memory_agent else 0
+            memory_tool_calls += sum(call.name.startswith("memory_") and call.name not in task_names
+                                     for call in decision.calls) if memory_agent else 0
+            task_tool_calls += sum(call.name in task_names for call in decision.calls)
             evidence_ref = (memory_agent.record_public_turn(observation, decision.calls, results)
                             if memory_agent is not None else None)
             motion_calls += sum(c.name in {"move_relative", "turn"} and not r.get("deduplicated")
@@ -311,6 +321,24 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
             log.save_frame(final_frame, "final")
             evaluation = backend.evaluator.evaluate(standoff_m=context["standoff_m"],
                                                     tolerance_m=context["distance_tolerance_m"])
+            if task_extension is not None and memory_agent is not None:
+                evaluation = dict(evaluation)
+                physical_success = evaluation["success"]
+                if type(physical_success) is not bool:
+                    raise TypeError("Physical evaluator success must be a native bool")
+                evaluation["physical_success"] = physical_success
+                try:
+                    extension_evaluation = task_extension.evaluate()
+                    if (not isinstance(extension_evaluation, dict)
+                            or type(extension_evaluation.get("success")) is not bool):
+                        raise TypeError("Task extension evaluator must return a dictionary with native bool success")
+                    json_text(extension_evaluation)
+                except Exception as exc:
+                    error = _safe_error(exc)
+                    termination = "evaluation_error"
+                    extension_evaluation = {"success": False, "error": error}
+                evaluation.update(task_extension=extension_evaluation,
+                                  success=physical_success and extension_evaluation["success"])
             sim_elapsed = final_frame.sim_time_s - (start_sim if start_sim is not None else 0)
             if termination == "finish" and (sim_elapsed > max_sim_seconds or time.monotonic() > deadline):
                 termination = "budget_exhausted"
@@ -340,6 +368,8 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 metrics.update(external_memory=True, experiment_kind="memory-demo-v1", memory_mode=memory_mode,
                                memory_tool_calls=memory_tool_calls, memory_io_wall_s=memory_io_wall_s,
                                memory_initial_sha256=memory_initial["sha256"] if memory_initial else None)
+            if task_extension is not None:
+                metrics.update(task_extension_id=task_extension.extension_id, task_tool_calls=task_tool_calls)
             if memory_agent is not None:
                 try:
                     final_memory = memory_agent.snapshot()

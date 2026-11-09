@@ -18,6 +18,8 @@ from .types import ToolCall
 
 
 MEMORY_TOOLS = frozenset({"memory_search", "memory_read", "memory_save", "memory_revise", "memory_working_note"})
+_RESERVED_ROBOT_TOOLS = frozenset({"observe", "track_point", "get_geometry", "move_relative", "turn",
+                                   "set_posture", "reset_posture", "stop", "finish", "abort"})
 _OBSERVATION_FIELDS = frozenset({
     "task", "image_id", "sim_time_s", "image_size", "coordinate_convention", "local_odometry",
     "robot_state", "tracked_points", "capabilities", "sensors", "simulation_mode", "posture_limits",
@@ -101,7 +103,7 @@ def _memory_tools(limits):
 class MemoryAgent:
     """Explicit Harness + MemoryStore coordination, with no inference loop."""
 
-    def __init__(self, harness: Harness, store: MemoryStore, episode_id: str):
+    def __init__(self, harness: Harness, store: MemoryStore, episode_id: str, *, task_extension=None):
         if not isinstance(harness, Harness) or not isinstance(store, MemoryStore):
             raise TypeError("MemoryAgent requires an explicit Harness and MemoryStore")
         if not isinstance(episode_id, str) or not episode_id.strip() or episode_id != store.episode_id:
@@ -112,6 +114,33 @@ class MemoryAgent:
         self._robot_names = {tool["function"]["name"] for tool in harness.tools}
         if self._robot_names.intersection(MEMORY_TOOLS):
             raise ValueError("Robot and memory tool names must be distinct")
+        self.task_extension = task_extension
+        self._task_tools = []
+        if task_extension is not None:
+            extension_id = getattr(task_extension, "extension_id", None)
+            if (not isinstance(extension_id, str) or not extension_id.strip()
+                    or not callable(getattr(task_extension, "execute", None))
+                    or not callable(getattr(task_extension, "evaluate", None))):
+                raise ValueError("Task extension requires extension_id, tools, execute and evaluate")
+            tools = task_extension.tools
+            if not isinstance(tools, list):
+                raise ValueError("Task extension tools must be a list")
+            self._task_tools = deepcopy(tools)
+            _canonical(self._task_tools)
+        names = []
+        for tool in self._task_tools:
+            if not isinstance(tool, dict):
+                raise ValueError("Invalid task extension tool schema")
+            function = tool.get("function")
+            if (tool.get("type") != "function" or not isinstance(function, dict)
+                    or not isinstance(function.get("name"), str) or not function["name"].strip()
+                    or not isinstance(function.get("parameters"), dict)):
+                raise ValueError("Invalid task extension tool schema")
+            names.append(function["name"])
+        if (len(names) != len(set(names))
+                or set(names).intersection(self._robot_names | _RESERVED_ROBOT_TOOLS | MEMORY_TOOLS)):
+            raise ValueError("Task extension tool names must be unique and must not collide with robot/memory tools")
+        self.task_tool_names = frozenset(names)
         self._memory_tools = _memory_tools(store.limits)
         self._schemas = {tool["function"]["name"]: tool["function"]["parameters"] for tool in self._memory_tools}
         self._cache = {}
@@ -125,8 +154,9 @@ class MemoryAgent:
         mode = self.store.mode
         allowed = (MEMORY_TOOLS if mode == "read_write" else
                    {"memory_search", "memory_read", "memory_working_note"} if mode == "read_only" else set())
-        return self.harness.tools + deepcopy([tool for tool in self._memory_tools
-                                             if tool["function"]["name"] in allowed])
+        return (self.harness.tools + deepcopy([tool for tool in self._memory_tools
+                                              if tool["function"]["name"] in allowed])
+                + deepcopy(self._task_tools))
 
     def observation(self, *, remaining_wall_s: float, remaining_calls: int):
         return self.decorate_observation(self.harness.observation(), remaining_wall_s=remaining_wall_s,
@@ -201,6 +231,10 @@ class MemoryAgent:
                                        args["evidence_refs"], call_id=call.call_id)
         elif call.name == "memory_working_note":
             result = self.store.update_working_note(args["text"], call_id=call.call_id)
+        elif call.name in self.task_tool_names:
+            result = self.task_extension.execute(call)
+            if not isinstance(result, dict) or not isinstance(result.get("status"), str):
+                raise TypeError("Task extension execute must return a result dictionary with status")
         else:
             result = self.harness.execute(call)
         result = {**deepcopy(result), "call_id": call.call_id, "tool": call.name}

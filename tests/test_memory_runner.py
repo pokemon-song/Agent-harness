@@ -2,6 +2,7 @@
 
 import json
 
+from go2_demo import __version__
 from go2_demo.runner import run_episode
 from go2_demo.types import Decision, ToolCall
 from test_runner import EpisodeBackend, EpisodeModel
@@ -57,7 +58,7 @@ def test_memory_and_robot_tools_share_budget_and_archive_public_evidence(tmp_pat
         assert excluded not in json.dumps(final)
     manifest = json.loads((tmp_path / "run/manifest.json").read_text())
     assert manifest["task_agent"] and manifest["external_memory"]
-    assert manifest["application_version"] == "0.2.0"
+    assert manifest["application_version"] == __version__
     assert manifest["memory_initial_sha256"] == initial["sha256"]
     assert model.closed
 
