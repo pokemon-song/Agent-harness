@@ -158,6 +158,7 @@ def test_run_uses_the_entire_frozen_grid_and_settings(monkeypatch, tmp_path, rec
         assert directory == path.parent / case["run_dir"]
         assert directory.is_dir()
         assert vars(args) == {
+            "robot": "go2", "backend": "mujoco",
             "mode": "api", "provider": "compatible", "model_name": "test-vision-model",
             "api_key_file": key_file, "no_env_proxy": True, "assets_dir": assets,
             "viewer": False, "seed": 0, "max_model_calls": 30, "max_wall_seconds": 300,

@@ -13,6 +13,7 @@ import statistics
 
 from .scenarios import list_scenarios
 from .evaluation_metrics import SCORING_V2, score_components, trajectory_metrics
+from .provenance import runtime_identity, source_hashes
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -109,8 +110,11 @@ def _cases(tasks, repeats):
 def create_plan(*, label: str, model_name: str, provider: str, repeats: int = 5,
                 protocol_id: str = PROTOCOL_ID) -> dict:
     """Freeze the full denominator before any inference; never reads credentials."""
-    from .harness import TOOLS
-    from .models import SYSTEM_PROMPT
+    from .harness import build_tools
+    from .models import build_system_prompt
+    from .robots.registry import get_profile
+
+    robot_profile = get_profile("go2", "mujoco")
 
     if not isinstance(label, str) or not label.strip() or len(label) > 128:
         raise ValueError("label must be nonempty and at most 128 characters")
@@ -134,16 +138,12 @@ def create_plan(*, label: str, model_name: str, provider: str, repeats: int = 5,
         "profile": "standard" if repeats == 5 else "exploratory",
         "budgets": dict(BUDGETS), "api_settings": deepcopy(API_SETTINGS),
         "tasks": _tasks(multidimensional=multidimensional, protocol_id=protocol_id),
-        "simulation_mode": "paused_during_model_inference", "backend": "MujocoGo2Backend",
-        "observation_protocol": "rgb_tracked_geometry_local_odometry_v2",
-        "action_protocol": "bounded_relative_motion_static_posture_v2",
-        "completion_contract": "public_body_reference_and_clearance_v2",
-        "code_sha256": {str(p.relative_to(ROOT)): _file_hash(p)
-                        for p in sorted((ROOT / "go2_demo").glob("*.py"))},
+        **runtime_identity(robot_profile), "backend": "MujocoGo2Backend",
+        "code_sha256": source_hashes(ROOT),
         "package_versions": packages, "python_version": platform.python_version(),
         "asset_lock_sha256": _file_hash(ROOT / "assets.lock.json"),
-        "system_prompt_sha256": hashlib.sha256(SYSTEM_PROMPT.encode()).hexdigest(),
-        "tools_sha256": _digest(TOOLS),
+        "system_prompt_sha256": hashlib.sha256(build_system_prompt(robot_profile).encode()).hexdigest(),
+        "tools_sha256": _digest(build_tools(robot_profile)),
         "sampling": "provider defaults; no model sampling seed is requested",
         "primary_score": ("mean(group mean(task mean(success-gated weighted episode score)))"
                           if multidimensional else "100 * mean(group mean(task mean(strict success over repeats)))"),
@@ -206,6 +206,11 @@ def _manifest_issues(manifest, metrics, case, plan, directory):
     for key in ("budgets", "code_sha256", "package_versions", "asset_lock_sha256",
                 "simulation_mode", "backend", "observation_protocol", "action_protocol", "completion_contract"):
         expected[key] = protocol[key]
+    # Old archived plans predate robot profiles. Check the new identity only for
+    # new plans; their protocol hash already prevents ranking across the change.
+    for key in ("robot_id", "robot_profile", "robot_profile_sha256", "execution_contract"):
+        if key in protocol:
+            expected[key] = protocol[key]
     issues = [f"manifest.{key} mismatch" for key, value in expected.items() if manifest.get(key) != value]
     if any(manifest.get("api_settings", {}).get(k) != v for k, v in protocol["api_settings"].items()):
         issues.append("API settings mismatch")
@@ -219,6 +224,9 @@ def _manifest_issues(manifest, metrics, case, plan, directory):
         tools = json.loads((directory / "tools.json").read_text(encoding="utf-8"))
         if _digest(tools) != protocol["tools_sha256"]:
             issues.append("tools mismatch")
+        if "robot_profile_sha256" in protocol:
+            if _digest(_read(directory / "robot_profile.json")) != protocol["robot_profile_sha256"]:
+                issues.append("robot profile archive mismatch")
     except (OSError, ValueError, TypeError):
         issues.append("missing or invalid prompt/tools archive")
     return issues

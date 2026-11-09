@@ -2,17 +2,21 @@
 
 import json
 import math
+from dataclasses import replace
 
 import numpy as np
 import pytest
 
 from go2_demo.harness import Harness, TOOLS
 from go2_demo.posture import MAX_HEIGHT_M, MAX_PITCH_RAD, MIN_HEIGHT_M
+from go2_demo.robots.go2.profile import GO2_PROFILE
 from go2_demo.types import SensorFrame, ToolCall
 
 
 class RecordingBackend:
     def __init__(self):
+        self.profile = replace(GO2_PROFILE, height_pitch_control=False, posture=None,
+                               sensor=replace(GO2_PROFILE.sensor, rgb_width_px=100, rgb_height_px=80))
         self.capture_count = 0
         self.moves = []
         self.turns = []
@@ -43,6 +47,13 @@ class RecordingBackend:
     def stop(self):
         self.stops += 1
         return {"status": "succeeded"}
+
+    def execute(self, call):
+        self.profile.validate_action(call.name, call.arguments)
+        handlers = {"move_relative": self.move_relative, "turn": self.turn, "stop": self.stop}
+        if self.profile.height_pitch_control:
+            handlers.update(set_posture=self.set_posture, reset_posture=self.reset_posture)
+        return handlers[call.name](**call.arguments)
 
     def evaluate(self):
         self.evaluations += 1
@@ -203,6 +214,7 @@ class PostureBackend(RecordingBackend):
 
     def __init__(self):
         super().__init__()
+        self.profile = replace(self.profile, posture=GO2_PROFILE.posture, height_pitch_control=True)
         self.postures = []
         self.resets = 0
         self.control_mode = "locomotion"
@@ -316,7 +328,7 @@ def test_reset_posture_is_explicit_and_deduplicated():
     assert harness.termination is None
 
 
-def test_posture_capabilities_require_backend_support_and_callable_methods():
+def test_posture_capabilities_require_an_explicit_supporting_profile():
     backend = PostureBackend()
     observation = Harness(backend, "Adjust posture.").observation()
     assert observation["capabilities"]["height_pitch_control"] is True
@@ -328,6 +340,7 @@ def test_posture_capabilities_require_backend_support_and_callable_methods():
         "combined_constraint": "body_height_m + 0.1934 * abs(body_pitch_rad) <= 0.38",
     }
     backend.reset_posture = None
+    backend.profile = replace(backend.profile, posture=None, height_pitch_control=False)
     harness = Harness(backend, "Adjust posture.")
     assert harness.observation()["capabilities"]["height_pitch_control"] is False
     assert "posture_limits" not in harness.observation()

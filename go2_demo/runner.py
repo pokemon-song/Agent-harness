@@ -7,13 +7,16 @@ import hashlib
 import importlib.metadata
 from io import BytesIO
 import json
+import math
 from pathlib import Path
 import time
 
 from PIL import Image
 
-from .harness import Harness, TOOLS
-from .models import APIModel, ModelError, SYSTEM_PROMPT, redact_message
+from .harness import Harness
+from .models import ModelError, build_system_prompt, redact_message
+from .provenance import runtime_identity, source_hashes
+from .robots.contracts import IndependentTaskEvaluator, SimulationEpisodeBackend
 
 
 TASK = "找到红色标记，移动到距离标记约 1 米的位置，朝向标记并停止，然后调用 finish。距离按机身参考点到标记的水平距离理解。"
@@ -86,8 +89,7 @@ def _task_context(backend, task: str | None = None) -> dict:
 
 def build_manifest(mode, seed, budgets, backend, model, *, task: str | None = None) -> dict:
     root = Path(__file__).resolve().parents[1]
-    code_hashes = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
-                   for p in sorted((root / "go2_demo").glob("*.py"))}
+    code_hashes = source_hashes(root)
     versions = {}
     for package in ("mujoco", "numpy", "torch", "opencv-python", "httpx", "Pillow"):
         try:
@@ -95,38 +97,19 @@ def build_manifest(mode, seed, budgets, backend, model, *, task: str | None = No
         except importlib.metadata.PackageNotFoundError:
             versions[package] = "not_recorded"
     context = _task_context(backend, task)
-    posture_supported = getattr(backend, "posture_control_supported", False) is True
-    passage = context["goal_kind"] == "passage"
-    evaluation = {"goal_kind": context["goal_kind"],
-                  "standoff_m": None if passage else context["standoff_m"],
-                  "distance_tolerance_m": None if passage else context["distance_tolerance_m"],
-                  "heading_tolerance_rad": None if passage else 0.25,
-                  "max_speed_mps": 0.12, "max_yaw_rate_radps": 0.25,
-                  "requires_finish": True, "no_collision_or_fall": True}
-    if passage or context["goal_kind"] == "composite":
-        scenario = backend.scenario
-        evaluation.update({"passage_x_m": scenario.passage_x,
-                           "passage_center_y_m": scenario.passage_center_y,
-                           "passage_half_width_m": scenario.passage_half_width,
-                           "finish_x_min_m": scenario.finish_x_min,
-                           "requires_forward_crossing": True})
-    if context["goal_kind"] == "composite":
-        evaluation.update(cabinet_exit_x_m=backend.scenario.cabinet_exit_x,
-                          requires_stage_order=True)
+    profile = backend.profile
+    posture_supported = profile.capabilities["height_pitch_control"]
+    evaluation = backend.evaluator.criteria(standoff_m=context["standoff_m"],
+                                            tolerance_m=context["distance_tolerance_m"])
     return {
         "created_utc": datetime.now(timezone.utc).isoformat(), "mode": mode, "seed": seed,
         "task": context["instruction"], "task_id": context["task_id"],
         "scenario_source": context["source"], "category": context["category"],
         "model": getattr(model, "model", "unknown_api_model"),
-        "simulation_mode": "paused_during_model_inference", "backend": type(backend).__name__,
-        "observation_protocol": "rgb_tracked_geometry_local_odometry_v2",
-        "action_protocol": ("bounded_relative_motion_static_posture_v2" if posture_supported
-                            else "bounded_relative_planar_motion_v1"),
-        "completion_contract": "public_body_reference_and_clearance_v2",
-        "odometry_source": "idealized_simulated_proprioception_relative_to_episode_start",
+        **runtime_identity(profile), "backend": type(backend).__name__,
+        "odometry_source": profile.odometry_source,
         "posture_control_supported": posture_supported,
-        "moving_posture_control_supported": (posture_supported
-                                             and getattr(backend, "moving_posture_control_supported", False) is True),
+        "moving_posture_control_supported": profile.capabilities["moving_height_pitch_control"],
         "task_agent": False, "external_memory": False,
         "budgets": budgets, "package_versions": versions, "code_sha256": code_hashes,
         "api_settings": {"timeout_s": getattr(model, "timeout_s", None),
@@ -150,7 +133,13 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 max_model_calls: int = 30, max_wall_seconds: float = 300,
                 max_sim_seconds: float = 120, history_turns: int = 6,
                 task: str | None = None) -> dict:
-    """Both owned resources are stopped/closed on normal, failure and interrupt exits."""
+    """Run an evaluated, paused simulation episode and always close owned resources.
+
+    Harness itself accepts the smaller RobotBackend contract. This benchmark runner
+    additionally needs a simulation clock, localized RGB observations, trajectory
+    evidence and an independent evaluator (SimulationEpisodeBackend). A hardware
+    executor with continuous control is deliberately not implemented here.
+    """
     if mode != "api":
         raise ValueError("Only API-driven episodes are supported")
     log = RunLog(run_dir)
@@ -160,6 +149,7 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
     history, usage = [], {}
     calls_made, motion_calls, posture_calls = 0, 0, 0
     reasoning_responses, reasoning_characters = 0, 0
+    model_wait_s, action_wall_s = 0.0, 0.0
     harness = None
     deadline = time.monotonic() + max_wall_seconds
     start_sim = None
@@ -167,11 +157,24 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
     context = _task_context(backend, task)
     try:
         backend.deadline_monotonic = deadline
+        if (not isinstance(backend, SimulationEpisodeBackend)
+                or not isinstance(backend.evaluator, IndependentTaskEvaluator)
+                or backend.profile.simulation_mode != "paused_during_model_inference"):
+            raise ValueError("This runner requires a paused SimulationEpisodeBackend with an independent evaluator")
+        if not backend.profile.capabilities["rgb"] or not backend.profile.capabilities["odometry"]:
+            raise ValueError("This simulation benchmark requires RGB and odometry capabilities")
+        harness = Harness(backend, context["instruction"])
+        frame = harness.frame
+        if (frame.sim_time_s is None or not math.isfinite(frame.sim_time_s)
+                or frame.base_xy_yaw is None or len(frame.base_xy_yaw) != 3
+                or not all(math.isfinite(float(value)) for value in frame.base_xy_yaw)):
+            raise ValueError("Simulation benchmark requires a finite simulation timestamp and measured base pose")
+        model.system_prompt = build_system_prompt(backend.profile)
         manifest = build_manifest(mode, seed, budgets, backend, model, task=context["instruction"])
         (run_dir / "manifest.json").write_text(json_text(manifest), encoding="utf-8")
-        (run_dir / "tools.json").write_text(json_text(TOOLS), encoding="utf-8")
-        (run_dir / "system_prompt.txt").write_text(SYSTEM_PROMPT, encoding="utf-8")
-        harness = Harness(backend, context["instruction"])
+        (run_dir / "tools.json").write_text(json_text(harness.tools), encoding="utf-8")
+        (run_dir / "system_prompt.txt").write_text(model.system_prompt, encoding="utf-8")
+        (run_dir / "robot_profile.json").write_text(json_text(backend.profile.to_dict()), encoding="utf-8")
         start_sim = harness.frame.sim_time_s
         # Privileged scoring anchor, archived separately from model observations.
         # The physics trace starts after the first control step; keep its exact origin.
@@ -190,8 +193,11 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                       history_turns=min(len(history), history_turns))
             calls_made += 1
             started = time.monotonic()
-            decision = model.decide(observation, image_data_url(harness.frame.rgb), TOOLS,
-                                    history, timeout_s=remaining)
+            try:
+                decision = model.decide(observation, image_data_url(harness.frame.rgb), harness.tools,
+                                        history, timeout_s=remaining)
+            finally:
+                model_wait_s += time.monotonic() - started
             reasoning = getattr(decision, "reasoning_content", None)
             reasoning_chars = len(reasoning) if isinstance(reasoning, str) else 0
             reasoning_responses += int(reasoning_chars > 0)
@@ -207,9 +213,14 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 termination = "budget_exhausted"
                 log.write("discarded_response", reason="wall_deadline_exceeded")
                 break
-            results = harness.dispatch_many(decision.calls)
+            action_started = time.monotonic()
+            try:
+                results = harness.dispatch_many(decision.calls)
+            finally:
+                action_wall_s += time.monotonic() - action_started
             motion_calls += sum(c.name in {"move_relative", "turn"} and not r.get("deduplicated")
-                                and r.get("error_code") not in {"INVALID_ARGUMENTS", "ONE_TOOL_PER_TURN", "CALL_ID_REUSED"}
+                                and r.get("error_code") not in {"INVALID_ARGUMENTS", "ONE_TOOL_PER_TURN", "CALL_ID_REUSED",
+                                                                "UNSUPPORTED_CAPABILITY", "EPISODE_ENDED"}
                                 for c, r in zip(decision.calls, results))
             posture_calls += sum(c.name in {"set_posture", "reset_posture"} and not r.get("deduplicated")
                                  and r.get("error_code") not in {"INVALID_ARGUMENTS", "ONE_TOOL_PER_TURN", "CALL_ID_REUSED",
@@ -244,16 +255,19 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
         # A simulator continues stepping under zero velocity for a bounded settling interval.
         # Do not equate successful submission of zero velocity with confirmed stopping.
         try:
+            action_started = time.monotonic()
             final_stop = backend.stop()
             log.write("final_stop", result=final_stop)
         except BaseException as exc:
             final_stop = {"status": "failed", "error_code": "STOP_EXCEPTION", "detail": _safe_error(exc)}
             log.write("final_stop", result=final_stop)
+        finally:
+            action_wall_s += time.monotonic() - action_started
         try:
             final_frame = backend.capture()
             log.save_frame(final_frame, "final")
-            evaluation = backend.evaluate(standoff_m=context["standoff_m"],
-                                          tolerance_m=context["distance_tolerance_m"])
+            evaluation = backend.evaluator.evaluate(standoff_m=context["standoff_m"],
+                                                    tolerance_m=context["distance_tolerance_m"])
             sim_elapsed = final_frame.sim_time_s - (start_sim if start_sim is not None else 0)
             if termination == "finish" and (sim_elapsed > max_sim_seconds or time.monotonic() > deadline):
                 termination = "budget_exhausted"
@@ -271,8 +285,12 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 "posture_calls": posture_calls, "usage": usage,
                 "reasoning_responses": reasoning_responses, "reasoning_characters": reasoning_characters,
                 "wall_elapsed_s": time.monotonic()-log.started, "sim_elapsed_s": sim_elapsed,
+                "model_wait_s": model_wait_s, "action_execution_wall_s": action_wall_s,
                 "evaluation": evaluation,
-                "simulation_mode": "paused_during_model_inference",
+                "simulation_mode": backend.profile.simulation_mode,
+                "robot_id": backend.profile.robot_id,
+                "controller_id": backend.profile.controller_id,
+                "robot_profile_sha256": runtime_identity(backend.profile)["robot_profile_sha256"],
                 "is_llm_result": mode == "api",
             }
             (run_dir / "metrics.json").write_text(json_text(metrics), encoding="utf-8")

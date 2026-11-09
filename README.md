@@ -1,6 +1,18 @@
-# Go2 通用大模型＋视觉几何 Harness Demo
+# 通用机器人 Agent＋Harness（首个适配：Go2）
 
 一个在 **MuJoCo 中运行真实 Go2 关节动力学**的最小闭环：观察机载 RGB 图像 → 选取目标像素 → RGB-D 几何跟踪 → 调用短程移动工具 → 接收执行反馈 → 独立评分。
+
+项目已拆分为通用 Harness、机器人能力配置与接口、Go2 适配器、MuJoCo 场景和独立任务评估器。当前只实现 `go2 + mujoco`；其他型号与实机执行器尚未实现。旧 `python -m go2_demo`、`go2-demo` 和脚本入口继续可用，安装后新增 `robot-harness` 命令。实现结构与扩展步骤见 [机器人适配架构](docs/robot-architecture.md)。
+
+```bash
+# 不读密钥、不启动仿真
+python -m go2_demo --list-robots
+python -m go2_demo --robot go2 --backend mujoco --describe-robot
+# 只验证真实物理接口，不调用模型 API、不计模型成绩
+python scripts/validate_robot.py --robot go2 --backend mujoco
+# 模型闭环：会调用配置的 API
+python -m go2_demo --robot go2 --backend mujoco --task go_avoid_texture_drawers
+```
 
 现有13个导航场景涵盖接近不同颜色物体、辨别 A/B/C、绕过家具、穿过矩形或三角形门框；新增 **`composite_drawers_gate_b` 复合任务**，依次绕过抽屉柜、穿过绿色矩形门、从 A/B/C 中接近 B 并停稳。原始红色标记任务保留为 `red_marker`；两项低姿态爬行任务明确标为当前不支持。
 
@@ -110,6 +122,7 @@ python -m go2_demo --provider compatible --viewer --seed 0
 ```text
 runs/<运行标识>/
 ├── manifest.json       # 配置、模式、资产版本等
+├── robot_profile.json  # 机器人、控制器、能力、传感器和限制快照
 ├── events.jsonl        # API 决策、思考字符数、工具请求和反馈
 ├── trajectory.jsonl    # 仿真轨迹；包含评测用状态
 ├── metrics.json        # 独立判定、结束原因、时间和成本计数
@@ -117,6 +130,8 @@ runs/<运行标识>/
 ```
 
 API Key 与认证头不写入日志。仿真目标真值用于独立评分，不作为目标坐标直接提供给模型。`finish()` 只是完成声明，最终成绩以 `metrics.json` 为准。
+
+新记录保存机器人配置摘要，并分别记录 `model_wait_s`（模型适配器调用等待）和 `action_execution_wall_s`（工具执行及刷新、最终停稳的墙钟时间）。代码指纹覆盖嵌套的机器人与环境模块。旧评测仍可离线读取；新配置、工具和提示词的协议摘要与旧实验不同，需创建新计划，不能续写旧计划或直接混排。
 
 比较不同大模型时，使用 [固定模型评测规则](docs/model-evaluation.md)：默认v2为13任务×5次＝65回合，四类各25%；显式选择v3后为原13项＋复合1项，共14任务×5次＝70回合，五类各20%。两版均按严格成功60分、实际路径效率20分、墙钟效率10分、仿真效率5分和调用效率5分评分，有效失败各项为0。`python -m go2_demo.benchmark_cli` 提供冻结计划、执行、离线评分和比较入口；不同协议或缺失／无效回合不生成正式跨模型排名。
 

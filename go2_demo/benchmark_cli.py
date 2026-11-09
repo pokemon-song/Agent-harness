@@ -60,6 +60,7 @@ def _episode_arguments(args, plan: dict, case: dict) -> argparse.Namespace:
     budget = protocol["budgets"]
     api = protocol["api_settings"]
     return argparse.Namespace(
+        robot="go2", backend="mujoco",
         mode="api", provider=plan["model"]["provider"], model_name=plan["model"]["requested_model"],
         api_key_file=args.api_key_file, no_env_proxy=args.no_env_proxy,
         assets_dir=args.assets_dir, viewer=False, seed=case["seed"],

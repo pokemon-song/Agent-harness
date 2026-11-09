@@ -2,15 +2,34 @@
 
 from dataclasses import replace
 import json
+from types import SimpleNamespace
 
 import numpy as np
 
 from go2_demo.runner import build_manifest, run_episode
 from go2_demo.scenarios import get_scenario
 from go2_demo.types import Decision, SensorFrame, ToolCall
+from go2_demo.robots.go2.profile import GO2_PROFILE
+from go2_demo.task_evaluation import TaskEvaluator
 
 
 class ScenarioBackend:
+    profile = GO2_PROFILE
+    deadline_monotonic = None
+    sim_deadline_s = None
+
+    def cancel(self):
+        return self.stop()
+
+    @property
+    def evaluator(self):
+        criteria = TaskEvaluator(self.scenario, self.scenario.target.xy, lambda: None).criteria
+        return SimpleNamespace(criteria=criteria, evaluate=self.evaluate)
+
+    def execute(self, call):
+        self.profile.validate_action(call.name, call.arguments)
+        return getattr(self, call.name)(**call.arguments)
+
     def __init__(self):
         self.scenario = replace(get_scenario("go_to_blue_ball"), standoff_m=1.4, distance_tolerance_m=0.21)
         self.task_instruction = self.scenario.instruction

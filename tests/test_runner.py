@@ -1,6 +1,8 @@
 """Exit-path tests avoid importing MuJoCo and use injected model/backend contracts."""
 
 import json
+from dataclasses import replace
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -8,9 +10,27 @@ import pytest
 from go2_demo.models import ModelError
 from go2_demo.runner import build_manifest, run_episode
 from go2_demo.types import Decision, SensorFrame, ToolCall
+from go2_demo.robots.go2.profile import GO2_PROFILE
+from go2_demo.task_evaluation import TaskEvaluator
 
 
 class EpisodeBackend:
+    profile = replace(GO2_PROFILE, height_pitch_control=False, posture=None)
+    deadline_monotonic = None
+    sim_deadline_s = None
+
+    def cancel(self):
+        return self.stop()
+
+    @property
+    def evaluator(self):
+        criteria = TaskEvaluator(None, [0., 0.], lambda: None).criteria
+        return SimpleNamespace(criteria=criteria, evaluate=self.evaluate)
+
+    def execute(self, call):
+        self.profile.validate_action(call.name, call.arguments)
+        return getattr(self, call.name)(**call.arguments)
+
     def __init__(self, *, score_success=True, stop_results=None):
         self.score_success = score_success
         self.stop_results = list(stop_results or [])
@@ -209,14 +229,15 @@ def test_manifest_reports_backend_posture_capabilities_without_assuming_support(
     manifest = build_manifest("api", 0, {}, backend, EpisodeModel())
     assert manifest["posture_control_supported"] is False
     assert manifest["moving_posture_control_supported"] is False
-    assert manifest["action_protocol"] == "bounded_relative_planar_motion_v1"
+    assert manifest["action_protocol"] == "capability_driven_robot_tools_v3"
 
     backend.posture_control_supported = True
     backend.moving_posture_control_supported = False
+    backend.profile = GO2_PROFILE
     manifest = build_manifest("api", 0, {}, backend, EpisodeModel())
     assert manifest["posture_control_supported"] is True
     assert manifest["moving_posture_control_supported"] is False
-    assert manifest["action_protocol"] == "bounded_relative_motion_static_posture_v2"
+    assert manifest["action_protocol"] == "capability_driven_robot_tools_v3"
 
 
 def test_qwen_manifest_records_common_thinking_semantics_and_actual_wire_budget(tmp_path, monkeypatch):
@@ -236,6 +257,7 @@ def test_qwen_manifest_records_common_thinking_semantics_and_actual_wire_budget(
 
 def test_posture_actions_are_counted_separately_without_counting_cached_retries(tmp_path):
     class PostureBackend(EpisodeBackend):
+        profile = GO2_PROFILE
         posture_control_supported = True
         moving_posture_control_supported = False
 
@@ -271,3 +293,55 @@ def test_posture_actions_are_counted_separately_without_counting_cached_retries(
     manifest = json.loads((tmp_path / "manifest.json").read_text())
     assert manifest["posture_control_supported"] is True
     assert manifest["moving_posture_control_supported"] is False
+
+
+def test_runtime_uses_and_archives_same_robot_tools_prompt_and_profile(tmp_path):
+    from go2_demo.harness import build_tools
+    from go2_demo.models import build_system_prompt
+    from go2_demo.provenance import digest
+
+    backend = EpisodeBackend()
+    seen = {}
+
+    class InspectModel(EpisodeModel):
+        def decide(self, observation, image, tools, history, **kwargs):
+            seen.update(tools=tools, prompt=self.system_prompt)
+            assert "set_posture" not in {tool["function"]["name"] for tool in tools}
+            return super().decide(observation, image, tools, history, **kwargs)
+
+    metrics = run_episode(backend, InspectModel(), mode="api", run_dir=tmp_path)
+    assert metrics["success"]
+    assert seen["tools"] == build_tools(backend.profile) == json.loads((tmp_path / "tools.json").read_text())
+    assert seen["prompt"] == build_system_prompt(backend.profile) == (tmp_path / "system_prompt.txt").read_text()
+    archived = json.loads((tmp_path / "robot_profile.json").read_text())
+    manifest = json.loads((tmp_path / "manifest.json").read_text())
+    assert archived == backend.profile.to_dict() == manifest["robot_profile"]
+    assert digest(archived) == manifest["robot_profile_sha256"] == metrics["robot_profile_sha256"]
+
+
+def test_model_wait_and_action_execution_are_measured_separately(tmp_path, monkeypatch):
+    now = [0.0]
+    monkeypatch.setattr("go2_demo.runner.time.monotonic", lambda: now[0])
+
+    class SlowStop(EpisodeBackend):
+        def stop(self):
+            now[0] += 3.0
+            return super().stop()
+
+    model = EpisodeModel(after_decision=lambda: now.__setitem__(0, now[0] + 4.0))
+    metrics = run_episode(SlowStop(), model, mode="api", run_dir=tmp_path)
+    assert metrics["success"]
+    assert metrics["model_wait_s"] == 4.0
+    assert metrics["action_execution_wall_s"] == 6.0
+    assert metrics["wall_elapsed_s"] == 10.0
+
+
+def test_live_clock_profile_is_rejected_before_any_model_request(tmp_path):
+    backend = EpisodeBackend()
+    backend.profile = replace(backend.profile, simulation_mode="continuous", time_mode="wall_clock")
+    model = EpisodeModel(after_decision=lambda: pytest.fail("unimplemented live executor called model"))
+    metrics = run_episode(backend, model, mode="api", run_dir=tmp_path)
+    assert metrics["termination"] == "runtime_error"
+    assert "paused SimulationEpisodeBackend" in metrics["error"]["message"]
+    assert metrics["model_calls"] == 0
+    assert backend.closed and model.closed and backend.stops == 1

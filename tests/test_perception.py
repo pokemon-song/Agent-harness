@@ -1,6 +1,7 @@
 """Sensor geometry tests use synthetic RGB-D, never a simulator target pose."""
 
 import math
+from dataclasses import replace
 
 import numpy as np
 import pytest
@@ -102,5 +103,55 @@ def test_geometry_feedback_exposes_relative_measurements_not_world_pose():
     assert "world" not in point
     assert "camera_to_world" not in point
     assert "base_xy_yaw" not in point
+
+
+@pytest.mark.parametrize("changes,reason", [
+    ({"depth_m": None}, "Depth"),
+    ({"depth_available": False}, "Depth"),
+    ({"intrinsics": None}, "intrinsics"),
+    ({"camera_to_world": None}, "camera pose"),
+    ({"base_xy_yaw": None}, "localization"),
+    ({"localization_available": False}, "Localization"),
+    ({"localization_quality": {"stale": True}}, "Localization"),
+])
+def test_missing_sensor_or_pose_never_becomes_fabricated_geometry(changes, reason):
+    frame = replace(make_frame(), **changes)
+    with pytest.raises(PerceptionError, match=reason):
+        backproject(frame, 50., 40.)
+
+
+def test_singular_intrinsics_fail_as_a_perception_error():
+    frame = replace(make_frame(), intrinsics=np.zeros((3, 3)))
+    with pytest.raises(PerceptionError, match="intrinsics"):
+        backproject(frame, 50., 40.)
+
+
+@pytest.mark.parametrize("u", [True, "50", 10**400])
+def test_non_numeric_or_unrepresentable_pixels_are_rejected_without_raw_numeric_errors(u):
+    with pytest.raises(PerceptionError):
+        backproject(make_frame(), u, 40.)
+
+
+def test_depth_disappearing_in_the_same_frame_explicitly_invalidates_an_existing_track():
+    tracker = PointTracker()
+    frame = make_frame()
+    tracker.update(frame)
+    tracker.add("frame-1", 50., 40.)
+    tracker.update(replace(frame, depth_m=None, depth_available=False))
+    point = tracker.geometry()[0]
+    assert not point["valid"]
+    assert point["relative_xy_m"] is None and point["range_m"] is None and point["bearing_rad"] is None
+    assert "Depth" in point["loss_reason"]
+
+
+def test_tracker_uses_explicit_depth_limits_and_external_timestamps():
+    tracker = PointTracker(min_depth_m=.5, max_depth_m=3.)
+    frame = replace(make_frame(depth=.2), sim_time_s=None, timestamp_s=123.5)
+    tracker.update(frame)
+    with pytest.raises(PerceptionError, match="depth"):
+        tracker.add("frame-1", 50., 40.)
+    tracker.update(replace(frame, depth_m=np.full((80, 100), 2.)))
+    point = tracker.add("frame-1", 50., 40.)
+    assert point["timestamp_s"] == 123.5
 
 

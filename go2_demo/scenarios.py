@@ -57,6 +57,10 @@ class Scenario:
     target_jitter_m: float = 0.0
     unsupported_reason: str | None = None
     source: str = "local_mujoco_adaptation_not_official_QUARD_environment"
+    required_capabilities: tuple[str, ...] = ("planar_motion", "turn_in_place", "rgb", "depth", "point_tracking", "odometry")
+    instruction_template: str | None = None
+    bound_robot_id: str | None = None
+    intrinsic_unsupported_reason: str | None = None
 
     @property
     def supported(self) -> bool:
@@ -189,3 +193,26 @@ def get_scenario(task_id: str) -> Scenario:
         if scenario.task_id == task_id:
             return scenario
     raise ValueError(f"Unknown task {task_id!r}; use --list-tasks")
+
+
+def bind_robot(scenario: Scenario, profile) -> Scenario:
+    """Resolve public sensor mounting and capability eligibility for a robot.
+
+    Historical default instructions and geometry remain unchanged for Go2, keeping
+    archived benchmark plans readable. Capability support is necessary, not proof
+    that a particular robot can physically fit through every scene.
+    """
+    missing = [name for name in scenario.required_capabilities
+               if not profile.capabilities.get(name, False)]
+    intrinsic_reason = (scenario.intrinsic_unsupported_reason if scenario.bound_robot_id is not None
+                        else scenario.unsupported_reason)
+    reason = intrinsic_reason
+    if missing:
+        reason = "Robot lacks required capabilities: " + ", ".join(missing)
+    offset = profile.sensor.camera_position_in_body_m[0]
+    mounting = f"{'前' if offset >= 0 else '后'}方{abs(offset):g}米"
+    template = scenario.instruction_template or scenario.instruction
+    instruction = template.replace("前方0.32米", mounting)
+    return replace(scenario, instruction=instruction, instruction_template=template,
+                   unsupported_reason=reason, bound_robot_id=profile.robot_id,
+                   intrinsic_unsupported_reason=intrinsic_reason)

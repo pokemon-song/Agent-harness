@@ -8,8 +8,9 @@ import pytest
 
 from go2_demo.benchmark import (COMPOSITE_PROTOCOL_ID, LEGACY_PROTOCOL_ID, PROTOCOL_ID,
                                _digest, create_plan, load_plan, score_plan, compare_plans, write_json)
-from go2_demo.harness import TOOLS
-from go2_demo.models import SYSTEM_PROMPT
+from go2_demo.harness import build_tools
+from go2_demo.models import build_system_prompt
+from go2_demo.robots.registry import get_profile
 from go2_demo.scenarios import get_scenario
 
 
@@ -28,6 +29,8 @@ def record(path, plan, case, *, success=True, termination="finish", mutation=Non
     manifest = {k: protocol[k] for k in (
         "budgets", "code_sha256", "package_versions", "asset_lock_sha256", "simulation_mode",
         "backend", "observation_protocol", "action_protocol", "completion_contract", "api_settings")}
+    manifest.update({key: protocol[key] for key in
+                     ("robot_id", "robot_profile", "robot_profile_sha256", "execution_contract") if key in protocol})
     manifest.update(mode="api", seed=case["seed"], task_id=case["task_id"], task=task["instruction"],
                     category=case["category"], model=plan["model"]["requested_model"], evaluation=task["evaluation"])
     evaluation = {"source": "privileged_simulator_evaluator", "goal_kind": task["evaluation"]["goal_kind"],
@@ -52,8 +55,10 @@ def record(path, plan, case, *, success=True, termination="finish", mutation=Non
         mutation(manifest, metrics)
     write_json(directory / "manifest.json", manifest)
     write_json(directory / "metrics.json", metrics)
-    write_json(directory / "tools.json", TOOLS)
-    (directory / "system_prompt.txt").write_text(SYSTEM_PROMPT, encoding="utf-8")
+    write_json(directory / "tools.json", build_tools(get_profile()))
+    if "robot_profile" in protocol:
+        write_json(directory / "robot_profile.json", protocol["robot_profile"])
+    (directory / "system_prompt.txt").write_text(build_system_prompt(get_profile()), encoding="utf-8")
     events = [{"event": "episode_start", "sim_time_s": 0., "base_xy_m": [0., 0.], "yaw_rad": 0.},
               {"event": "model_input"},
               {"event": "model_response", "model": "actual-provider-model", "latency_s": 2., "usage": metrics["usage"],
@@ -74,6 +79,19 @@ def record(path, plan, case, *, success=True, termination="finish", mutation=Non
 def fill(path, plan, **kwargs):
     for case in plan["cases"]:
         record(path, plan, case, **kwargs)
+
+
+def test_robot_identity_is_frozen_and_tampered_profile_invalidates_episode(tmp_path):
+    path, plan = plan_at(tmp_path)
+    assert plan["protocol"]["robot_id"] == "go2"
+    assert "go2_demo/robots/go2/backend.py" in plan["protocol"]["code_sha256"]
+    case = plan["cases"][0]
+    directory = record(path, plan, case)
+    changed = deepcopy(plan["protocol"]["robot_profile"])
+    changed["controller_id"] = "another-controller"
+    write_json(directory / "robot_profile.json", changed)
+    report = score_plan(path)
+    assert report["invalid_episodes"] == 1
 
 
 def test_frozen_grid_has_65_trials_without_unsupported_or_baseline_tasks(tmp_path):

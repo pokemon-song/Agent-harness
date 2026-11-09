@@ -36,15 +36,22 @@ def _make_model(args, scenario):
 def _run_single(args, scenario, run_dir: Path) -> tuple[dict, int]:
     from .models import ModelError
     from .runner import run_episode, _safe_error
+    from .robots.registry import create_backend, get_profile
+    from .scenarios import bind_robot
     backend, model = None, None
     print(f"Task: {scenario.task_id} | {scenario.title}", flush=True)
     print(f"Instruction: {scenario.instruction}", flush=True)
     print(f"Scenario source: {scenario.source}", flush=True)
     try:
+        profile = get_profile(args.robot, args.backend)
+        scenario = bind_robot(scenario, profile)
+        if not scenario.supported:
+            raise ValueError(f"Unsupported task for {profile.robot_id}: {scenario.unsupported_reason}")
         model = _make_model(args, scenario)
-        from .backend import MujocoGo2Backend
-        backend = MujocoGo2Backend(args.assets_dir, seed=args.seed, viewer=args.viewer, scenario=scenario)
-        print(f"Mode: {args.mode} | Real MuJoCo Go2 dynamics | API waiting pauses physics", flush=True)
+        backend = create_backend(args.robot, args.backend, asset_dir=args.assets_dir,
+                                 seed=args.seed, viewer=args.viewer, scenario=scenario)
+        print(f"Mode: {args.mode} | Robot: {profile.display_name} | Backend: {profile.backend_id} | "
+              f"{profile.simulation_mode}", flush=True)
         print(f"Logs: {run_dir}", flush=True)
         metrics = run_episode(backend, model, mode=args.mode, run_dir=run_dir, seed=args.seed,
                               max_model_calls=args.max_model_calls, max_wall_seconds=args.max_wall_seconds,
@@ -97,6 +104,7 @@ def _suite_summary(args, scenarios, results) -> dict:
     sources = sorted({scenario.source for scenario in scenarios})
     return {
         "suite": args.suite, "mode": args.mode, "seed": args.seed,
+        "robot_id": args.robot, "backend_id": args.backend,
         "scenario_source": sources[0] if len(sources) == 1 else "mixed_local_mujoco_scenarios",
         "scenario_sources": sources, "is_official_quard_benchmark": False,
         "is_llm_result": args.mode == "api", "total_cases": len(scenarios),
@@ -147,7 +155,11 @@ def _run_suite(args, scenarios) -> int:
 
 
 def main(argv=None) -> int:
-    parser = argparse.ArgumentParser(description="Go2 thinking API harness: select a MuJoCo task or run a suite")
+    parser = argparse.ArgumentParser(description="Robot thinking API harness (implemented adapter: Go2 / MuJoCo)")
+    parser.add_argument("--robot", default="go2", help="robot profile ID (currently: go2)")
+    parser.add_argument("--backend", default="mujoco", help="execution backend ID (currently: mujoco)")
+    parser.add_argument("--list-robots", action="store_true", help="list implemented robots without simulator or credentials")
+    parser.add_argument("--describe-robot", action="store_true", help="print the selected robot's capability and limit profile")
     parser.add_argument("--mode", choices=("api",), default="api", help="API is the only runtime mode")
     selection = parser.add_mutually_exclusive_group()
     selection.add_argument("--task", help="scenario ID; default: go_to_blue_ball; see --list-tasks")
@@ -174,23 +186,38 @@ def main(argv=None) -> int:
         parser.error("max-model-calls must be 1..1000 and history-turns 0..100")
     if not 1 <= args.max_output_tokens <= 65536:
         parser.error("max-output-tokens must be 1..65536")
-    from .scenarios import get_scenario, list_scenarios
+    from .robots.registry import get_profile, list_robots
+    from .scenarios import bind_robot, get_scenario, list_scenarios
+    if args.list_robots:
+        for robot_id in list_robots():
+            robot = get_profile(robot_id)
+            print(f"{robot_id} | {robot.backend_id} | {robot.display_name}")
+        return 0
+    try:
+        profile = get_profile(args.robot, args.backend)
+    except ValueError as exc:
+        parser.error(str(exc))
+    if args.describe_robot:
+        import json
+        print(json.dumps(profile.to_dict(), ensure_ascii=False, indent=2, allow_nan=False))
+        return 0
     if args.list_tasks:
         print("Task ID | category | status | visible scenario")
-        for scenario in list_scenarios():
+        for original in list_scenarios():
+            scenario = bind_robot(original, profile)
             status = "supported" if scenario.supported else "unsupported: " + scenario.unsupported_reason
             print(f"{scenario.task_id} | {scenario.category} | {status} | {scenario.title}")
         print("Source: local MuJoCo adaptations, not the original QUARD simulator or published evaluation split.")
         return 0
     if args.suite:
-        scenarios = [scenario for scenario in list_scenarios() if scenario.task_id != "red_marker"]
+        scenarios = [bind_robot(scenario, profile) for scenario in list_scenarios() if scenario.task_id != "red_marker"]
         if args.suite == "quard-planar":
             scenarios = [scenario for scenario in scenarios if scenario.category != "composite"]
         elif args.suite == "composite":
             scenarios = [scenario for scenario in scenarios if scenario.category == "composite"]
         return _run_suite(args, scenarios)
     try:
-        scenario = get_scenario(args.task or "go_to_blue_ball")
+        scenario = bind_robot(get_scenario(args.task or "go_to_blue_ball"), profile)
     except ValueError as exc:
         parser.error(str(exc))
     if not scenario.supported:
