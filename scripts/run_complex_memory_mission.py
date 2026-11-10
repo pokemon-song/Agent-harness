@@ -82,7 +82,8 @@ def worker(directory, phase, api_key_file=None):
         task = learning_instruction(phase, contract) if learning else recall_instruction(contract["order_id"])
         mode = "read_write" if learning else "read_only"
         model = APIModel.from_env(provider="deepseek", api_key_file=api_key_file,
-            model_name="deepseek-flash", trust_env=False, timeout_s=90, history_turns=6, max_output_tokens=8192)
+            model_name="deepseek-flash", trust_env=False, timeout_s=config["api_timeout_s"],
+            history_turns=6, max_output_tokens=config["max_output_tokens"])
         backend = create_backend("go2", "mujoco", asset_dir=ROOT / "assets", seed=0, scenario=scene)
         if config["recording"]:
             recording = backend.start_recording(run_dir / "third_person")
@@ -228,7 +229,8 @@ def experiment(args):
         "code_sha256": source_hashes(ROOT), "scripts_sha256": script_hashes(),
         "memory_prompt_sha256": file_hash(ROOT / "go2_demo/prompts/memory_agent.txt"),
         "model": "deepseek-flash", "provider": "deepseek", "seed": 0,
-        "budgets": BUDGETS, "history_turns": 6, "api_timeout_s": 90, "max_output_tokens": 8192,
+        "budgets": BUDGETS, "history_turns": 6, "api_timeout_s": args.api_timeout,
+        "max_output_tokens": args.max_output_tokens,
         "order_id": contract["order_id"], "contract_sha256": file_hash(directory / "contract.private.json"),
         "phases": list(PHASES), "memory_parents": PARENTS, "retries": 0, "formal_score": None,
         "recording": not args.no_recording,
@@ -265,10 +267,16 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--runs-dir", type=Path, default=ROOT / "runs")
     parser.add_argument("--api-key-file", type=Path)
+    parser.add_argument("--max-output-tokens", type=int, default=8192,
+                        help="Freeze the per-response output budget, including reasoning")
+    parser.add_argument("--api-timeout", type=float, default=90,
+                        help="Freeze per-request timeout; episode deadlines still apply")
     parser.add_argument("--no-recording", action="store_true", help="Disable private control-step state archive")
     parser.add_argument("--worker", choices=PHASES, help=argparse.SUPPRESS)
     parser.add_argument("--experiment-dir", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
+    if not 1 <= args.max_output_tokens <= 32768 or not 1 <= args.api_timeout <= 600:
+        parser.error("Output tokens must be 1..32768 and API timeout 1..600 seconds")
     if args.worker:
         if args.experiment_dir is None:
             parser.error("Internal worker requires --experiment-dir")

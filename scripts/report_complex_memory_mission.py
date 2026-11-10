@@ -304,6 +304,8 @@ def build_report(directory):
             f"结果：{verdict(p['strict_success'])}；终止：`{p['termination']}`；"
             f"碰撞：{p['evaluation'].get('collision')}；跌倒：{p['evaluation'].get('fallen')}；"
             f"记忆模式：`{p['memory_mode']}`。", ""]
+        if p["error_code"]:
+            report += [f"模型或运行错误代码：`{p['error_code']}`；协议或服务中断不能直接归因于导航或记忆能力。", ""]
         if p["receipt"]:
             report += ["提交与最终验收：`" + json.dumps(p["receipt"], ensure_ascii=False) + "`。", ""]
         if p["memory_events"]:

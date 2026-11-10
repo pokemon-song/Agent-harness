@@ -61,6 +61,10 @@
 # 会调用真实DeepSeek，默认保存每控制步的录像状态
 MUJOCO_GL=egl .venv/bin/python scripts/run_complex_memory_mission.py
 
+# 回复较长时，新建独立实验并显式冻结更大的回复预算
+MUJOCO_GL=egl .venv/bin/python scripts/run_complex_memory_mission.py \
+  --max-output-tokens 16384 --api-timeout 180
+
 # 在实验结束后按仿真时间生成连续第三视角视频
 MUJOCO_GL=egl .venv/bin/python scripts/render_complex_memory_video.py runs/<实验目录>
 
@@ -77,3 +81,9 @@ MUJOCO_GL=egl .venv/bin/python scripts/render_complex_memory_video.py runs/<实�
 实现阶段已用真实Go2控制器检查蓝／黄两条路线及两个新增学习区：四条验证均零碰撞、零跌倒并到达目标。两条最终路线分别为24个运动动作、约80.52／79.50秒仿真、9.317／9.277米；两个学习区分别17／15动作、57.96／51.20秒仿真。验证用私有坐标导航，仅说明场景可达，**不计为大模型成功**。
 
 本地记录：[最终场景两条路线](../runs/20261110-092622-complex-physics-validation-ad89aa/)及[新增学习区域](../runs/20261110-092715-complex-learning-physics-validation-df0d3d/)。记录在公开横偏要求补充之前生成，几何、路线判据及控制器保持相同。真实模型结果单独归档。
+
+## 首次模型试验的协议中断
+
+`31bd20f`上的首轮`20261110-093431-complex-memory-24ea05`使用每次8192输出token、90秒API超时。模型完成4次原地视觉选点，第5次回复被截断而触发`MODEL_PROTOCOL_ERROR`，102.24秒后终止；未执行导航、未保存长期记忆，其余5阶段按规则未运行。不能将其解释为复杂场景导航或记忆能力失败。5次请求中仅4次有完整用量，已知41680 token，最后一次的缺失用量不按零计费。
+
+该失败原样保留。后续增额实验必须新建目录，显式设置16384输出token、180秒API超时；仍保持原每回合总调用数、墙钟和仿真预算，三种交付条件设置完全一致，不在已冻结的运行中改限额。这是改变配置后的新实验，不覆盖或排除首轮记录。

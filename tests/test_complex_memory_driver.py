@@ -76,7 +76,8 @@ def worker_config(driver, directory):
     contract = make_contract()
     driver.write_json(directory / "contract.private.json", contract)
     driver.write_json(directory / "experiment.json", {"contract_sha256": driver.file_hash(directory / "contract.private.json"),
-        "order_id": contract["order_id"], "budgets": driver.BUDGETS, "recording": False})
+        "order_id": contract["order_id"], "budgets": driver.BUDGETS, "recording": False,
+        "api_timeout_s": 90, "max_output_tokens": 8192})
     return contract
 
 
@@ -96,9 +97,16 @@ def test_worker_preserves_completed_metrics_when_cleanup_raises(driver, tmp_path
     from go2_demo import runner
     from go2_demo.robots import registry
     worker_config(driver, tmp_path)
+    config = driver.read_json(tmp_path / "experiment.json")
+    config.update(api_timeout_s=180, max_output_tokens=16384)
+    driver.write_json(tmp_path / "experiment.json", config)
     monkeypatch.setattr(driver, "check_frozen", lambda config: None)
     closed = []
-    monkeypatch.setattr(APIModel, "from_env", lambda **kwargs: SimpleNamespace(close=lambda: closed.append("model")))
+    def model_factory(**kwargs):
+        assert kwargs["timeout_s"] == 180 and kwargs["max_output_tokens"] == 16384
+        return SimpleNamespace(close=lambda: closed.append("model"))
+
+    monkeypatch.setattr(APIModel, "from_env", model_factory)
     monkeypatch.setattr(registry, "create_backend", lambda *args, **kwargs:
         SimpleNamespace(stop=lambda: closed.append("stop"), close=lambda: closed.append("backend")))
     result = {"success": True, "termination": "finish", "model_calls": 12, "usage": {"total_tokens": 300}}
