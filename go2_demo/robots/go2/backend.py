@@ -64,6 +64,7 @@ class MujocoGo2Backend:
         self.sim_deadline_s: float | None = None
         self._viewer = None
         self._renderer = None
+        self._recording = None
         self._stopping = False
         self._command_lock = threading.Lock()
         self._frame_counter = 0
@@ -116,6 +117,20 @@ class MujocoGo2Backend:
             self._viewer.cam.azimuth = 135
             self._viewer.cam.elevation = -25
 
+    def start_recording(self, directory):
+        """Opt-in private state capture; no camera rendering in the action loop."""
+        from ...recording import SimulationRecording
+        if self._recording is not None:
+            raise RuntimeError("A recording has already been started")
+        self._recording = SimulationRecording(self.model, self.data, directory,
+                                               control_hz=1 / (self.dt * self.decimation))
+        return self._recording
+
+    def _record_state(self):
+        recording = getattr(self, "_recording", None)
+        if recording is not None:
+            recording.sample(self.model, self.data)
+
     def _verify_assets(self) -> None:
         manifest_path = Path(__file__).resolve().parents[3] / "assets.lock.json"
         self.asset_manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -147,6 +162,8 @@ class MujocoGo2Backend:
 
     def _step_control(self, command: np.ndarray, *, record: bool = True) -> None:
         started = time.monotonic()
+        if record:
+            self._record_state()
         if self._posture_controller is not None:
             target = self._posture_controller.target(*self._posture_reference, validate_request=False)
             kp, kd = 120.0, 2.0
@@ -182,6 +199,7 @@ class MujocoGo2Backend:
             self._fallen_ever |= self._fallen()
             position, yaw, rotation = self._base_pose()
             self.trajectory.append({"sim_time_s": float(self.data.time), "base_xyz_m": position.tolist(), "yaw_rad": yaw, "body_pitch_rad": self._pitch(rotation), "control_mode": self.control_mode, "posture_reference": self._posture_values(self._posture_reference), "posture_target": self._posture_values(self._posture_target), "velocity_world_mps": self.data.qvel[:3].tolist(), "command": command.tolist(), "fallen": self._fallen_ever, "collision_steps": self._collision_steps})
+            self._record_state()
         if self._viewer is not None:
             if not self._viewer.is_running():
                 closed_viewer, self._viewer = self._viewer, None
@@ -197,6 +215,7 @@ class MujocoGo2Backend:
             self._step_control(np.zeros(3, dtype=np.float32), record=record)
 
     def capture(self) -> SensorFrame:
+        self._record_state()
         self._frame_counter += 1
         self._renderer.disable_depth_rendering()
         self._renderer.update_scene(self.data, camera="front_rgbd")
@@ -444,12 +463,20 @@ class MujocoGo2Backend:
         return {"status": "succeeded" if stopped else "failed", "error_code": None if stopped else "STOP_NOT_CONFIRMED", "speed_mps": speed, "yaw_rate_radps": angular_speed}
 
     def close(self) -> None:
-        if self._viewer is not None:
-            self._viewer.close()
-            self._viewer = None
-        if self._renderer is not None:
-            self._renderer.close()
-            self._renderer = None
+        try:
+            self._record_state()
+            recording = getattr(self, "_recording", None)
+            if recording is not None:
+                recording.finish()
+        finally:
+            try:
+                if self._viewer is not None:
+                    self._viewer.close()
+                    self._viewer = None
+            finally:
+                if self._renderer is not None:
+                    self._renderer.close()
+                    self._renderer = None
 
     # Private helpers remain thin compatibility adapters for existing local code.
     _add_letter = staticmethod(add_letter)

@@ -118,7 +118,7 @@ def worker(directory, phase, api_key_file=None):
 
     directory = Path(directory)
     run_dir = directory / phase
-    backend = model = None
+    backend = model = recording = None
     cleanup_errors, worker_error = [], None
     result = None
     try:
@@ -136,6 +136,8 @@ def worker(directory, phase, api_key_file=None):
                                   model_name="deepseek-flash", trust_env=False,
                                   timeout_s=90, history_turns=6, max_output_tokens=8192)
         backend = create_backend("go2", "mujoco", asset_dir=ROOT / "assets", seed=0, scenario=scenario)
+        if config.get("third_person_recording"):
+            recording = backend.start_recording(run_dir / "third_person")
         if not is_briefing:
             # The world always has identical A/B/C signs. Only this independent,
             # private scorer knows which sign the earlier public order assigned.
@@ -160,6 +162,8 @@ def worker(directory, phase, api_key_file=None):
             operations.extend((("backend.stop", backend.stop), ("backend.close", backend.close)))
         if model is not None:
             operations.append(("model.close", model.close))
+        if recording is not None:
+            operations.append(("recording.finish", recording.finish))
         for name, operation in operations:
             try:
                 operation()
@@ -260,6 +264,7 @@ def experiment(args):
               "budgets": BUDGETS, "history_turns": 6, "api_timeout_s": 90, "max_output_tokens": 8192,
               "order_id": order["order_id"], "order_file_sha256": file_hash(directory / "order.private.json"),
               "phases": list(PHASES), "retries": 0, "formal_score": None,
+              "third_person_recording": args.record_third_person,
               "design": "Cross-episode mission with fresh OS processes and canonical robot resets; read-only full/empty recall pair"}
     write_json(directory / "experiment.json", config)
     results, error, audit, stopped_reason = [], None, None, None
@@ -314,6 +319,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--runs-dir", type=Path, default=ROOT / "runs")
     parser.add_argument("--api-key-file", type=Path)
+    parser.add_argument("--record-third-person", action="store_true",
+                        help="Archive every control-step state for offline third-person video")
     parser.add_argument("--worker", choices=PHASES, help=argparse.SUPPRESS)
     parser.add_argument("--experiment-dir", type=Path, help=argparse.SUPPRESS)
     args = parser.parse_args(argv)
