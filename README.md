@@ -1,5 +1,14 @@
 # 通用机器人 Agent＋Harness（首个适配：Go2）
 
+**feature 演示版 `0.5.0.dev1`：独立多模态记忆 Agent 异步维护 MD，独立规划 Agent 读取发布版本并提出短动作。** 记忆与规划各自有上下文、预算和工具边界；证据先入账，版本冲突和未处理关键输入阻止旧计划执行。见 [异步 MD 记忆 Demo](docs/async-md-memory-demo.md)。
+
+```bash
+# 离线接口演示：脚本模型＋合成后端，不计大模型成绩
+.venv/bin/python scripts/run_md_memory_demo.py
+# 真实 DeepSeek 两种角色＋Go2 仿真，保存并渲染第三视角录像
+MUJOCO_GL=egl .venv/bin/python scripts/run_md_memory_demo.py --mode api --backend mujoco --render-video
+```
+
 一个在 **MuJoCo 中运行真实 Go2 关节动力学**的最小闭环：观察机载 RGB 图像 → 选取目标像素 → RGB-D 几何跟踪 → 调用短程移动工具 → 接收执行反馈 → 独立评分。
 
 项目已拆分为通用 Harness、机器人能力配置与接口、Go2 适配器、MuJoCo 场景和独立任务评估器。当前只实现 `go2 + mujoco`；其他型号与实机执行器尚未实现。旧 `python -m go2_demo`、`go2-demo` 和脚本入口继续可用，安装后新增 `robot-harness` 命令。实现结构与扩展步骤见 [机器人适配架构](docs/robot-architecture.md)。
