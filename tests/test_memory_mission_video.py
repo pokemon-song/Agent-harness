@@ -65,21 +65,28 @@ def test_rejects_tampered_state_archive(video, tmp_path):
         video.load_recording(tmp_path / "recording")
 
 
-def test_real_mujoco_render_and_video_decode_without_physics_step(video, tmp_path, monkeypatch):
+@pytest.mark.parametrize("timebases", [("wall", "sim"), ("sim",)])
+def test_real_mujoco_render_and_video_decode_without_physics_step(video, tmp_path, monkeypatch, timebases):
     pytest.importorskip("imageio_ffmpeg", reason="Optional video dependencies not installed")
     import mujoco
     for phase in video.PHASES:
         make_recording(video, tmp_path / phase / "third_person")
     # Rendering must reconstruct archived states, never rerun the controller/physics.
     monkeypatch.setattr(mujoco, "mj_step", lambda *args, **kwargs: pytest.fail("Offline renderer stepped physics"))
-    report = video.render_mission(tmp_path, width=320, height=240, fps=25)
+    report = video.render_mission(tmp_path, width=320, height=240, fps=25, timebases=timebases)
     assert report["all_phases_recorded"] and report["missing_phases"] == []
     for phase in report["phases"]:
-        assert phase["videos"]["wall"]["frame_count"] == 7
+        assert set(phase["videos"]) == set(timebases)
+        if "wall" in timebases:
+            assert phase["videos"]["wall"]["frame_count"] == 7
         for clip in phase["videos"].values():
             assert clip["decoded_all_frames"] and clip["first_and_final_states_included"]
             assert clip["first_source_index"] == 0 and clip["last_source_index"] == 3
-    assert report["combined"]["wall"]["frame_count"] == 3 * 7 + 4 * 25
-    assert report["combined"]["wall"]["decoded_all_frames"]
+    assert set(report["combined"]) == set(timebases)
+    if "wall" in timebases:
+        assert report["combined"]["wall"]["frame_count"] == 3 * 7 + 4 * 25
+        assert report["combined"]["wall"]["decoded_all_frames"]
+    else:
+        assert not list(tmp_path.rglob("*wall*.mp4"))
     with pytest.raises(FileExistsError):
         video.render_mission(tmp_path, width=320, height=240)

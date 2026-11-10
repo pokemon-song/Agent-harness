@@ -177,13 +177,14 @@ def fixed_camera(mujoco, phase):
     return camera
 
 
-def render_phase(directory, phase, executable, *, width=1280, height=720, fps=25, overwrite=False):
+def render_phase(directory, phase, executable, *, width=1280, height=720, fps=25, overwrite=False,
+                 timebases=("wall", "sim")):
     import mujoco
     directory = Path(directory)
     metadata, state, sim, wall, hashes = load_recording(directory)
     if metadata["mujoco_version"] != mujoco.__version__:
         raise ValueError("Archived MJB must be rendered with its original MuJoCo version")
-    outputs = {kind: directory / f"third-person-{kind}.mp4" for kind in ("wall", "sim")}
+    outputs = {kind: directory / f"third-person-{kind}.mp4" for kind in timebases}
     if not overwrite and any(path.exists() for path in (*outputs.values(), directory / "video-manifest.json")):
         raise FileExistsError("Video outputs already exist; use --overwrite explicitly")
     model = mujoco.MjModel.from_binary_path(str(directory / "model.mjb"))
@@ -203,6 +204,8 @@ def render_phase(directory, phase, executable, *, width=1280, height=720, fps=25
               "videos": {}, "note": "CFR endpoint holds add at most two frames; model-inference waits remain in wall movie."}
     try:
         for timebase, timeline in (("wall", wall), ("sim", sim)):
+            if timebase not in timebases:
+                continue
             indices, output_times = frame_schedule(timeline, fps)
             encoder = Encoder(executable, outputs[timebase], width, height, fps)
             failed = True
@@ -271,9 +274,12 @@ def concat_movies(executable, paths, output, expected_frames, fps):
         return verified
 
 
-def render_mission(directory, *, width=1280, height=720, fps=25, overwrite=False):
+def render_mission(directory, *, width=1280, height=720, fps=25, overwrite=False,
+                   timebases=("wall", "sim")):
     if width < 160 or height < 120 or width % 2 or height % 2 or fps <= 0:
         raise ValueError("Use even video dimensions >=160x120 and positive fps")
+    if not timebases or len(set(timebases)) != len(timebases) or set(timebases) - {"wall", "sim"}:
+        raise ValueError("Select unique timebases from wall and sim")
     directory = Path(directory).resolve()
     executable = ffmpeg_path()
     phases = [phase for phase in PHASES if (directory / phase / "third_person/metadata.json").exists()]
@@ -281,20 +287,22 @@ def render_mission(directory, *, width=1280, height=720, fps=25, overwrite=False
         raise FileNotFoundError("No phase recordings found")
     outputs = {"wall": directory / "mission-third-person-full.mp4",
                "sim": directory / "mission-third-person-motion.mp4"}
+    outputs = {kind: path for kind, path in outputs.items() if kind in timebases}
     protected = [*outputs.values(), directory / "video-manifest.json"]
     protected.extend(directory / phase / "third_person" / filename for phase in phases
-                     for filename in ("third-person-wall.mp4", "third-person-sim.mp4", "video-manifest.json"))
+                     for filename in (*(f"third-person-{kind}.mp4" for kind in timebases), "video-manifest.json"))
     if not overwrite and any(path.exists() for path in protected):
         raise FileExistsError("Video outputs already exist; use --overwrite explicitly")
     reports = [render_phase(directory / phase / "third_person", phase, executable,
-                            width=width, height=height, fps=fps, overwrite=overwrite) for phase in phases]
+                            width=width, height=height, fps=fps, overwrite=overwrite,
+                            timebases=timebases) for phase in phases]
     combined = {}
     with tempfile.TemporaryDirectory(prefix="go2-video-cards-") as work:
         cards = {}
         for phase in phases[1:]:
             cards[phase] = Path(work) / (phase + ".mp4")
             reset_card(executable, cards[phase], phase, width, height, fps)
-        for timebase in ("wall", "sim"):
+        for timebase in timebases:
             paths, count = [], 0
             for index, (phase, report) in enumerate(zip(phases, reports)):
                 if index:
@@ -306,6 +314,7 @@ def render_mission(directory, *, width=1280, height=720, fps=25, overwrite=False
     report = {"schema_version": 1, "phases": reports, "combined": combined,
               "all_phases_recorded": phases == list(PHASES), "missing_phases": [p for p in PHASES if p not in phases],
               "fps": fps, "resolution": [width, height], "reset_card_seconds": 2,
+              "timebases": list(timebases),
               "wall_semantics": "Each recorded phase at wall-clock speed, including paused inference. Process setup gaps are replaced by 2-second RESET cards.",
               "sim_semantics": "Each recorded phase at simulation-clock speed. Repeated timestamps (inference waits) collapse. No motion tool or final stop is skipped.",
               "no_task_answers_read": True, "no_model_api": True, "no_physics_rerun": True}

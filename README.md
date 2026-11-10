@@ -8,6 +8,8 @@
 
 **v0.3.0 增加依赖记忆的跨班次任务**：第一班次接收随机目的地与六位回执码并完成复合巡检；重启全部短期上下文后，根据长期记忆交付。真实实验同时运行有记忆与空记忆对照，第二班次的世界、起点、工具、提示词和预算相同。设计与验收见 [长时记忆任务](docs/long-memory-mission.md)，入口为 `.venv/bin/python scripts/run_long_memory_mission.py`（会调用真实 API）。
 
+**v0.4.0 增加多区与修订记忆任务**：三班分别提供代码片段、仓位映射和改变目的地／许可通道的订单修订，随后在双通道分岔、两组绕障及绿门组成的场景中交付。对比完整、变更前及空记忆，评分结合真实过门路线与最新订单。见[复杂记忆任务](docs/complex-memory-mission.md)，入口为 `.venv/bin/python scripts/run_complex_memory_mission.py`（会调用真实 API）。
+
 ```bash
 # 不调用 API 的持久化接口演示（合成模型和后端，无机器人性能成绩）
 .venv/bin/python scripts/validate_memory_demo.py
