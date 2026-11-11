@@ -1,8 +1,13 @@
 # 通用机器人 Agent＋Harness（首个适配：Go2）
 
-**feature 演示版 `0.5.0.dev3`：独立多模态记忆 Agent 异步维护 MD，独立规划 Agent 读取发布版本并通过机器人 Harness 导航。** 关键公告优先处理，旧反馈保留待处理；模型可局部编辑 MD，工具提供字段级错误说明，普通反馈采用可追溯的字段投影。见 [记忆优化与验证](docs/md-memory-optimization.md)、[异步 MD 记忆 Demo](docs/async-md-memory-demo.md) 和 [复杂任务复测](docs/md-complex-memory-test.md)。
+**feature 演示版 `0.5.0.dev4`：单班去 B，再根据去程 MD 记忆原路返回。** 保留原抽屉柜／绿门／B 场景；到 B 只清空规划上下文，物理世界、机器人状态和共同里程计原点连续。去程记忆 Agent 自主保存地标和实测路线，返程规划器读取实际 MD，独立验收同侧绕柜、反向过门、路线覆盖和回到起点。每段限时增至 1,800 秒，详见 [单班往返任务](docs/md-roundtrip-task.md)。旧 [记忆优化验证](docs/md-memory-optimization.md)、[异步 MD Demo](docs/async-md-memory-demo.md) 和 [六阶段复测](docs/md-complex-memory-test.md) 保留。
 
 ```bash
+# 当前单班往返任务：真实 DeepSeek + Go2，保存整趟连续控制步状态
+MUJOCO_GL=egl .venv/bin/python scripts/run_md_roundtrip.py
+# 任务结束后渲染连续第三视角录像并生成报告
+MUJOCO_GL=egl .venv/bin/python scripts/report_md_roundtrip.py runs/<本轮目录> --render
+
 # 离线接口演示：脚本模型＋合成后端，不计大模型成绩
 .venv/bin/python scripts/run_md_memory_demo.py
 # 真实 DeepSeek 两种角色＋Go2 仿真，保存并渲染第三视角录像

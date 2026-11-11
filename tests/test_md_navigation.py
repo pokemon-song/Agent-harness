@@ -72,6 +72,8 @@ def test_learning_notice_only_reaches_memory_model_and_index_is_not_full_documen
         event = observation["pending_events"][0]
         assert event["payload"]["text"] == notice
         assert event["payload"]["episode_id"] and event["payload"]["scene_id"]
+        assert event["payload"]["observation"]["local_odometry"]["translation_m"] == [0., 0.]
+        assert "hidden_target" not in json.dumps(event["payload"]["observation"])
         return call("commit_memory", {"changes": [change(event, notice)]})
 
     memory = Model([save, call("commit_memory", {"changes": []})])

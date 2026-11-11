@@ -48,8 +48,10 @@ also requires refresh and actual reads of documents changed since the selected
 snapshot, even if you never read those documents before. MEMORY_PENDING means a critical
 input is still being processed: you may observe, inspect geometry, stop or abort.
 Use only the provided robot primitives, exactly one tool per response, and judge
-progress from actual motion feedback. Coordinates from previous episodes have
-different local origins; old positions are not current measurements. Explicit
+progress from actual motion feedback. Coordinates from other coordinate_frame_id
+values or previous independent episodes have different local origins. A declared
+shared continuous-mission coordinate frame is preserved across planning-context
+resets; its historical measurements remain historical, not current observations. Explicit
 effective dispatch revisions take precedence over older archived notices.
 """
 
@@ -181,7 +183,7 @@ class _MemoryAccess:
         if self.required_reads:
             raise NavigationMemoryError("Re-read revised memory before acting", "MEMORY_REREAD_REQUIRED")
         if require_memory and not self.receipts:
-            raise NavigationMemoryError("Read the order memory before submitting", "MEMORY_NOT_READ")
+            raise NavigationMemoryError("Read relevant published memory before this action", "MEMORY_NOT_READ")
 
 
 def _append_public(store, frame, kind, payload, *, critical=False):
@@ -230,8 +232,11 @@ def run_md_episode(backend, planner_model, *, run_dir, store, memory_model=None,
                    read_only=False, task: str, memory_notice: str | None = None,
                    task_extension=None, seed=0, max_model_calls=40, max_memory_calls=12,
                    max_wall_seconds=900, max_sim_seconds=150, history_turns=2,
-                   api_timeout_s=180):
+                   api_timeout_s=180, odometry_origin=None, coordinate_frame_id=None,
+                   require_memory_for_motion=False, mode="api"):
     """Run one evaluated episode. Caller retains backend/recording ownership."""
+    if mode not in {"api", "fixture"}:
+        raise ValueError("Explicit api or fixture mode required")
     for name, value in (("max_model_calls", max_model_calls), ("max_memory_calls", max_memory_calls)):
         if type(value) is not int or value < 1:
             raise ValueError(name + " must be positive")
@@ -248,6 +253,13 @@ def run_md_episode(backend, planner_model, *, run_dir, store, memory_model=None,
         raise ValueError("A learning notice requires a memory model")
     if memory_model is planner_model:
         raise ValueError("Memory and planning models require independent instances")
+    if (odometry_origin is None) != (coordinate_frame_id is None):
+        raise ValueError("A shared odometry origin requires its coordinate frame identifier")
+    if coordinate_frame_id is not None and (not isinstance(coordinate_frame_id, str)
+            or re.fullmatch(r"[A-Za-z0-9_-]{1,128}", coordinate_frame_id) is None):
+        raise ValueError("Invalid coordinate frame identifier")
+    if type(require_memory_for_motion) is not bool:
+        raise ValueError("require_memory_for_motion must be boolean")
     run_dir = Path(run_dir)
     run_dir.mkdir(parents=True, exist_ok=True)
     log = RunLog(run_dir)
@@ -257,6 +269,9 @@ def run_md_episode(backend, planner_model, *, run_dir, store, memory_model=None,
     identity = runtime_identity(backend.profile)
     scope = {"episode_id": episode_id, "scene_id": context["task_id"],
              "coordinate_reference": "this_episode_start; previous episodes reset local origin"}
+    if coordinate_frame_id is not None:
+        scope.update(coordinate_frame_id=coordinate_frame_id,
+                     coordinate_reference="continuous_mission_start; physical world and odometry origin are preserved")
     worker = harness = access = None
     worker_stopped = True
     termination, error = "runtime_error", None
@@ -270,13 +285,14 @@ def run_md_episode(backend, planner_model, *, run_dir, store, memory_model=None,
     memory_initial = memory_final = None
     initial_memory_failed = False
     initial_notice_seq = None
+    trajectory_start_index = len(getattr(backend, "trajectory", []))
     try:
         backend.deadline_monotonic = deadline
         if (not isinstance(backend, SimulationEpisodeBackend)
                 or not isinstance(backend.evaluator, IndependentTaskEvaluator)
                 or backend.profile.simulation_mode != "paused_during_model_inference"):
             raise ValueError("A paused SimulationEpisodeBackend and independent evaluator are required")
-        harness = Harness(backend, task)
+        harness = Harness(backend, task, odometry_origin=odometry_origin)
         start_sim = harness.frame.sim_time_s
         if start_sim is None or not math.isfinite(start_sim) or harness.frame.base_xy_yaw is None:
             raise ValueError("A finite simulation clock and measured base pose are required")
@@ -293,11 +309,16 @@ def run_md_episode(backend, planner_model, *, run_dir, store, memory_model=None,
         budgets = {"max_model_calls": max_model_calls, "max_memory_calls": max_memory_calls,
                    "max_wall_seconds": max_wall_seconds, "max_sim_seconds": max_sim_seconds,
                    "history_turns": history_turns, "api_timeout_s": api_timeout_s}
-        manifest = build_manifest("api", seed, budgets, backend, planner_model, task=task)
+        manifest = build_manifest(mode, seed, budgets, backend, planner_model, task=task)
         manifest.update(task_agent=True, external_memory=True, experiment_kind="md-navigation-v1",
                         memory_storage="versioned_markdown", memory_root=str(store.root),
                         memory_mode="read_only" if read_only else "read_write", episode_id=episode_id,
                         system_prompt_sha256=hashlib.sha256(planner_model.system_prompt.encode()).hexdigest(), tools_sha256=digest(tools))
+        manifest.update(coordinate_frame_id=coordinate_frame_id,
+                        is_llm_result=mode == "api",
+                        shared_odometry_origin=list(odometry_origin) if odometry_origin is not None else None,
+                        trajectory_start_index=trajectory_start_index,
+                        require_memory_for_motion=require_memory_for_motion)
         if task_extension is not None:
             manifest["task_extension_id"] = task_extension.extension_id
         (run_dir / "manifest.json").write_text(json_text(manifest), encoding="utf-8")
@@ -311,7 +332,8 @@ def run_md_episode(backend, planner_model, *, run_dir, store, memory_model=None,
                   yaw_rad=float(harness.frame.base_xy_yaw[2]), episode_id=episode_id)
         if memory_notice is not None:
             event = _append_public(store, harness.frame, "public_announcement",
-                                   {**scope, "text": memory_notice}, critical=True)
+                                   {**scope, "text": memory_notice,
+                                    "observation": harness.observation()}, critical=True)
             initial_notice_seq = event["seq"]
             log.write("memory_notice_registered", event_id=event["id"], event_seq=event["seq"])
         if not read_only and memory_model is not None:
@@ -385,7 +407,8 @@ def run_md_episode(backend, planner_model, *, run_dir, store, memory_model=None,
                         result = task_extension.execute(call)
                         task_calls += 1
                     elif call.name in robot_names:
-                        access.guard(call.name)
+                        access.guard(call.name, require_memory=(require_memory_for_motion
+                            and call.name in {"move_relative", "turn", "set_posture", "reset_posture", "finish"}))
                         result = harness.execute(call)
                         dispatched_robot = True
                         if not result.get("deduplicated") and result.get("error_code") not in {
@@ -495,7 +518,7 @@ def run_md_episode(backend, planner_model, *, run_dir, store, memory_model=None,
                 if entry.get("event") == "model_response" and len(_usage(entry.get("usage", {}))) == 3:
                     memory_usage_responses += 1
         try:
-            path_length = _path_length(origin, getattr(backend, "trajectory", []))
+            path_length = _path_length(origin, getattr(backend, "trajectory", [])[trajectory_start_index:])
         except (TypeError, ValueError, KeyError) as exc:
             path_length = None
             termination, error = "evaluation_error", _error(exc)
@@ -504,7 +527,7 @@ def run_md_episode(backend, planner_model, *, run_dir, store, memory_model=None,
             termination = "budget_exhausted"
         if log.write_error is not None:
             termination, error = "logging_error", log.write_error
-        metrics = {"mode": "api", "is_llm_result": True, "seed": seed,
+        metrics = {"mode": mode, "is_llm_result": mode == "api", "seed": seed,
                    "experiment_kind": "md-navigation-v1", "episode_id": episode_id,
                    "task_id": context["task_id"], "scenario_source": context["source"],
                    "termination": termination, "error": error, "evaluation": evaluation,
@@ -531,11 +554,14 @@ def run_md_episode(backend, planner_model, *, run_dir, store, memory_model=None,
                    "memory_initial_revision": (memory_initial or {}).get("revision"),
                    "memory_final_revision": (memory_final or {}).get("revision"),
                    "memory_pending_events": (memory_final or {}).get("pending_event_count", 0)}
+        metrics.update(coordinate_frame_id=coordinate_frame_id,
+                       trajectory_start_index=trajectory_start_index,
+                       require_memory_for_motion=require_memory_for_motion)
         if task_extension is not None:
             metrics["task_extension_id"] = task_extension.extension_id
         try:
             with (run_dir / "trajectory.jsonl").open("w", encoding="utf-8") as stream:
-                for row in getattr(backend, "trajectory", []):
+                for row in getattr(backend, "trajectory", [])[trajectory_start_index:]:
                     stream.write(json_text(row) + "\n")
             (run_dir / "metrics.json").write_text(json_text(metrics), encoding="utf-8")
             log.write("episode_end", metrics=metrics)

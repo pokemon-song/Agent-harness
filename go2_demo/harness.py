@@ -79,10 +79,11 @@ _ROBOT_FIELDS = {"body_height_m", "body_pitch_rad", "body_roll_rad", "speed_mps"
 
 _CALIBRATION_TEXT_FIELDS = {"camera_frame", "body_frame", "optical_axes", "body_axes"}
 _COMPLETION_TEXT_FIELDS = {"goal_kind", "reference_body"}
-_COMPLETION_BOOL_FIELDS = {"stop_required", "collision_free_required", "stages_ordered"}
+_COMPLETION_BOOL_FIELDS = {"stop_required", "collision_free_required", "stages_ordered", "heading_required"}
 _COMPLETION_NUMBER_FIELDS = {
     "required_clearance_m", "standoff_m", "distance_tolerance_m",
     "heading_tolerance_rad", "max_stopped_speed_mps", "max_stopped_yaw_rate_radps",
+    "retrace_tolerance_m", "min_outbound_coverage",
 }
 
 
@@ -169,7 +170,7 @@ def _public_quality(value) -> dict:
 
 
 class Harness:
-    def __init__(self, backend, task: str):
+    def __init__(self, backend, task: str, *, odometry_origin=None):
         profile = getattr(backend, "profile", None)
         if not isinstance(profile, RobotProfile):
             raise TypeError("Backend must provide an explicit RobotProfile; implicit Go2 defaults are unsupported")
@@ -180,7 +181,14 @@ class Harness:
         self._tools = build_tools(profile)
         self.tracker = PointTracker(min_depth_m=profile.sensor.depth_min_m, max_depth_m=profile.sensor.depth_max_m)
         self.frame = None
-        self._initial_base_xy_yaw: tuple[float, float, float] | None = None
+        if odometry_origin is not None and (
+                not isinstance(odometry_origin, (list, tuple)) or len(odometry_origin) != 3
+                or not all(_finite_number(value) for value in odometry_origin)):
+            raise ValueError("Odometry origin must be three finite measured x/y/yaw values")
+        self._initial_base_xy_yaw: tuple[float, float, float] | None = (
+            tuple(float(value) for value in odometry_origin) if odometry_origin is not None else None)
+        self._odometry_reference = ("mission_start_body_horizontal" if odometry_origin is not None
+                                    else "episode_start_body_horizontal")
         self._initial_capture_complete = False
         self.termination: str | None = None
         self.cache: dict[str, tuple[str, dict]] = {}
@@ -193,7 +201,7 @@ class Harness:
     def refresh(self) -> dict:
         self.frame = self.backend.capture()
         if not self._initial_capture_complete:
-            if self.profile.capabilities.get("odometry", False):
+            if self.profile.capabilities.get("odometry", False) and self._initial_base_xy_yaw is None:
                 try:
                     self._initial_base_xy_yaw = tuple(float(x) for x in localization_pose(self.frame))
                 except PerceptionError:
@@ -225,7 +233,7 @@ class Harness:
             yaw_delta = yaw - initial_yaw
             odometry = {"translation_m": [c * dx + s * dy, -s * dx + c * dy],
                         "yaw_rad": math.atan2(math.sin(yaw_delta), math.cos(yaw_delta)),
-                        "reference": "episode_start_body_horizontal", "source": source}
+                        "reference": self._odometry_reference, "source": source}
         elif pose is not None:
             localization_problem = "Episode-start localization was unavailable; relative odometry is unknown"
         depth_problem = depth_frame_error(frame) if capabilities["depth"] else "Depth is unsupported by the robot profile"
@@ -252,6 +260,10 @@ class Harness:
                                         "unavailable_reason": geometry_problem},
                 },
                 "simulation_mode": self.profile.simulation_mode}
+        if self._odometry_reference == "mission_start_body_horizontal":
+            observation["coordinate_convention"] = (
+                "tracked_points.relative_xy_m: origin at the current base body reference, horizontal forward and left axes, metres; yaw positive left. "
+                "local_odometry: origin and horizontal axes fixed at the continuous mission's initial base pose; preserved across planning-context resets.")
         if self._posture_supported():
             posture = self.profile.posture
             observation["posture_limits"] = {
