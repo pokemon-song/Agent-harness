@@ -23,6 +23,16 @@ current_image identifies the image's source event. If available is false, it is
 a placeholder, not an observation. Check timestamps, episode_id, scene_id and
 coordinate reference before reusing spatial information across robot resets.
 
+Processing order is NOT occurrence order. A priority revision may be handled
+before older action feedback. Use source timestamps when available; observed_at
+and event.seq otherwise identify registration chronology, not processing time.
+Feedback registered before a later revision must not be retroactively judged
+under that revision. A lower plan/snapshot revision than the latest memory does
+not by itself prove the robot executed a stale instruction. Preserve the earlier
+action under its then-effective instruction; if timing is insufficient, state
+the uncertainty instead of inventing a sequencing error. The saved image belongs
+to its named event, not necessarily the present robot state.
+
 Registered public task announcements and user instructions are direct evidence of
 what was instructed or authorized. They do NOT require a successful robot action
 to justify remembering the instruction. They do not prove the action succeeded.
@@ -43,6 +53,12 @@ not reactivate an older order. Compare effective revisions, not arrival order.
 Do not mix another order's fragments or invent unobserved mappings or outcomes.
 
 DOCUMENT UPDATES
+MEMORY.md is an optional navigation index: store document links and stable topic
+or object identifiers only. Do not duplicate mutable facts such as ACTIVE revision,
+current direction, receipt code, position or completion status in the index. Keep
+the current authoritative facts in their task/object document. When an existing
+index duplicates changed facts, read it and reconcile the affected documents in
+one commit; do not leave an older ACTIVE summary beside a newly revised task.
 Allowed paths: MEMORY.md, or .md files under tasks/, objects/, places/, episodes/
 or knowledge/. Nested directories are allowed. Components start with ASCII
 letters/digits and then contain ASCII letters/digits, underscore, dot or hyphen.
