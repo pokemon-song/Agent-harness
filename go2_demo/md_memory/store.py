@@ -127,7 +127,8 @@ class MDMemoryStore:
                     raise StoreError("SCOPE_MISMATCH", "This memory root belongs to a different scope")
             else:
                 directory = "00000000-" + uuid.uuid4().hex
-                manifest = {"revision": 0, "scope": scope, "processed_event_seq": 0, "files": []}
+                manifest = {"revision": 0, "scope": scope, "processed_event_seq": 0,
+                            "acknowledged_event_seqs": [], "files": []}
                 data = _json(manifest).encode()
                 _write_file(self._versions / directory / "manifest.json", data)
                 _sync_directories(self._versions / directory)
@@ -239,6 +240,19 @@ class MDMemoryStore:
             if (manifest["revision"] != revision or manifest["scope"] != self.scope
                     or manifest["processed_event_seq"] != row[2] or not isinstance(manifest["files"], list)):
                 raise StoreError("MEMORY_CORRUPT", "Revision manifest metadata mismatch")
+            # Old revisions are immutable: supply the compatible default only in
+            # this decoded value, never rewrite their manifest or its checksum.
+            acknowledged = manifest.setdefault("acknowledged_event_seqs", [])
+            prefix = manifest["processed_event_seq"]
+            if (type(prefix) is not int or prefix < 0 or not isinstance(acknowledged, list)
+                    or any(type(seq) is not int or seq <= prefix for seq in acknowledged)
+                    or acknowledged != sorted(set(acknowledged))
+                    or prefix + 1 in acknowledged):
+                raise StoreError("MEMORY_CORRUPT", "Invalid sparse event acknowledgements")
+            if acknowledged:
+                registered = {item[0] for item in db.execute("SELECT seq FROM events WHERE seq>?", (prefix,))}
+                if not set(acknowledged).issubset(registered):
+                    raise StoreError("MEMORY_CORRUPT", "Acknowledged event does not exist")
             contents, paths = {}, set()
             for entry in manifest["files"]:
                 path = _memory_path(entry["path"])
@@ -253,24 +267,48 @@ class MDMemoryStore:
         except (OSError, ValueError, KeyError, TypeError) as exc:
             raise StoreError("MEMORY_CORRUPT", "Committed memory revision is unreadable") from exc
 
+    @staticmethod
+    def _pending(db, manifest):
+        acknowledged = set(manifest["acknowledged_event_seqs"])
+        return [json.loads(row[1]) for row in db.execute(
+            "SELECT seq,payload FROM events WHERE seq>? ORDER BY seq", (manifest["processed_event_seq"],))
+                if row[0] not in acknowledged]
+
     def snapshot(self, revision: int | None = None):
         with self._connection() as db:
             db.execute("BEGIN")
             manifest, _ = self._load(db, revision)
             latest = db.execute("SELECT COALESCE(MAX(seq),0) FROM events").fetchone()[0]
-            pending = [json.loads(row[0]) for row in db.execute("SELECT payload FROM events WHERE seq>? ORDER BY seq", (manifest["processed_event_seq"],))]
-            return {**manifest, "latest_event_seq": latest,
+            pending = self._pending(db, manifest)
+            acknowledged = set(manifest["acknowledged_event_seqs"])
+            processed_critical = next((seq for seq, payload in db.execute(
+                "SELECT seq,payload FROM events ORDER BY seq DESC")
+                if (seq <= manifest["processed_event_seq"] or seq in acknowledged)
+                and json.loads(payload)["critical"]), 0)
+            return {**manifest, "latest_event_seq": latest, "pending_event_count": len(pending),
+                    "processed_critical_event_seq": processed_critical,
                     "pending_critical_events": [{"seq": e["seq"], "id": e["id"], "kind": e["kind"]} for e in pending if e["critical"]]}
 
-    def pending_events(self, limit=8):
+    def pending_events(self, limit=8, *, prioritize_critical=False):
         _integer(limit, "limit", 1)
-        if limit > 100:
+        if limit > 100 or type(prioritize_critical) is not bool:
             raise StoreError("INVALID_ARGUMENTS", "Event batch limit cannot exceed 100")
         with self._connection() as db:
             db.execute("BEGIN")
             manifest, _ = self._load(db)
-            ids = [row[0] for row in db.execute("SELECT id FROM events WHERE seq>? ORDER BY seq LIMIT ?", (manifest["processed_event_seq"], limit))]
-            return [self._event(db, event_id) for event_id in ids]
+            pending = self._pending(db, manifest)
+            if prioritize_critical:
+                critical = [event for event in pending if event["critical"]]
+                pending = critical or pending
+            return [self._event(db, event["id"]) for event in pending[:limit]]
+
+    def is_event_processed(self, seq):
+        """Whether an event is acknowledged, including outside the FIFO prefix."""
+        _integer(seq, "seq", 1)
+        with self._connection() as db:
+            db.execute("BEGIN")
+            manifest, _ = self._load(db)
+            return seq <= manifest["processed_event_seq"] or seq in manifest["acknowledged_event_seqs"]
 
     def read(self, path, revision=None):
         _memory_path(path)
@@ -302,10 +340,25 @@ class MDMemoryStore:
                         break
             return result
 
-    def commit(self, base_revision: int, processed_event_seq: int, changes: list[dict], *, call_id: str):
+    def commit(self, base_revision: int, processed_event_seq: int, changes: list[dict], *, call_id: str,
+               event_seqs: list[int] | None = None):
+        """Publish prose and acknowledge an input window atomically.
+
+        Without event_seqs the watermark retains its legacy prefix semantics.
+        An explicit list acknowledges only those pending events; the supplied
+        watermark is their maximum, while the returned watermark is the newly
+        contiguous prefix. Previously acknowledged events remain usable evidence.
+        """
         _integer(base_revision, "base_revision")
         _integer(processed_event_seq, "processed_event_seq")
         _identifier(call_id, "call_id")
+        if event_seqs is not None:
+            if (not isinstance(event_seqs, list) or not 1 <= len(event_seqs) <= 100
+                    or any(type(seq) is not int or seq < 1 for seq in event_seqs)
+                    or event_seqs != sorted(set(event_seqs))):
+                raise StoreError("INVALID_ARGUMENTS", "Selected events must be 1..100 distinct increasing positive sequences")
+            if processed_event_seq != event_seqs[-1]:
+                raise StoreError("INVALID_WATERMARK", "Selected window maximum does not match its watermark")
         if not isinstance(changes, list) or len(changes) > 4:
             raise StoreError("INVALID_ARGUMENTS", "A commit permits at most four document changes")
         paths = set()
@@ -327,7 +380,11 @@ class MDMemoryStore:
                 _identifier(ref, "evidence id")
             if len(set(refs)) != len(refs):
                 raise StoreError("INVALID_ARGUMENTS", "Evidence IDs cannot repeat")
-        fingerprint = _sha(_json({"base_revision": base_revision, "processed_event_seq": processed_event_seq, "changes": changes}).encode())
+        request = {"base_revision": base_revision, "processed_event_seq": processed_event_seq, "changes": changes}
+        # Preserve fingerprints of commits recorded by the legacy API.
+        if event_seqs is not None:
+            request["event_seqs"] = event_seqs
+        fingerprint = _sha(_json(request).encode())
         directory = None
         published = False
         try:
@@ -344,13 +401,32 @@ class MDMemoryStore:
                 latest = db.execute("SELECT COALESCE(MAX(seq),0) FROM events").fetchone()[0]
                 if not before["processed_event_seq"] <= processed_event_seq <= latest:
                     raise StoreError("INVALID_WATERMARK", "Processed event watermark must be monotone and registered")
+                previous_prefix = before["processed_event_seq"]
+                acknowledged = set(before["acknowledged_event_seqs"])
+                selected = set(event_seqs or [])
+                if event_seqs is None:
+                    prefix = processed_event_seq
+                    acknowledged = {seq for seq in acknowledged if seq > prefix}
+                else:
+                    for seq in event_seqs:
+                        if seq <= previous_prefix or seq in acknowledged:
+                            raise StoreError("EVENT_ALREADY_PROCESSED", "Selected event is no longer pending")
+                        event_row = db.execute("SELECT id FROM events WHERE seq=?", (seq,)).fetchone()
+                        if event_row is None:
+                            raise StoreError("UNKNOWN_EVIDENCE", "Selected event must be registered")
+                        self._event(db, event_row[0])
+                    prefix = previous_prefix
+                    acknowledged.update(selected)
+                while prefix + 1 in acknowledged:
+                    prefix += 1
+                    acknowledged.remove(prefix)
                 entries = {item["path"]: item for item in before["files"]}
                 revision = base_revision + 1
                 for change in changes:
                     events = [self._event(db, ref) for ref in change["evidence_ids"]]
                     maximum = max(event["seq"] for event in events)
-                    if maximum > processed_event_seq:
-                        raise StoreError("FUTURE_EVIDENCE", "Evidence is newer than this commit's processed window")
+                    if any(event["seq"] > prefix and event["seq"] not in acknowledged for event in events):
+                        raise StoreError("FUTURE_EVIDENCE", "Evidence is neither acknowledged nor selected by this commit")
                     previous = entries.get(change["path"])
                     if previous and maximum < previous["evidence_max_seq"]:
                         raise StoreError("STALE_EVIDENCE", "Older evidence cannot overwrite a newer document")
@@ -363,7 +439,8 @@ class MDMemoryStore:
                     data = ("---\n" + frontmatter + "\n---\n" + change["body"]).encode("utf-8")
                     entries[change["path"]] = {**metadata, "sha256": _sha(data)}
                     contents[change["path"]] = data
-                manifest = {"revision": revision, "scope": self.scope, "processed_event_seq": processed_event_seq,
+                manifest = {"revision": revision, "scope": self.scope, "processed_event_seq": prefix,
+                            "acknowledged_event_seqs": sorted(acknowledged),
                             "files": [entries[path] for path in sorted(entries)]}
                 name = f"{revision:08d}-" + uuid.uuid4().hex
                 directory = self._safe(self._versions / name)
@@ -373,8 +450,9 @@ class MDMemoryStore:
                 _write_file(directory / "manifest.json", encoded)
                 _sync_directories(directory)
                 # The directory is complete before a transaction makes its pointer visible.
-                result = {"status": "succeeded", "revision": revision, "processed_event_seq": processed_event_seq}
-                db.execute("INSERT INTO commits VALUES (?,?,?,?)", (revision, name, _sha(encoded), processed_event_seq))
+                result = {"status": "succeeded", "revision": revision, "processed_event_seq": prefix,
+                          "acknowledged_event_seqs": sorted(acknowledged)}
+                db.execute("INSERT INTO commits VALUES (?,?,?,?)", (revision, name, _sha(encoded), prefix))
                 db.execute("UPDATE settings SET head=? WHERE id=1", (revision,))
                 db.execute("INSERT INTO receipts VALUES (?,?,?)", (call_id, fingerprint, _json(result)))
                 db.commit()

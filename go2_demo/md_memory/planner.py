@@ -47,6 +47,9 @@ def check_plan(plan, store, profile):
         raise PlanError("SCOPE_CHANGED", "Plan belongs to a different world scope")
     if snapshot["pending_critical_events"]:
         raise PlanError("MEMORY_PENDING", "Critical inputs have not been processed")
+    if snapshot.get("processed_critical_event_seq", 0) > store.snapshot(
+            plan.snapshot_revision).get("processed_critical_event_seq", 0):
+        raise PlanError("MEMORY_CHANGED", "A new critical input was published after this plan snapshot")
     if not plan.dependencies:
         raise PlanError("NO_MEMORY_DEPENDENCY", "This memory demo requires read evidence")
     for dependency in plan.dependencies:

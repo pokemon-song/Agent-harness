@@ -189,7 +189,7 @@ def run_demo(directory, *, mode="scripted", backend_kind="fixture", api_key_file
                         raise
             print(f"{phase}: queued event {event['seq']}; memory agent processing", flush=True)
             worker.notify()
-            if not worker.wait_until(event["seq"], timeout_s=stage_timeout):
+            if not worker.wait_event(event["seq"], timeout_s=stage_timeout):
                 raise PlanError("MEMORY_NOT_READY", "Memory processing failed or exceeded stage budget")
             snapshot = store.snapshot()
             result = {"phase": phase, "event_seq": event["seq"], "memory_revision": snapshot["revision"],
@@ -263,7 +263,7 @@ def run_demo(directory, *, mode="scripted", backend_kind="fixture", api_key_file
             try:
                 snapshot = store.snapshot()
                 write_json(directory / "memory-final.json", snapshot)
-                summary["pending_events"] = snapshot["latest_event_seq"] - snapshot["processed_event_seq"]
+                summary["pending_events"] = snapshot["pending_event_count"]
                 summary["memory_revision"] = snapshot["revision"]
             except Exception as exc:
                 summary["cleanup_errors"].append({"operation": "snapshot", **safe_error(exc)})

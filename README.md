@@ -1,6 +1,6 @@
 # 通用机器人 Agent＋Harness（首个适配：Go2）
 
-**feature 演示版 `0.5.0.dev2`：独立多模态记忆 Agent 异步维护 MD，独立规划 Agent 读取发布版本并通过机器人 Harness 导航。** 记忆与规划各自有上下文、预算和工具边界；证据先入账，版本冲突和未处理关键输入阻止旧计划执行。见 [异步 MD 记忆 Demo](docs/async-md-memory-demo.md) 和 [原复杂任务的双 Agent 复测](docs/md-complex-memory-test.md)。
+**feature 演示版 `0.5.0.dev3`：独立多模态记忆 Agent 异步维护 MD，独立规划 Agent 读取发布版本并通过机器人 Harness 导航。** 关键公告优先处理，旧反馈保留待处理；模型可局部编辑 MD，工具提供字段级错误说明，普通反馈采用可追溯的字段投影。见 [记忆优化与验证](docs/md-memory-optimization.md)、[异步 MD 记忆 Demo](docs/async-md-memory-demo.md) 和 [复杂任务复测](docs/md-complex-memory-test.md)。
 
 ```bash
 # 离线接口演示：脚本模型＋合成后端，不计大模型成绩

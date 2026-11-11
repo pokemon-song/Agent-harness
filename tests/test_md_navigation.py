@@ -145,6 +145,80 @@ def test_unrelated_document_revision_does_not_block_current_read_dependency(tmp_
     assert metrics["success"] and len(backend.moves) == 1
 
 
+@pytest.mark.parametrize("path", ["tasks/order.md", "tasks/new-order.md"])
+@pytest.mark.parametrize("act_before_refresh", [True, False])
+def test_published_critical_notice_requires_read_of_previously_unread_document(tmp_path, path, act_before_refresh):
+    store = MDMemoryStore(tmp_path / "memory")
+    seed(store)
+    store.append_event("feedback", {"text": "Older feedback remains pending"})
+
+    def publish(observation, history):
+        notice = store.append_event("instruction", {"text": "Use the revised order"}, critical=True)
+        store.commit(1, notice["seq"], [change(notice, "Revised order", path)],
+                     call_id="critical", event_seqs=[notice["seq"]])
+        assert store.snapshot()["processed_event_seq"] == 1
+        assert store.snapshot()["processed_critical_event_seq"] == 3
+        assert store.snapshot()["pending_critical_events"] == []
+        if act_before_refresh:
+            return call("move_relative", {"forward_m": .2, "lateral_m": 0}, identifier="old-plan")
+        return call("memory_refresh")
+
+    steps = [publish]
+    if act_before_refresh:
+        steps += [call("stop"), call("memory_refresh")]
+    steps += [call("move_relative", {"forward_m": .2, "lateral_m": 0}, identifier="unread-plan"),
+              call("memory_read", {"path": path}),
+              call("move_relative", {"forward_m": .2, "lateral_m": 0}, identifier="fresh-plan"),
+              call("finish")]
+    metrics, events, backend, _ = run(tmp_path, Model(steps), store=store, read_only=True)
+    results = tool_results(events)
+    assert metrics["success"] and len(backend.moves) == 1
+    assert any(r.get("error_code") == "MEMORY_REREAD_REQUIRED" for r in results)
+    if act_before_refresh:
+        assert results[0]["error_code"] == "MEMORY_CHANGED"
+        assert results[1]["status"] == "succeeded"  # Recovery stop is always permitted.
+    refresh = next(r for r in results if r["tool"] == "memory_refresh")
+    assert refresh["required_reads"] == [path]
+    assert metrics["memory_read_calls"] == 1
+
+
+def test_critical_ack_without_document_change_requires_only_one_refresh(tmp_path):
+    store = MDMemoryStore(tmp_path / "memory")
+    seed(store)
+
+    def acknowledge(observation, history):
+        notice = store.append_event("instruction", {"text": "No semantic change"}, critical=True)
+        store.commit(1, notice["seq"], [], call_id="no-change", event_seqs=[notice["seq"]])
+        return call("move_relative", {"forward_m": .2, "lateral_m": 0}, identifier="unrefreshed")
+
+    planner = Model([acknowledge, call("stop"), call("get_geometry"), call("memory_refresh"),
+                     call("move_relative", {"forward_m": .2, "lateral_m": 0}, identifier="refreshed"),
+                     call("finish")])
+    metrics, events, backend, _ = run(tmp_path, planner, store=store, read_only=True)
+    results = tool_results(events)
+    assert metrics["success"] and len(backend.moves) == 1
+    assert results[0]["error_code"] == "MEMORY_CHANGED"
+    assert results[1]["status"] == results[2]["status"] == "succeeded"
+    assert results[3]["required_reads"] == []
+    assert metrics["memory_read_calls"] == 0
+
+
+def test_selected_critical_version_does_not_make_unrelated_normal_updates_blocking(tmp_path):
+    store = MDMemoryStore(tmp_path / "memory")
+    event = store.append_event("instruction", {"text": "Current order"}, critical=True)
+    store.commit(0, 1, [change(event)], call_id="initial-critical", event_seqs=[1])
+
+    def ordinary_update(observation, history):
+        event = store.append_event("observation", {"text": "A box"})
+        store.commit(1, 2, [change(event, "A box", "objects/box.md")], call_id="ordinary")
+        return call("move_relative", {"forward_m": .2, "lateral_m": 0})
+
+    planner = Model([call("memory_read", {"path": "tasks/order.md"}), ordinary_update, call("finish")])
+    metrics, events, backend, _ = run(tmp_path, planner, store=store, read_only=True)
+    assert metrics["success"] and len(backend.moves) == 1
+    assert all(r["status"] == "succeeded" for r in tool_results(events))
+
+
 def test_pending_critical_notice_blocks_motion_but_allows_stop_and_abort(tmp_path):
     store = MDMemoryStore(tmp_path / "memory")
     store.append_event("instruction", {"text": "Wait for changed order"}, critical=True)

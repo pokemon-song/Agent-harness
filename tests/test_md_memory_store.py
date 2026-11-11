@@ -271,3 +271,229 @@ def test_symlinked_root_ancestor_and_revision_directory_are_rejected(tmp_path):
     root.mkdir()
     (root / "revisions").symlink_to(target, target_is_directory=True)
     assert_error("INVALID_PATH", lambda: MDMemoryStore(root))
+
+
+def test_critical_events_preempt_feedback_without_acknowledging_the_gap(tmp_path):
+    store = MDMemoryStore(tmp_path)
+    feedback = [store.append_event("feedback", {"number": i}) for i in range(16)]
+    notice = store.append_event("new_instruction", {"revision": 2}, critical=True)
+    assert store.pending_events() == feedback[:8]
+    assert store.pending_events(prioritize_critical=True) == [notice]
+    result = store.commit(0, 17, [change(notice, "Active instruction revision 2", "tasks/dispatch.md")],
+                          call_id="critical", event_seqs=[17])
+    assert result["processed_event_seq"] == 0
+    assert result["acknowledged_event_seqs"] == [17]
+    snapshot = store.snapshot()
+    assert snapshot["processed_event_seq"] == 0
+    assert snapshot["processed_critical_event_seq"] == 17
+    assert snapshot["pending_event_count"] == 16
+    assert snapshot["pending_critical_events"] == []
+    assert store.is_event_processed(17)
+    assert not store.is_event_processed(1)
+    assert not store.is_event_processed(18)
+    assert store.pending_events(limit=100, prioritize_critical=True) == feedback
+    # Draining the old feedback incorporates the already-acknowledged notice.
+    store.commit(1, 8, [], call_id="old-feedback-1", event_seqs=list(range(1, 9)))
+    result = store.commit(2, 16, [], call_id="old-feedback-2", event_seqs=list(range(9, 17)))
+    assert result["processed_event_seq"] == 17
+    assert result["acknowledged_event_seqs"] == []
+    assert store.snapshot()["pending_event_count"] == 0
+    assert store.snapshot()["processed_critical_event_seq"] == 17
+    assert store.pending_events(prioritize_critical=True) == []
+    assert store.snapshot(1)["acknowledged_event_seqs"] == [17]
+    assert store.snapshot(1)["pending_event_count"] == 16
+    assert store.snapshot(0)["processed_critical_event_seq"] == 0
+
+
+def test_multiple_critical_events_sorted_bounded_and_late_notice_stays_pending(tmp_path):
+    store = MDMemoryStore(tmp_path)
+    events = [store.append_event("notice" if seq in {3, 5, 7} else "feedback", {},
+                                 critical=seq in {3, 5, 7}) for seq in range(1, 8)]
+    window = store.pending_events(limit=2, prioritize_critical=True)
+    assert [e["seq"] for e in window] == [3, 5]
+    later = store.append_event("notice", {}, critical=True)
+    store.commit(0, 5, [], call_id="first-critical-window", event_seqs=[3, 5])
+    assert [e["seq"] for e in store.pending_events(prioritize_critical=True)] == [7, 8]
+    assert [e["seq"] for e in store.snapshot()["pending_critical_events"]] == [7, later["seq"]]
+    assert store.snapshot()["processed_critical_event_seq"] == 5
+    assert store.pending_events(limit=100) == [e for e in events + [later] if e["seq"] not in {3, 5}]
+    store.commit(1, 8, [], call_id="second-critical-window", event_seqs=[7, 8])
+    assert [e["seq"] for e in store.pending_events(prioritize_critical=True)] == [1, 2, 4, 6]
+    # Legacy prefix processing remains compatible and collapses sparse suffixes.
+    store.commit(2, 4, [], call_id="legacy-feedback")
+    assert store.snapshot()["processed_event_seq"] == 5
+    assert store.snapshot()["acknowledged_event_seqs"] == [7, 8]
+    store.commit(3, 6, [], call_id="last-feedback", event_seqs=[6])
+    assert store.snapshot()["processed_event_seq"] == 8
+    assert store.snapshot()["pending_event_count"] == 0
+    assert store.snapshot()["processed_critical_event_seq"] == 8
+
+
+def test_sparse_evidence_requires_acknowledged_or_selected_events(tmp_path):
+    store = MDMemoryStore(tmp_path)
+    old = store.append_event("feedback", {})
+    gap = store.append_event("feedback", {})
+    critical = store.append_event("notice", {}, critical=True)
+    unselected = store.append_event("notice", {}, critical=True)
+    assert_error("FUTURE_EVIDENCE", lambda: store.commit(
+        0, 3, [change(gap)], call_id="unprocessed-gap", event_seqs=[3]))
+    assert_error("FUTURE_EVIDENCE", lambda: store.commit(
+        0, 3, [change(unselected)], call_id="unselected-notice", event_seqs=[3]))
+    store.commit(0, 3, [change(critical, "Updated instruction")], call_id="priority", event_seqs=[3])
+    # Already-acknowledged critical evidence remains available even though its
+    # sequence is higher than the currently processed old-feedback batch.
+    mixed = change(critical, "Keep new instruction; summarize old feedback.")
+    mixed["evidence_ids"].append(old["id"])
+    store.commit(1, 1, [mixed], call_id="old-with-current-context", event_seqs=[1])
+    assert store.snapshot()["processed_event_seq"] == 1
+    assert store.snapshot()["acknowledged_event_seqs"] == [3]
+    assert_error("STALE_EVIDENCE", lambda: store.commit(
+        2, 2, [change(gap, "Replace with old instruction")], call_id="late-old-overwrite", event_seqs=[2]))
+    assert not store.is_event_processed(2)
+    # An old prefix caller may also retain newer acknowledged evidence.
+    store.commit(2, 2, [change(critical, "Retain current instruction")], call_id="legacy-with-context")
+    assert store.snapshot()["processed_event_seq"] == 3
+    assert store.pending_events() == [unselected]
+
+
+@pytest.mark.parametrize("selected", [[], [1, 1], [2, 1], [True], [0], [-1], [1.0], "1", list(range(1, 102))])
+def test_invalid_explicit_selections_fail_without_acknowledgement(tmp_path, selected):
+    store = MDMemoryStore(tmp_path)
+    event = store.append_event("feedback", {})
+    assert_error("INVALID_ARGUMENTS", lambda: store.commit(0, 1, [], call_id="invalid", event_seqs=selected))
+    assert store.pending_events() == [event]
+    assert store.snapshot()["revision"] == 0
+
+
+def test_explicit_selection_bounds_and_already_processed_events(tmp_path):
+    store = MDMemoryStore(tmp_path)
+    for number in range(3):
+        store.append_event("event", {"number": number})
+    assert_error("INVALID_WATERMARK", lambda: store.commit(0, 2, [], call_id="wrong-max", event_seqs=[3]))
+    assert_error("INVALID_WATERMARK", lambda: store.commit(0, 4, [], call_id="unregistered", event_seqs=[4]))
+    store.commit(0, 3, [], call_id="sparse", event_seqs=[3])
+    assert_error("EVENT_ALREADY_PROCESSED", lambda: store.commit(1, 3, [], call_id="repeat", event_seqs=[3]))
+    store.commit(1, 1, [], call_id="first", event_seqs=[1])
+    assert_error("EVENT_ALREADY_PROCESSED", lambda: store.commit(2, 1, [], call_id="prefix-repeat", event_seqs=[1]))
+    assert_error("INVALID_ARGUMENTS", lambda: store.pending_events(prioritize_critical=1))
+    assert_error("INVALID_ARGUMENTS", lambda: store.is_event_processed(True))
+    assert store.snapshot()["pending_event_count"] == 1
+
+
+def test_sparse_idempotency_and_readonly_reopen_do_not_change_any_file(tmp_path):
+    store = MDMemoryStore(tmp_path)
+    store.append_event("feedback", {})
+    notice = store.append_event("notice", {}, critical=True)
+    original = store.commit(0, 2, [change(notice)], call_id="durable-sparse", event_seqs=[2])
+    before = {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    reopened = MDMemoryStore(tmp_path)
+    assert reopened.snapshot()["acknowledged_event_seqs"] == [2]
+    assert reopened.snapshot()["pending_event_count"] == 1
+    assert reopened.is_event_processed(2)
+    reopened.snapshot(0)
+    reopened.read("objects/ball.md")
+    reopened.search("ball")
+    reopened.pending_events(prioritize_critical=True)
+    replay = reopened.commit(0, 2, [change(notice)], call_id="durable-sparse", event_seqs=[2])
+    assert replay == {**original, "deduplicated": True}
+    assert_error("CALL_ID_REUSED", lambda: reopened.commit(
+        0, 2, [change(notice)], call_id="durable-sparse", event_seqs=[1, 2]))
+    assert_error("CALL_ID_REUSED", lambda: reopened.commit(0, 2, [change(notice)], call_id="durable-sparse"))
+    after = {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    assert before == after
+
+
+def test_legacy_manifests_and_receipts_reopen_without_migration(tmp_path):
+    store = MDMemoryStore(tmp_path)
+    event = store.append_event("observation", {})
+    store.commit(0, 1, [change(event)], call_id="legacy")
+    # Recreate the pre-extension disk shape, including its original receipt.
+    with sqlite3.connect(tmp_path / "index.sqlite3") as db:
+        for revision, directory in db.execute("SELECT revision,directory FROM commits").fetchall():
+            path = tmp_path / "revisions" / directory / "manifest.json"
+            manifest = json.loads(path.read_text())
+            manifest.pop("acknowledged_event_seqs")
+            data = module._json(manifest).encode()
+            path.write_bytes(data)
+            db.execute("UPDATE commits SET manifest_sha256=? WHERE revision=?", (module._sha(data), revision))
+        legacy_result = {"status": "succeeded", "revision": 1, "processed_event_seq": 1}
+        db.execute("UPDATE receipts SET result=? WHERE call_id='legacy'", (module._json(legacy_result),))
+    before = {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    reopened = MDMemoryStore(tmp_path)
+    assert reopened.snapshot()["acknowledged_event_seqs"] == []
+    assert reopened.snapshot()["pending_event_count"] == 0
+    assert reopened.snapshot(0)["pending_event_count"] == 1
+    assert reopened.commit(0, 1, [change(event)], call_id="legacy") == {**legacy_result, "deduplicated": True}
+    assert before == {p.relative_to(tmp_path): p.read_bytes() for p in tmp_path.rglob("*") if p.is_file()}
+    reopened.append_event("feedback", {})
+    notice = reopened.append_event("notice", {}, critical=True)
+    reopened.commit(1, 3, [change(notice)], call_id="new-format", event_seqs=[3])
+    assert reopened.snapshot()["acknowledged_event_seqs"] == [3]
+    assert reopened.snapshot(1)["acknowledged_event_seqs"] == []
+
+
+@pytest.mark.parametrize("acknowledged", [[1], [3, 3], [3, 2], [999], [True], [0], "3"])
+def test_invalid_sparse_manifest_metadata_fails_closed(tmp_path, acknowledged):
+    store = MDMemoryStore(tmp_path)
+    for _ in range(3):
+        store.append_event("feedback", {})
+    store.commit(0, 3, [], call_id="sparse", event_seqs=[3])
+    path = revision_directory(tmp_path, 1) / "manifest.json"
+    manifest = json.loads(path.read_text())
+    manifest["acknowledged_event_seqs"] = acknowledged
+    data = module._json(manifest).encode()
+    path.write_bytes(data)
+    with sqlite3.connect(tmp_path / "index.sqlite3") as db:
+        db.execute("UPDATE commits SET manifest_sha256=? WHERE revision=1", (module._sha(data),))
+    assert_error("MEMORY_CORRUPT", store.snapshot)
+    assert_error("MEMORY_CORRUPT", lambda: MDMemoryStore(tmp_path))
+
+
+def test_concurrent_sparse_writers_do_not_acknowledge_the_losing_selection(tmp_path):
+    first = MDMemoryStore(tmp_path)
+    first.append_event("feedback", {})
+    notices = [first.append_event("notice", {}, critical=True) for _ in range(2)]
+    second = MDMemoryStore(tmp_path)
+    barrier = threading.Barrier(2)
+
+    def submit(store, event):
+        barrier.wait()
+        try:
+            store.commit(0, event["seq"], [], call_id=event["id"], event_seqs=[event["seq"]])
+            return "succeeded", event["seq"]
+        except StoreError as exc:
+            return exc.code, event["seq"]
+
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        outcomes = list(executor.map(lambda pair: submit(*pair), zip([first, second], notices)))
+    assert sorted(status for status, _ in outcomes) == ["VERSION_CONFLICT", "succeeded"]
+    winner = next(seq for status, seq in outcomes if status == "succeeded")
+    assert first.snapshot()["acknowledged_event_seqs"] == [winner]
+    assert first.snapshot()["pending_event_count"] == 2
+    assert first.snapshot()["pending_critical_events"][0]["seq"] != winner
+
+
+def test_sparse_acknowledgement_publishes_atomically_with_its_document(tmp_path, monkeypatch):
+    store = MDMemoryStore(tmp_path)
+    store.append_event("feedback", {})
+    notice = store.append_event("notice", {}, critical=True)
+    entered, release = threading.Event(), threading.Event()
+    original = module._write_file
+
+    def delayed(path, data):
+        original(path, data)
+        if path.name == "ball.md":
+            entered.set()
+            assert release.wait(5)
+
+    monkeypatch.setattr(module, "_write_file", delayed)
+    with ThreadPoolExecutor(max_workers=1) as executor:
+        future = executor.submit(store.commit, 0, 2, [change(notice)], call_id="priority", event_seqs=[2])
+        assert entered.wait(5)
+        assert not store.is_event_processed(2)
+        assert store.snapshot()["acknowledged_event_seqs"] == []
+        assert store.pending_events(prioritize_critical=True) == [notice]
+        release.set()
+        assert future.result()["processed_event_seq"] == 0
+    assert store.is_event_processed(2)
+    assert store.read("objects/ball.md")["evidence_ids"] == [notice["id"]]

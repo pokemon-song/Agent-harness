@@ -67,7 +67,16 @@ class FixtureMemoryModel:
         changes = []
         if notices:
             event = notices[-1]
-            changes = [{"path": "tasks/current_order.md", "body": event["payload"]["notice"],
+            path = "tasks/current_order.md"
+            existing = any(item["path"] == path for item in observation["memory_index"])
+            read = any(result.get("tool") == "memory_read" and result.get("status") == "succeeded"
+                       and result.get("document", {}).get("path") == path
+                       and result["document"].get("snapshot_revision") == observation["base_revision"]
+                       for turn in history for result in turn["results"])
+            if existing and not read:
+                return Decision([ToolCall(f"fixture-memory-{self.counter}", "memory_read", {"path": path})],
+                                model=self.model)
+            changes = [{"path": path, "body": event["payload"]["notice"],
                         "evidence_ids": [event["id"]], "status": "confirmed"}]
         return Decision([ToolCall(f"fixture-memory-{self.counter}", "commit_memory", {"changes": changes})],
                         model=self.model)

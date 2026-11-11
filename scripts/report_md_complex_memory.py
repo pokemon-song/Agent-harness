@@ -84,6 +84,10 @@ def snapshot_info(base, label):
             return {"revision": value.get("revision"), "scope": value.get("scope"),
                     "files": len(value.get("files", [])), "processed_event_seq": value.get("processed_event_seq"),
                     "latest_event_seq": value.get("latest_event_seq"),
+                    "acknowledged_event_seqs": value.get("acknowledged_event_seqs", []),
+                    "pending_event_count": value.get("pending_event_count",
+                        value.get("latest_event_seq", 0) - value.get("processed_event_seq", 0)),
+                    "processed_critical_event_seq": value.get("processed_critical_event_seq"),
                     "pending_critical_events": len(value.get("pending_critical_events", [])),
                     "artifact": f"{base.name}/{name}"}
     return None

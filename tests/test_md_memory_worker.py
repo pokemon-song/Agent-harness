@@ -197,7 +197,7 @@ def test_no_robot_tools_and_rejected_tool_can_be_corrected(tmp_path):
     finally:
         assert worker.stop(2)
     assert {tool["function"]["name"] for tool in memory_tools()} == {
-        "memory_search", "memory_read", "inspect_event", "commit_memory"}
+        "memory_search", "memory_read", "inspect_event", "commit_memory", "patch_memory"}
     assert model.inputs[1][3][0]["results"][0]["error_code"] == "UNSUPPORTED_TOOL"
     assert worker.stats["tool_errors"] == 1
     assert store.snapshot()["files"] == []
@@ -359,8 +359,8 @@ def test_new_event_cannot_be_used_to_acknowledge_beyond_fixed_batch(tmp_path):
         assert worker.wait_until(later[0]["seq"], 2)
     finally:
         assert worker.stop(2)
-    assert [item[0]["batch_last_seq"] for item in model.inputs] == [first["seq"], first["seq"], later[0]["seq"]]
-    assert model.inputs[1][3][0]["results"][0]["error_code"] == "EVENT_OUTSIDE_BATCH"
+    assert [item[0]["batch_last_seq"] for item in model.inputs] == [first["seq"], later[0]["seq"], first["seq"]]
+    assert any(row.get("reason") == "new_critical_event" for row in logs(worker))
     assert store.snapshot()["files"] == []
 
 

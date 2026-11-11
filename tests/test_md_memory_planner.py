@@ -228,11 +228,24 @@ def test_revised_dependency_rejects_old_plan_after_event_is_processed(environmen
     assert env.backend.calls == []
 
 
+def test_new_critical_document_invalidates_plan_even_when_old_dependency_is_unchanged(environment):
+    env = environment
+    plan, _, _ = ready_plan(env)
+    before = env.store.read(TASK_PATH)["sha256"]
+    publish(env.store, path="tasks/new-instruction.md", body="New critical direction instruction")
+    assert env.store.read(TASK_PATH)["sha256"] == before
+    assert not env.store.snapshot()["pending_critical_events"]
+    with pytest.raises(PlanError) as error:
+        execute_plan(plan, env.store, env.harness)
+    assert error.value.code == "MEMORY_CHANGED"
+    assert env.backend.calls == []
+
+
 def test_unrelated_published_document_does_not_invalidate_read_dependency(environment):
     env = environment
     plan, _, _ = ready_plan(env)
     old_hash = plan.dependencies[0]["sha256"]
-    publish(env.store, path="knowledge/bench.md", body="A bench was observed in another area.")
+    publish(env.store, path="knowledge/bench.md", body="A bench was observed in another area.", critical=False)
     assert env.store.snapshot()["revision"] > plan.snapshot_revision
     assert env.store.read(TASK_PATH)["sha256"] == old_hash
     result = execute_plan(plan, env.store, env.harness)
