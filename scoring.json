@@ -1,0 +1,82 @@
+{
+  "case_id": "composite_drawers_gate_b_roundtrip_v1",
+  "scene_id": "composite_drawers_gate_b",
+  "profile": "historical_strict",
+  "audience": "独立评分器读取。坐标、路线、接触真值与阶段通过标志仅用于评估。",
+  "reference_body": "base",
+  "units": {"length": "m", "time": "s", "angle": "rad"},
+  "required_measurements": {
+    "each_trajectory_row": ["sim_time_s", "base_xyz_m"],
+    "frame": "两程共用同一世界坐标系。保留去程实测起点、折返点和返程终点。",
+    "phase_final_state": ["base_xyz_m", "yaw_rad", "velocity_world_xy_mps", "yaw_rate_radps", "fallen_ever", "collision_physics_steps"],
+    "phase_execution": ["termination", "final_stop_confirmed", "planner_requests", "memory_requests", "sim_elapsed_s", "wall_elapsed_s"],
+    "time_validity": "每条轨迹的位置和时间均须有限；各段内部时间严格递增。折返点可在两段共享同一条记录。无效数据不能插值跨接，整轮几何验收失败。"
+  },
+  "outbound": {
+    "ordered_forward_planes_x_m": [
+      {"event": "cabinet_cleared", "x_m": 2.30},
+      {"event": "gate_opening", "x_m": 3.40, "center_y_m": 0, "half_width_m_inclusive": 0.60},
+      {"event": "beyond_gate_exit", "x_m": 4.20}
+    ],
+    "retry_rule": "取得有效穿门事件后，若在越过出口线前返回门前，须重新从开口正向穿门。",
+    "final_base_x_at_least_m": 4.20,
+    "target_object_id": "scenario_target",
+    "target_letter": "B",
+    "target_center_xy_m": [5.6, 0],
+    "target_standoff_xy_m": 1.0,
+    "standoff_absolute_error_at_most_m": 0.18,
+    "heading_error_at_most_rad": 0.25,
+    "heading_error_definition": "取从 base 的 XY 指向标牌中心的 atan2 方位角与实测 yaw 的最短角差绝对值。",
+    "pass": "按序通过三条线且去程结束时仍在出口线或其前进方向一侧，同时满足 B 的水平距离、朝向、停稳、finish、安全和预算条件。"
+  },
+  "roundtrip_geometry": {
+    "reference_outbound": "本个体本轮从实测起点到 B 的完整实际去程折线。各受测 Agent 都使用自己的去程，历史示例的路线或请求动作均不作为参照。",
+    "crossing_method": "对相邻实测 base 的 XY 作线性插值，取平面处交点。正向穿线使用 x0 < X <= x1；反向使用 x1 < X <= x0。同一线段穿过多个平面时按行进顺序计。",
+    "cabinet": {"center_x_m": 1.65, "center_y_m": 0, "half_width_y_m": 0.33, "additional_clearance_m": 0.12},
+    "cabinet_side": "以世界 y 的正负记录绕行侧。两程中每次跨越柜体中心平面时均须满足 |y| >= 0.33 + 0.12，并保持相同一侧。",
+    "gate": {"x_m": 3.40, "center_y_m": 0, "half_width_m_inclusive": 0.60, "max_outside_opening_crossings": 0},
+    "outbound_required_order": ["cabinet_forward", "gate_forward"],
+    "return_required_order": ["gate_reverse", "cabinet_reverse_same_side"],
+    "boundary_tolerance_m": 0.05,
+    "boundary_tests": [
+      "去程首个实测 XY 距本轮实测起点不超过边界容差。",
+      "去程末点和返程首点各距同一实测折返点不超过边界容差。",
+      "折返点 x 大于门平面 x。返程首个时间戳不早于去程最后时间戳。"
+    ],
+    "sampling": {
+      "arc_length_spacing_m": 0.05,
+      "include_both_endpoints": true,
+      "point_to_path_distance": "水平面上，采样点到另一条完整实测折线最近线段的欧氏距离，投影限制在线段内。沿弧长均匀取样，静止时长不重复加权。"
+    },
+    "corridor": {
+      "max_return_sample_to_outbound_path_m_inclusive": 0.50,
+      "coverage_radius_m_inclusive": 0.50,
+      "min_outbound_sample_coverage_inclusive": 0.95,
+      "coverage_definition": "到返程折线距离不超过覆盖半径的去程采样点数，除以全部去程采样点数。"
+    },
+    "return_final_base_distance_to_measured_start_at_most_m": 0.30,
+    "return_final_heading_required": false,
+    "return_endpoint_test": "返程轨迹末点和本轮最终实测 base XY 均须满足回到起点距离。",
+    "pass": "轨迹数据有效、边界连续、事件顺序与绕柜侧正确、开口外穿门次数为零，同时满足走廊、覆盖率和终点距离。"
+  },
+  "both_legs": {
+    "stopped": {"horizontal_speed_strictly_below_mps": 0.12, "absolute_yaw_rate_strictly_below_radps": 0.25, "historical_go2_stop_command_duration_s": 0.6},
+    "termination_required_per_leg": "finish",
+    "final_stop_confirmation_required_per_leg": true,
+    "max_collision_physics_steps_entire_run": 0,
+    "collision_counting": "每个物理步中只要产生与任一实体道具的接触，该步记 1 次；同一步多接触只记一次。正常地面支撑、无碰撞字形不计。",
+    "fall_allowed": false,
+    "historical_go2_fall": "出现非有限 qpos、base z < 0.16 m 或机身局部 Z 轴与世界 Z 轴点积 < 0.55 中的任一项，累积标记跌倒。",
+    "budget_per_leg": {
+      "outbound": {"max_planner_requests": 60, "max_memory_requests": 48, "max_wall_s": 1800, "max_sim_s": 300},
+      "return": {"max_planner_requests": 90, "max_memory_requests": 0, "max_wall_s": 1800, "max_sim_s": 300}
+    },
+    "historical_api": {"timeout_s": 180, "max_output_tokens_per_request": 16384, "automatic_retries": 0}
+  },
+  "mission_success": {
+    "physical": "去程验收通过、返程几何验收通过，且两程均满足停稳、finish、无碰撞、无跌倒和各自预算。单独调用 finish 不构成验收。",
+    "historical_memory_protocol": "依照 agent_task.json 交接；去程没有通过或没有完成可读记忆发布时，返程未运行，整轮未通过。新返程上下文须在运动前读取去程只读记忆。",
+    "historical_integrity_checks": ["same_physical_boundary", "return_memory_unchanged", "fresh_return_history", "shared_coordinate_frame", "same_simulation_clock", "return_read_memory", "source_frozen"],
+    "historical_driver": "两段均成功、交接与完整性检查全通过，且实验、清理、用量记录没有错误时标记 mission_success。"
+  }
+}

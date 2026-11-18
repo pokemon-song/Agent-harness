@@ -1,0 +1,417 @@
+{
+  "scene_id": "composite_drawers_gate_b",
+  "source_commit": "11248c44ca2443fa94d62fb22f4dee2512338ec7",
+  "usage": "场景构建器和独立评分器读取。规划器通过自己的传感器观察场景。",
+  "seed": 0,
+  "target_jitter_m": 0,
+  "world_frame": {
+    "handedness": "right",
+    "x_positive": "初始前方",
+    "y_positive": "初始左方",
+    "z_positive": "上方",
+    "units": {
+      "length": "m",
+      "time": "s",
+      "angle": "rad"
+    },
+    "gravity_xyz_mps2": [
+      0,
+      0,
+      -9.81
+    ]
+  },
+  "floor": {
+    "shape": "unbounded_plane",
+    "z_m": 0,
+    "physical_boundary_walls": false,
+    "mujoco_visual_size": [
+      10,
+      10,
+      0.1
+    ],
+    "material": {
+      "type": "checker",
+      "rgb1": [
+        0.28,
+        0.32,
+        0.36
+      ],
+      "rgb2": [
+        0.42,
+        0.46,
+        0.5
+      ],
+      "texrepeat": [
+        12,
+        12
+      ]
+    }
+  },
+  "spawn": {
+    "nominal_base_xyz_m": [
+      0,
+      0,
+      0.34
+    ],
+    "nominal_base_quat_wxyz": [
+      1,
+      0,
+      0,
+      0
+    ],
+    "nominal_yaw_rad": 0,
+    "historical_zero_command_settle_s": 1,
+    "start_reference": "首次去程观测时，记录热身后静止的实际 base 世界 XY 作起点，实际航向作里程计初始朝向；两程共用此坐标系。",
+    "turnaround_reference": "去程在 B 验收后，记录实测 base 世界位姿与时间；机器人和场景原位继续运行。"
+  },
+  "historical_go2": {
+    "physics_timestep_s": 0.002,
+    "trajectory_sample_period_s": 0.02,
+    "camera": {
+      "position_in_base_xyz_m": [
+        0.32,
+        0.0,
+        0.08
+      ],
+      "width_px": 640,
+      "height_px": 360,
+      "vertical_fov_deg": 60,
+      "optical_axes": "x 向右、y 向下、z 向前",
+      "optical_to_base_rotation_rows": [
+        [
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -1.0,
+          0.0
+        ]
+      ]
+    }
+  },
+  "objects": {
+    "shape": "box",
+    "rotation": "所有实体与世界坐标轴平行。",
+    "collision_enabled": true,
+    "mujoco_friction_slide_spin_roll": [
+      1,
+      0.005,
+      0.0001
+    ],
+    "items": [
+      {
+        "id": "scenario_target",
+        "center_xyz_m": [
+          5.6,
+          0.0,
+          0.65
+        ],
+        "half_extents_xyz_m": [
+          0.025,
+          0.2,
+          0.25
+        ],
+        "rgba": [
+          0.95,
+          0.95,
+          0.95,
+          1.0
+        ],
+        "letter": "B"
+      },
+      {
+        "id": "drawers_body",
+        "center_xyz_m": [
+          1.65,
+          0.0,
+          0.28
+        ],
+        "half_extents_xyz_m": [
+          0.22,
+          0.33,
+          0.28
+        ],
+        "rgba": [
+          0.55,
+          0.33,
+          0.14,
+          1.0
+        ]
+      },
+      {
+        "id": "drawer_handle_0",
+        "center_xyz_m": [
+          1.42,
+          0.0,
+          0.12
+        ],
+        "half_extents_xyz_m": [
+          0.02,
+          0.14,
+          0.02
+        ],
+        "rgba": [
+          0.06,
+          0.07,
+          0.08,
+          1.0
+        ]
+      },
+      {
+        "id": "drawer_handle_1",
+        "center_xyz_m": [
+          1.42,
+          0.0,
+          0.29
+        ],
+        "half_extents_xyz_m": [
+          0.02,
+          0.14,
+          0.02
+        ],
+        "rgba": [
+          0.06,
+          0.07,
+          0.08,
+          1.0
+        ]
+      },
+      {
+        "id": "drawer_handle_2",
+        "center_xyz_m": [
+          1.42,
+          0.0,
+          0.46
+        ],
+        "half_extents_xyz_m": [
+          0.02,
+          0.14,
+          0.02
+        ],
+        "rgba": [
+          0.06,
+          0.07,
+          0.08,
+          1.0
+        ]
+      },
+      {
+        "id": "gate_post_0",
+        "center_xyz_m": [
+          3.4,
+          -0.7,
+          0.65
+        ],
+        "half_extents_xyz_m": [
+          0.1,
+          0.1,
+          0.65
+        ],
+        "rgba": [
+          0.04,
+          0.75,
+          0.1,
+          1.0
+        ]
+      },
+      {
+        "id": "gate_post_1",
+        "center_xyz_m": [
+          3.4,
+          0.7,
+          0.65
+        ],
+        "half_extents_xyz_m": [
+          0.1,
+          0.1,
+          0.65
+        ],
+        "rgba": [
+          0.04,
+          0.75,
+          0.1,
+          1.0
+        ]
+      },
+      {
+        "id": "gate_top",
+        "center_xyz_m": [
+          3.4,
+          0.0,
+          1.35
+        ],
+        "half_extents_xyz_m": [
+          0.1,
+          0.8,
+          0.08
+        ],
+        "rgba": [
+          0.04,
+          0.75,
+          0.1,
+          1.0
+        ]
+      },
+      {
+        "id": "sign_A",
+        "center_xyz_m": [
+          5.6,
+          -1.0,
+          0.65
+        ],
+        "half_extents_xyz_m": [
+          0.025,
+          0.2,
+          0.25
+        ],
+        "rgba": [
+          0.95,
+          0.95,
+          0.95,
+          1.0
+        ],
+        "letter": "A"
+      },
+      {
+        "id": "sign_C",
+        "center_xyz_m": [
+          5.6,
+          1.0,
+          0.65
+        ],
+        "half_extents_xyz_m": [
+          0.025,
+          0.2,
+          0.25
+        ],
+        "rgba": [
+          0.95,
+          0.95,
+          0.95,
+          1.0
+        ],
+        "letter": "C"
+      },
+      {
+        "id": "sign_support_A",
+        "center_xyz_m": [
+          5.6,
+          -1.0,
+          0.2
+        ],
+        "half_extents_xyz_m": [
+          0.025,
+          0.025,
+          0.2
+        ],
+        "rgba": [
+          0.32,
+          0.36,
+          0.42,
+          1.0
+        ]
+      },
+      {
+        "id": "sign_support_B",
+        "center_xyz_m": [
+          5.6,
+          0.0,
+          0.2
+        ],
+        "half_extents_xyz_m": [
+          0.025,
+          0.025,
+          0.2
+        ],
+        "rgba": [
+          0.32,
+          0.36,
+          0.42,
+          1.0
+        ]
+      },
+      {
+        "id": "sign_support_C",
+        "center_xyz_m": [
+          5.6,
+          1.0,
+          0.2
+        ],
+        "half_extents_xyz_m": [
+          0.025,
+          0.025,
+          0.2
+        ],
+        "rgba": [
+          0.32,
+          0.36,
+          0.42,
+          1.0
+        ]
+      }
+    ]
+  },
+  "sign_glyphs": {
+    "front_face_normal_world": [
+      -1,
+      0,
+      0
+    ],
+    "layout_from_spawn_left_to_right": [
+      "C",
+      "B",
+      "A"
+    ],
+    "row_order": "top_to_bottom (-Z)",
+    "column_order": "left_to_right (-Y)",
+    "pattern": {
+      "A": [
+        "01110",
+        "11011",
+        "11011",
+        "11111",
+        "11011",
+        "11011",
+        "11011"
+      ],
+      "B": [
+        "11110",
+        "11011",
+        "11011",
+        "11110",
+        "11011",
+        "11011",
+        "11110"
+      ],
+      "C": [
+        "01111",
+        "11000",
+        "11000",
+        "11000",
+        "11000",
+        "11000",
+        "01111"
+      ]
+    },
+    "pixel_material_rgba": [
+      0.015,
+      0.015,
+      0.015,
+      1
+    ],
+    "pixel_half_extents_xyz_m": [
+      0.002,
+      0.028,
+      0.02625
+    ],
+    "pixel_center": "对于字符中值为 1 的单元格和从 0 开始的行列 (r,c)，以标牌中心 (x,y,z) 为参照，像素中心为 [x-0.028, y-(c-2)*0.056, z+(3-r)*0.0525]。",
+    "collision_enabled": false
+  }
+}

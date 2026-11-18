@@ -1,0 +1,94 @@
+{
+  "reference_run": "20261111-200743-md-roundtrip-280c8d",
+  "purpose": "An example to check an evaluator. Grade another agent against its own measured outbound trajectory.",
+  "mission_success": true,
+  "outbound_success": true,
+  "return_success": true,
+  "trajectory": {
+    "frame": "MuJoCo world frame; XY horizontal, Z up; distances in metres, times in seconds and yaw in radians.",
+    "time_origin": "Original simulation clock including the 1-second warmup. The first sample starts the task.",
+    "sample_period_s": 0.02,
+    "sample_count": 5949,
+    "sample_index_base": 0,
+    "outbound_rows_inclusive": [
+      0,
+      2844
+    ],
+    "return_rows_inclusive": [
+      2844,
+      5948
+    ],
+    "turnaround_note": "The single row with leg=turnaround is both the outbound endpoint and the return start. Include it in each leg when scoring.",
+    "start": {
+      "sim_time_s": 1.0000000000000007,
+      "base_xyz_m": [
+        -0.0015189879768714258,
+        0.006109811166518311,
+        0.35865463251089125
+      ],
+      "yaw_rad": 0.018318982226654158
+    },
+    "turnaround": {
+      "sim_time_s": 57.88000000002477,
+      "base_xyz_m": [
+        4.564500819773008,
+        -0.0007678353217312032,
+        0.3626810464803128
+      ],
+      "yaw_rad": 0.07856698541347477
+    },
+    "finish": {
+      "sim_time_s": 119.95999999990183,
+      "base_xyz_m": [
+        0.0977674522837379,
+        0.1459419133258966,
+        0.35818255294965107
+      ],
+      "yaw_rad": -2.951822419919435
+    }
+  },
+  "rgb": {
+    "width_px": 640,
+    "height_px": 360,
+    "index": "frames.csv",
+    "path_base": "reference/",
+    "timing": "Decision entries are the RGB observation before that decision. Stationary observations can share a time and image_id. Final entries are after the leg stops.",
+    "outbound_decisions": 59,
+    "return_decisions": 38,
+    "final_frames": 2
+  },
+  "outbound_at_b": {
+    "distance_to_target_center_m": 1.0354994649065987,
+    "heading_error_rad": 0.07782547330447054,
+    "stopped": true,
+    "fallen": false,
+    "collision": false
+  },
+  "return_at_start": {
+    "stopped": true,
+    "speed_mps": 0.0034399684896449373,
+    "yaw_rate_radps": 0.01386964016464147,
+    "fallen": false,
+    "collision": false
+  },
+  "route_geometry": {
+    "outbound_path_length_m": 6.730193976972153,
+    "return_path_length_m": 6.5044906977492865,
+    "return_distance_to_start_m": 0.17149581340060271,
+    "retrace_max_deviation_m": 0.16698915181494436,
+    "retrace_mean_deviation_m": 0.08669466887895494,
+    "retrace_p95_deviation_m": 0.15403296023392743,
+    "outbound_coverage": 1.0,
+    "return_corridor_fraction": 1.0,
+    "outbound_cabinet_side": "positive_y",
+    "same_cabinet_side": true,
+    "outside_gate_crossings": 0,
+    "outbound_sample_count": 136,
+    "return_sample_count": 132,
+    "outbound_stages_in_order": true,
+    "return_stages_in_order": true,
+    "boundaries_continuous": true,
+    "returned_to_start": true,
+    "retrace_corridor_passed": true
+  }
+}

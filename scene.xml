@@ -1,0 +1,104 @@
+<mujoco model="composite_drawers_gate_b_static">
+  <compiler angle="radian" meshdir="" />
+  <asset>
+    <texture name="floor_texture" type="2d" builtin="checker" rgb1="0.28 0.32 0.36" rgb2="0.42 0.46 0.50" width="128" height="128" />
+    <material name="floor_material" texture="floor_texture" texrepeat="12 12" texuniform="true" reflectance="0" />
+  </asset>
+  <worldbody>
+    <light pos="0 0 4" dir="0 0 -1" diffuse="0.8 0.8 0.8" directional="true" />
+    <geom name="floor" type="plane" size="10 10 .1" material="floor_material" friction="1 .005 .0001" />
+    <geom name="scenario_target" type="box" pos="5.6 0.0 0.65" size="0.025 0.2 0.25" rgba="0.95 0.95 0.95 1.0" friction="1 .005 .0001" />
+    <geom name="scenario_target_glyph_0" type="box" pos="5.571999999999999 0.11200000000000002 0.8075" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_1" type="box" pos="5.571999999999999 0.05600000000000001 0.8075" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_2" type="box" pos="5.571999999999999 0.0 0.8075" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_3" type="box" pos="5.571999999999999 -0.05600000000000001 0.8075" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_4" type="box" pos="5.571999999999999 0.11200000000000002 0.755" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_5" type="box" pos="5.571999999999999 0.05600000000000001 0.755" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_6" type="box" pos="5.571999999999999 -0.05600000000000001 0.755" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_7" type="box" pos="5.571999999999999 -0.11200000000000002 0.755" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_8" type="box" pos="5.571999999999999 0.11200000000000002 0.7025" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_9" type="box" pos="5.571999999999999 0.05600000000000001 0.7025" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_10" type="box" pos="5.571999999999999 -0.05600000000000001 0.7025" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_11" type="box" pos="5.571999999999999 -0.11200000000000002 0.7025" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_12" type="box" pos="5.571999999999999 0.11200000000000002 0.65" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_13" type="box" pos="5.571999999999999 0.05600000000000001 0.65" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_14" type="box" pos="5.571999999999999 0.0 0.65" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_15" type="box" pos="5.571999999999999 -0.05600000000000001 0.65" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_16" type="box" pos="5.571999999999999 0.11200000000000002 0.5975" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_17" type="box" pos="5.571999999999999 0.05600000000000001 0.5975" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_18" type="box" pos="5.571999999999999 -0.05600000000000001 0.5975" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_19" type="box" pos="5.571999999999999 -0.11200000000000002 0.5975" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_20" type="box" pos="5.571999999999999 0.11200000000000002 0.545" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_21" type="box" pos="5.571999999999999 0.05600000000000001 0.545" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_22" type="box" pos="5.571999999999999 -0.05600000000000001 0.545" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_23" type="box" pos="5.571999999999999 -0.11200000000000002 0.545" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_24" type="box" pos="5.571999999999999 0.11200000000000002 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_25" type="box" pos="5.571999999999999 0.05600000000000001 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_26" type="box" pos="5.571999999999999 0.0 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="scenario_target_glyph_27" type="box" pos="5.571999999999999 -0.05600000000000001 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="drawers_body" type="box" pos="1.65 0.0 0.28" size="0.22 0.33 0.28" rgba="0.55 0.33 0.14 1.0" friction="1 .005 .0001" />
+    <geom name="drawer_handle_0" type="box" pos="1.42 0.0 0.12" size="0.02 0.14 0.02" rgba="0.06 0.07 0.08 1.0" friction="1 .005 .0001" />
+    <geom name="drawer_handle_1" type="box" pos="1.42 0.0 0.29000000000000004" size="0.02 0.14 0.02" rgba="0.06 0.07 0.08 1.0" friction="1 .005 .0001" />
+    <geom name="drawer_handle_2" type="box" pos="1.42 0.0 0.46" size="0.02 0.14 0.02" rgba="0.06 0.07 0.08 1.0" friction="1 .005 .0001" />
+    <geom name="gate_post_0" type="box" pos="3.4 -0.7 0.65" size="0.1 0.1 0.65" rgba="0.04 0.75 0.1 1.0" friction="1 .005 .0001" />
+    <geom name="gate_post_1" type="box" pos="3.4 0.7 0.65" size="0.1 0.1 0.65" rgba="0.04 0.75 0.1 1.0" friction="1 .005 .0001" />
+    <geom name="gate_top" type="box" pos="3.4 0.0 1.35" size="0.1 0.8 0.08" rgba="0.04 0.75 0.1 1.0" friction="1 .005 .0001" />
+    <geom name="sign_A" type="box" pos="5.6 -1.0 0.65" size="0.025 0.2 0.25" rgba="0.95 0.95 0.95 1.0" friction="1 .005 .0001" />
+    <geom name="sign_A_glyph_0" type="box" pos="5.571999999999999 -0.944 0.8075" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_1" type="box" pos="5.571999999999999 -1.0 0.8075" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_2" type="box" pos="5.571999999999999 -1.056 0.8075" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_3" type="box" pos="5.571999999999999 -0.888 0.755" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_4" type="box" pos="5.571999999999999 -0.944 0.755" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_5" type="box" pos="5.571999999999999 -1.056 0.755" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_6" type="box" pos="5.571999999999999 -1.112 0.755" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_7" type="box" pos="5.571999999999999 -0.888 0.7025" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_8" type="box" pos="5.571999999999999 -0.944 0.7025" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_9" type="box" pos="5.571999999999999 -1.056 0.7025" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_10" type="box" pos="5.571999999999999 -1.112 0.7025" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_11" type="box" pos="5.571999999999999 -0.888 0.65" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_12" type="box" pos="5.571999999999999 -0.944 0.65" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_13" type="box" pos="5.571999999999999 -1.0 0.65" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_14" type="box" pos="5.571999999999999 -1.056 0.65" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_15" type="box" pos="5.571999999999999 -1.112 0.65" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_16" type="box" pos="5.571999999999999 -0.888 0.5975" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_17" type="box" pos="5.571999999999999 -0.944 0.5975" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_18" type="box" pos="5.571999999999999 -1.056 0.5975" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_19" type="box" pos="5.571999999999999 -1.112 0.5975" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_20" type="box" pos="5.571999999999999 -0.888 0.545" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_21" type="box" pos="5.571999999999999 -0.944 0.545" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_22" type="box" pos="5.571999999999999 -1.056 0.545" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_23" type="box" pos="5.571999999999999 -1.112 0.545" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_24" type="box" pos="5.571999999999999 -0.888 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_25" type="box" pos="5.571999999999999 -0.944 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_26" type="box" pos="5.571999999999999 -1.056 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_A_glyph_27" type="box" pos="5.571999999999999 -1.112 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C" type="box" pos="5.6 1.0 0.65" size="0.025 0.2 0.25" rgba="0.95 0.95 0.95 1.0" friction="1 .005 .0001" />
+    <geom name="sign_C_glyph_0" type="box" pos="5.571999999999999 1.056 0.8075" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_1" type="box" pos="5.571999999999999 1.0 0.8075" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_2" type="box" pos="5.571999999999999 0.944 0.8075" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_3" type="box" pos="5.571999999999999 0.888 0.8075" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_4" type="box" pos="5.571999999999999 1.112 0.755" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_5" type="box" pos="5.571999999999999 1.056 0.755" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_6" type="box" pos="5.571999999999999 1.112 0.7025" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_7" type="box" pos="5.571999999999999 1.056 0.7025" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_8" type="box" pos="5.571999999999999 1.112 0.65" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_9" type="box" pos="5.571999999999999 1.056 0.65" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_10" type="box" pos="5.571999999999999 1.112 0.5975" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_11" type="box" pos="5.571999999999999 1.056 0.5975" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_12" type="box" pos="5.571999999999999 1.112 0.545" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_13" type="box" pos="5.571999999999999 1.056 0.545" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_14" type="box" pos="5.571999999999999 1.056 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_15" type="box" pos="5.571999999999999 1.0 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_16" type="box" pos="5.571999999999999 0.944 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_C_glyph_17" type="box" pos="5.571999999999999 0.888 0.49250000000000005" size=".002 0.028000000000000004 0.02625" rgba=".015 .015 .015 1" contype="0" conaffinity="0" />
+    <geom name="sign_support_A" type="box" pos="5.6 -1.0 0.2" size="0.025 0.025 0.2" rgba="0.32 0.36 0.42 1.0" friction="1 .005 .0001" />
+    <geom name="sign_support_B" type="box" pos="5.6 0.0 0.2" size="0.025 0.025 0.2" rgba="0.32 0.36 0.42 1.0" friction="1 .005 .0001" />
+    <geom name="sign_support_C" type="box" pos="5.6 1.0 0.2" size="0.025 0.025 0.2" rgba="0.32 0.36 0.42 1.0" friction="1 .005 .0001" />
+  </worldbody>
+  <option timestep="0.002" gravity="0 0 -9.81" integrator="implicitfast" />
+  <visual>
+    <global offwidth="640" offheight="360" />
+    <headlight diffuse="0.7 0.7 0.7" ambient="0.3 0.3 0.3" specular="0.2 0.2 0.2" />
+    <map znear="0.01" zfar="20" />
+  </visual>
+</mujoco>

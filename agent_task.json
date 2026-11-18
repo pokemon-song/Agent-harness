@@ -1,0 +1,43 @@
+{
+  "case_id": "composite_drawers_gate_b_roundtrip_v1",
+  "scene_id": "composite_drawers_gate_b",
+  "language": "zh-CN",
+  "outbound_instruction": "按顺序完成三个阶段：先绕过前方的抽屉柜，让机身base原点通过柜体后方并留出机身余量；再从绿色矩形门框的开口中穿过，机身base原点跨过门框平面时必须在开口内，沿穿门方向继续前进至少0.8米；最后从门后的A、B、C三块白色字母标牌中选中B，移动到距离B标牌中心约1米处，面向B并停止，然后调用finish。全程不得接触柜体、门框、标牌或其他场景物体。阶段必须按顺序完成，不能绕过门框直接前往B。前置相机位于机身base原点前方0.32米，门框移出画面不代表机身已经穿过。趁门框仍可见时选取可靠表面点，结合local_odometry与实际运动反馈确认机身过门和完成余量，不要累加请求移动距离代替实测位移。\n这是一次连续往返任务的去程。到达B并停稳后调用finish，只结束去程。随后会清空规划Agent的对话历史、临时笔记和跟踪点，并启动新的返程规划上下文；机器人、场景、仿真时间和当前姿态均不重置，local_odometry继续使用本次往返共同的起点坐标系。返程需要读取记忆Agent根据本次真实观测和执行反馈保存的MD路线，再自行规划原路返回。继续用当前RGB、实测几何与执行反馈完成去程；不要把动作请求量当作实际位移。",
+  "return_instruction": "去程已经结束，现在仍处于同一个物理场景的B处，开始原路返回。你的对话历史、临时笔记和跟踪点已清空；机器人没有复位，local_odometry的共同起点坐标系保持不变。先检索并读取去程保存的MD路线，根据其中有证据的地标、实际绕行侧、转折点和位置误差，结合当前RGB、实测几何及动作反馈，自主按去程相反的顺序走回出发处。必须反向通过实际经过的通道，从抽屉柜去程经过的同一侧返回；不能以一条直接指向起点的直线替代原路，也不要把历史运动指令机械倒放。返程应保持在实际去程路线周围0.50米内，并覆盖至少95%的去程路线；最后让机身base回到去程起点0.30米范围内，停稳后调用finish，不要求特定终点朝向。全程不得接触障碍物或跌倒。用实际位移确认进度；记忆不充分或当前观测不支持时，先重新观察核实，无法可靠继续则如实abort。",
+  "memory_instruction": "本任务需要你为同一场景中的原路返回保留去程路线记忆。规划Agent先绕过抽屉柜、穿过绿色门框并到达B；到B后它的对话历史和跟踪点会清空，返程只能从你发布的MD中恢复去程经历，并结合当前感知自行规划。机器人世界、实际姿态和local_odometry共同起点坐标系不会在B处重置；请记录观测中的coordinate_frame_id、起点参考及测量来源，明确不同阶段共用此坐标系。你仍是记忆Agent，负责保存证据和更新文档，不负责输出下一步运动指令。从登记的RGB观测、几何测量、local_odometry和实际执行反馈识别真正走过的路线：包括可辨认的地标、经过柜体的实际一侧、少量有用的实测转折点、门框通过位置及余量、已知测量误差和需要返程重新观察的事项。区分尚未执行的计划、已请求的动作和已经测得的位移。不要从本任务描述虚构路线坐标或预选绕行侧，也不要把未验证的导航计划写成已完成经历。自行选择清晰的MD文件名，把本次路线整理成可逆序理解的简短记录，并引用公开证据。在关键经过点得到证据后及时保存；已有文档先读取，优先局部更新，保留之前仍有效的路线段。去程结束前保存最近测得的B处状态和路线不确定性，供新规划上下文使用。",
+  "handoff": {
+    "start_return_after": [
+      "outbound_passed",
+      "outbound_memory_published"
+    ],
+    "reset": [
+      "planner_conversation",
+      "temporary_notes",
+      "tracked_points"
+    ],
+    "preserve": [
+      "robot_pose",
+      "physical_world",
+      "simulation_time",
+      "odometry_origin",
+      "published_outbound_memory"
+    ],
+    "return_memory_access": "read_only",
+    "read_outbound_memory_before_return_motion": true,
+    "read_outbound_memory_before_return_finish": true
+  },
+  "original_budgets": {
+    "outbound": {
+      "planner_requests": 60,
+      "memory_requests": 48,
+      "wall_seconds": 1800,
+      "simulation_seconds": 300
+    },
+    "return": {
+      "planner_requests": 90,
+      "memory_requests": 0,
+      "wall_seconds": 1800,
+      "simulation_seconds": 300
+    }
+  }
+}
