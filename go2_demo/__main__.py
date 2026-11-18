@@ -146,6 +146,10 @@ def _run_suite(args, scenarios) -> int:
 
 
 def main(argv=None) -> int:
+    argv = sys.argv[1:] if argv is None else argv
+    if argv[:1] == ["occluded-return"]:
+        from .occluded_return import main as return_main
+        return return_main(argv[1:])
     parser = argparse.ArgumentParser(description="Go2 thinking API harness: select a MuJoCo task or run a suite")
     parser.add_argument("--mode", choices=("api",), default="api", help="API is the only runtime mode")
     selection = parser.add_mutually_exclusive_group()
