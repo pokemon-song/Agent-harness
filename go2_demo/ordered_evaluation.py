@@ -45,7 +45,7 @@ class OrderedStandoffEvaluator:
                 reasons.append("NOT_STOPPED")
         if not sample.get("stop_confirmed", False):
             reasons.append("STOP_NOT_CONFIRMED")
-        if sample["collision"]:
+        if sample["collision"] and not sample.get("collision_penalty_only", False):
             reasons.append("COLLISION")
         if sample["fallen"]:
             reasons.append("FALLEN")
@@ -92,7 +92,7 @@ class OrderedStandoffEvaluator:
                         and sample["sim_time_s"] > self.a_witness["sim_time_s"])
         if not eligible:
             b["failure_reasons"].append("A_NOT_CONFIRMED_BEFORE_B")
-        safe = not sample["collision"] and not sample["fallen"]
+        safe = not sample["fallen"] and (not sample["collision"] or sample.get("collision_penalty_only", False))
         a = deepcopy(self.a_witness or self.best_a_attempt or self.measure("A", current))
         a.update(achieved_at_checkpoint=self.a_witness is not None,
                  passed=bool(self.a_witness is not None and safe))

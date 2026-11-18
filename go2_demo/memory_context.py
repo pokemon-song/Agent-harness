@@ -76,7 +76,7 @@ def compact_observation(observation, *, retry=False):
     w['current_observation'] = current
     feedback = []
     for r in world.get('last_tool_feedback', [])[-1:]:
-        feedback.append(_fields(r, ('tool', 'status', 'error_code', 'constraint_feedback',
+        feedback.append(_fields(r, ('tool', 'status', 'error_code', 'collision', 'cabinet_contact', 'constraint_feedback',
                                     'plan_diagnostic', 'plan_id', 'subgoal_id', 'image_id')))
     w['last_tool_feedback'] = feedback
     objects = [o for o in state.get('objects', []) if o.get('state') in {'confirmed', 'predicted'}]

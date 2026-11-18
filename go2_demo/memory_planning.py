@@ -241,7 +241,7 @@ class MemoryPlanningHarness:
 
     def note_results(self, calls, results):
         self.consecutive_observes = self.consecutive_observes + 1 if len(calls) == 1 and calls[0].name == "observe" else 0
-        allowed = {"call_id", "tool", "status", "error_code", "constraint_feedback", "message",
+        allowed = {"call_id", "tool", "status", "error_code", "collision", "cabinet_contact", "constraint_feedback", "message",
                    "point", "points", "image_id", "deduplicated", "plan_id", "subgoal_id", "plan_diagnostic"}
         self.last_tool_feedback = [{k: deepcopy(v) for k, v in r.items() if k in allowed} for r in results]
 

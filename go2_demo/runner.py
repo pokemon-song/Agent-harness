@@ -18,6 +18,7 @@ from .models import APIModel, ModelError, SYSTEM_PROMPT, redact_message
 
 
 TASK = "找到红色标记，移动到距离标记约 1 米的位置，朝向标记并停止，然后调用 finish。距离按机身参考点到标记的水平距离理解。"
+CHECKPOINT_POINTS = 50
 
 
 def _json_default(value):
@@ -48,6 +49,7 @@ class RunLog:
         self.started = time.monotonic()
         self.events = (directory / "events.jsonl").open("w", encoding="utf-8")
         self.write_error = None
+        self.contacts_written = 0
 
     def write(self, event: str, **data):
         line = json_text({"event": event, "wall_elapsed_s": time.monotonic()-self.started, **data}) + "\n"
@@ -62,6 +64,13 @@ class RunLog:
         path = Path("frames") / f"{prefix}-{frame.frame_id}.png"
         Image.fromarray(frame.rgb).save(self.directory / path)
         return path.as_posix()
+
+    def write_contacts(self, backend, **context):
+        contacts = getattr(backend, "collision_events", ())
+        for contact in contacts[self.contacts_written:]:
+            event = "cabinet_contact" if contact["object"] == "cabinet" else "collision_contact"
+            self.write(event, **context, **contact)
+        self.contacts_written = len(contacts)
 
     def close(self):
         try:
@@ -86,6 +95,7 @@ def _task_context(backend, task: str | None = None) -> dict:
         "goal_kind": getattr(scenario, "goal_kind", "standoff"),
         "standoff_m": getattr(scenario, "standoff_m", 1.0),
         "distance_tolerance_m": getattr(scenario, "distance_tolerance_m", 0.18),
+        "collision_penalty_points": getattr(scenario, "collision_penalty_points", 0),
     }
 
 
@@ -107,6 +117,13 @@ def build_manifest(mode, seed, budgets, backend, model, *, task: str | None = No
                   "heading_tolerance_rad": None if passage else 0.25,
                   "max_speed_mps": 0.12, "max_yaw_rate_radps": 0.25,
                   "requires_finish": True, "no_collision_or_fall": True}
+    nonterminal_geoms = getattr(getattr(backend, "scenario", None), "nonterminal_contact_geoms", ())
+    if context["collision_penalty_points"]:
+        evaluation.update(no_collision_or_fall=False, requires_no_fall=True, collision_ends_episode=False,
+                          points_per_checkpoint=CHECKPOINT_POINTS, minimum_score=0,
+                          collision_penalty_points=context["collision_penalty_points"])
+    elif nonterminal_geoms:
+        evaluation["nonterminal_contact_geoms"] = list(nonterminal_geoms)
     if context["goal_kind"] == "ordered_standoff":
         evaluation.update(checkpoint_order=["A", "B"],
                           checkpoint_labels={"A": "blue sphere", "B": "green box"},
@@ -240,6 +257,7 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
                 break
             feedback, binding = planner.prepare(decision, index) if planner else (None, {})
             results = [feedback] if feedback else harness.dispatch_many(decision.calls)
+            log.write_contacts(backend, turn=index)
             if planner:
                 results = [{**result, **binding} for result in results]
                 planner.note_results(decision.calls, results)
@@ -263,7 +281,7 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
             if harness.termination is not None:
                 termination = harness.termination
                 break
-            # A fall/collision ends the run; these are proprioception/execution events, not goal truth.
+            # The backend reserves COLLISION for contacts that end the episode.
             if any(r.get("error_code") in {"ROBOT_FELL", "COLLISION"} for r in results):
                 termination = "execution_failure"
                 break
@@ -291,6 +309,7 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
         except BaseException as exc:
             final_stop = {"status": "failed", "error_code": "STOP_EXCEPTION", "detail": _safe_error(exc)}
             log.write("final_stop", result=final_stop)
+        log.write_contacts(backend, phase="final_stop")
         if memory is not None:
             try:
                 memory.close()  # Drain only on shutdown, never between planner decisions.
@@ -325,6 +344,15 @@ def run_episode(backend, model, *, mode: str, run_dir: Path, seed: int = 0,
             if "checkpoints" in evaluation:
                 metrics["checkpoints"] = evaluation["checkpoints"]
                 metrics["order_satisfied"] = evaluation["order_satisfied"]
+            if "cabinet_contact_count" in evaluation:
+                metrics["cabinet_contact_count"] = evaluation["cabinet_contact_count"]
+            if context["collision_penalty_points"] and "checkpoints" in evaluation:
+                goal_points = CHECKPOINT_POINTS * (
+                    int(evaluation["checkpoints"]["A"]["passed"]) + int(metrics["success"]))
+                collision_count = evaluation.get("collision_count", 0)
+                penalty = context["collision_penalty_points"] * collision_count
+                metrics.update(goal_points=goal_points, collision_count=collision_count,
+                               collision_penalty=penalty, score=max(0, goal_points - penalty))
             (run_dir / "metrics.json").write_text(json_text(metrics), encoding="utf-8")
             with (run_dir / "trajectory.jsonl").open("w", encoding="utf-8") as stream:
                 for row in getattr(backend, "trajectory", []):

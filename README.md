@@ -1,5 +1,7 @@
 # Go2 通用大模型＋视觉几何 Harness Demo
 
+[A→B 遮挡导航复现说明、H0/H2 全程录像与评分记录](docs/occluded-handoff.zh-CN.md)
+
 一个在 **MuJoCo 中运行真实 Go2 关节动力学**的最小闭环：观察机载 RGB 图像 → 选取目标像素 → RGB-D 几何跟踪 → 调用短程移动工具 → 接收执行反馈 → 独立评分。
 
 现在可选择 **13 个新闭环场景**：接近不同颜色物体、辨别 A/B/C、绕过家具、穿过矩形或三角形门框。原始红色标记任务保留为 `red_marker`；两项低姿态爬行任务明确标为当前不支持。
@@ -17,7 +19,7 @@
 已在 WSL2 / Ubuntu 24.04 中创建独立的 Linux `.venv`，使用 Python 3.11.15、MuJoCo 3.2.5 和 PyTorch 2.5.1+cpu。当前工作区可直接启动：
 
 ```bash
-cd '/home/pokemon_song/study/嵌入式系统/Agent+harness'
+# 在克隆后的仓库根目录运行
 source .venv/bin/activate
 unset MUJOCO_GL
 ./scripts/run_deepseek.sh --task go_to_blue_ball --viewer --seed 0

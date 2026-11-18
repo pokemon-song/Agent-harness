@@ -110,6 +110,20 @@ def test_motion_gt_feedback_is_archived_with_honest_source_not_promoted_to_navig
     assert 'execution.displacement_m' not in state_packet(rules.state)['world']['measurements']
 
 
+def test_cabinet_contact_feedback_reaches_the_planner_without_privileged_geometry(tmp_path):
+    memory = AsyncMemory(tmp_path / 'memory.md')
+    try:
+        planner = MemoryPlanningHarness(memory)
+        call = ToolCall('move', 'move_relative', {'forward_m': .4, 'lateral_m': 0.})
+        planner.note_results([call], [{'tool': call.name, 'status': 'timed_out', 'cabinet_contact': True,
+                                       'base_xy_m': [3.7, 1.8], 'geom_names': ['memory_drawers_body']}])
+        world = planner.context('A then B', 1)['memory_state']['world']
+        assert world['last_tool_feedback'] == [
+            {'tool': 'move_relative', 'status': 'timed_out', 'cabinet_contact': True}]
+    finally:
+        memory.close()
+
+
 def test_empty_md_still_has_task_labels_fresh_candidates_and_safe_action_paths(tmp_path):
     memory = AsyncMemory(tmp_path / 'memory.md')
     try:

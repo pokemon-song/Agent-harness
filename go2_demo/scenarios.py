@@ -58,6 +58,8 @@ class Scenario:
     source: str = "local_mujoco_adaptation_not_official_QUARD_environment"
     floor_half_size_m: tuple[float, float] | None = None
     offline_only: bool = False
+    nonterminal_contact_geoms: tuple[str, ...] = ()
+    collision_penalty_points: int = 0
 
     @property
     def supported(self) -> bool:
@@ -167,13 +169,16 @@ _DEMO_SCENARIOS = (Scenario(
     "依次完成两个目标：先找到蓝球 A，停到距其中心 0.82–1.18 米处，面向它（朝向误差不超过 0.25 弧度），调用 stop 确认停止；"
     "然后找到绿方块 B，以同样的距离和朝向标准停止，再调用 finish 结束整轮。"
     "B 只有在 A 的独立检查点已通过后才计分，直接先到 B 不算完成。"
-    "两段行程都不得碰撞或跌倒。场景中的柜体是不允许接触的障碍，目标可能被柜体遮挡，需要安全绕行。"
+    "目标可能被柜体遮挡，请安全绕行。碰撞会被记录并扣分，发生接触后请调整路线，继续任务。"
+    "按顺序完成两个目标并停稳结束即可通过。跌倒会结束任务。"
     "目标位置不在工具中给出；只能用相机可见信息、追踪点几何和实测运动反馈作判断。"
     "请在离开初始区域之前留意两个目标，并自行验证 A 后再去 B。独立评分不接受模型自述。",
     replace(_BLUE, xy=(6.4, 0.0)),
     objects=(SceneObject("memory_goal_b", _GREEN.kind, (1.8, .6, _GREEN.z),
                          _GREEN.half_size, COLORS[_GREEN.color], "demo_target"),) + _CABINET,
     goal_kind="ordered_standoff", floor_half_size_m=(8.0, 6.0), offline_only=False,
+    nonterminal_contact_geoms=tuple(item.name for item in _CABINET),
+    collision_penalty_points=5,
     source="local_memory_ordered_navigation_demo_not_official_benchmark"),)
 
 
