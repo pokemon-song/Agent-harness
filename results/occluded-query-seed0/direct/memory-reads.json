@@ -1,0 +1,62 @@
+[
+  {
+    "planner_decision": 1,
+    "read_path": "handoff/last-observation.md"
+  },
+  {
+    "planner_decision": 2,
+    "read_path": "targets/target-B.md"
+  },
+  {
+    "planner_decision": 3,
+    "read_path": "route/leg-01.md"
+  },
+  {
+    "planner_decision": 4,
+    "read_path": "route/leg-02.md"
+  },
+  {
+    "planner_decision": 5,
+    "read_path": "route/leg-03.md"
+  },
+  {
+    "planner_decision": 6,
+    "read_path": "targets/target-B.md"
+  },
+  {
+    "planner_decision": 7,
+    "read_path": "handoff/last-observation.md"
+  },
+  {
+    "planner_decision": 8,
+    "read_path": "route/leg-03.md"
+  },
+  {
+    "planner_decision": 9,
+    "read_path": "route/leg-01.md"
+  },
+  {
+    "planner_decision": 12,
+    "read_path": "route/leg-03.md"
+  },
+  {
+    "planner_decision": 13,
+    "read_path": "targets/target-B.md"
+  },
+  {
+    "planner_decision": 22,
+    "read_path": "route/leg-01.md"
+  },
+  {
+    "planner_decision": 23,
+    "read_path": "route/leg-02.md"
+  },
+  {
+    "planner_decision": 32,
+    "read_path": "targets/target-B.md"
+  },
+  {
+    "planner_decision": 37,
+    "read_path": "route/leg-03.md"
+  }
+]

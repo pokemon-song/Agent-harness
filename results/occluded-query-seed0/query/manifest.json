@@ -1,0 +1,52 @@
+{
+  "task": "memory_ab_occluded_v1",
+  "return_instruction": "去程在蓝球 A 处停稳，现开始返回找绿方块 B。两段共用出发时的里程计坐标系。在首次运动和完成前，先使用提供的记忆工具取得去程公开记录。当前记忆内容会保留至下次读取或查询。历史观测只代表当时的位置；结合当前 RGB、跟踪点几何、实测里程计，自主绕开柜子寻找并重新确认 B。机身距 B 中心 0.82–1.18 米、朝向误差不超过 0.25 rad 时调用 stop，再调用 finish。首次与场景物体发生碰撞即终止。每次决策只选择一个工具。",
+  "seed": 0,
+  "model": "deepseek-flash",
+  "return_mode": "query",
+  "first_contact_terminates": true,
+  "max_requests_including_reader": 115,
+  "max_wall_seconds": 1117.0,
+  "max_sim_seconds": 470.0,
+  "timeout_s": 90.0,
+  "max_output_tokens": 8192,
+  "shared_prefix_source": "20261118-101657-api-memory_ab_occluded_v1-s0-86745b-continued",
+  "history_turns": 6,
+  "handoff": {
+    "sim_time_s": 130.1399999998933,
+    "first_return_image_sha256": "cced5f566eb33c9018a168daaf946b80b3ef62bb06c05d62f6af6e0770440921",
+    "first_public_observation_sha256": "a5837919c8b08e104dbf32208b0c9f35079ac9ea8fdec7d31b07adb6ea29250c",
+    "outbound_trajectory_sha256": "57eaf06c53727ed1ebea9f2b8980aea88720c1da6c6a9f20ba861008605c89e4",
+    "documents": {
+      "targets/target-A.md": "0cc386e7333a1df3c696b2ebc138b293cee3e19aa5a5c807b4235a164991b6c6",
+      "targets/target-B.md": "6a54f1ebbe864e0624c5f44ae55df5fe81c8d75d64b515158c374bd3a6c90769",
+      "route/leg-01.md": "575aa684ed5757b9b1725e32e11e1ae2bf3d7aea129a37918731261cee6af625",
+      "route/leg-02.md": "ee0a1d50dbc7feb3a2e6e61888412cca9dc1a4888554d0fa148c38444f86b3df",
+      "route/leg-03.md": "b9f468dd42e09fec1757d43511a660cb1f4f1b138e3fc5a1770a9038945d2804",
+      "handoff/last-observation.md": "cb2f45c37e18960adcaf37b7fe421adb2f7584620450790b3b6d47a4e07aa0a7"
+    }
+  },
+  "source_sha256": {
+    "__init__.py": "208c9d851b1e9def7a52c1f7e36f3cdbcdb086ae9897be733de868e48bbc357b",
+    "__main__.py": "da25e6a40259048b8b06f76c4e781353c0222cc9e36e86267e04596c3d0217eb",
+    "backend.py": "cc1ab45b4f2ea1561a55959ddeffbf376b0da2e2914ad5eab643b1b1fd7083f7",
+    "experimental_boundary_gate.py": "062202e57a248f74f5692f657615fa3db446bb14f7257df6a941b04a4da92476",
+    "harness.py": "fcc7833d5c7b89ffc1a3c67917f34748d53280bc799e0a663552ce388f4c9f5c",
+    "memory.py": "b940595c5114c4316a1e9337c6e9e64ab0beeafbe088dc1dc86e4354100c67e7",
+    "memory_context.py": "e155440fafbf11da26ec03e127c499354632f49f3217c629abd25b3ccdce13c7",
+    "memory_perception.py": "ad690d04999235db828e413e2e70d930232548b82abd136ca655965a63c7b989",
+    "memory_planning.py": "2ae9e7ea98c6a9d91df8d614882880e53b4ff66da3fc896a6e0446cd00092de0",
+    "memory_protocol.py": "0a7ac4322ba5af2d36609134ce0a0839802518090de638489d3ff4fca145c931",
+    "models.py": "875ae500f08f2c4192bdf5ca58beac88e5c9c31c07391a1b1fc2a073128d2c39",
+    "occluded_handoff.py": "c2e681a043bf41809763c4f150c5a0ecd79ccd7185a6bcd270b5639de34aac02",
+    "occluded_recall.py": "9ff7089339c85695bd3d90f3ce3deeaefc641d1cfec828f0e97fd5828c8b939d",
+    "occluded_return.py": "85b37c458074455fbdd15f995d64e3c0a1da35f8fdc07d0ffc48205ed38810a0",
+    "occluded_video.py": "ae046f0dc988d7e061e253214f4265683b79dfe76cd908ec4ced09a8ac7acdc3",
+    "ordered_evaluation.py": "4821540761d24c0bd998fe34621cb6d976df24cdd033f7b13c0cb41c67d88111",
+    "perception.py": "d69f8fa98b1321fc2eab6b5adc966d23c7ec90fffe547166fa0ab9a767b83382",
+    "quard.py": "a0c9e2fdaf6de57108efb87a0bb07d60511acfff56cac1ad1afa4a53663d52fe",
+    "runner.py": "1bb450b1a25a69770acd3c9e9e7e5b624a1695fbd6ef006908b1f34da60679cb",
+    "scenarios.py": "03e9edc538c16120de3cb329068975e36393e96448edbbb6c9603456a9f6a978",
+    "types.py": "5aeacfff31e2f9eae78796cd27bdc4d38700897f916c40680aafe8d6a75b941b"
+  }
+}
