@@ -1,0 +1,997 @@
+{
+  "artifact_kind": "postrun-memory-projection-compatibility-v1",
+  "generated_at": "2026-11-11T20:31:40.227320+08:00",
+  "source_run": "20261111-200743-md-roundtrip-280c8d",
+  "actual_run_frozen_commit": "987fbb3fcf55eb3098935cd245031faa5f2dcdf2",
+  "actual_run_mission_success": true,
+  "repair_applied_after_run": true,
+  "model_rerun_with_fixed_projection": false,
+  "postprocess_model_api_requests": 0,
+  "postprocess_simulation_steps": 0,
+  "original_run_artifacts_modified": false,
+  "actual_run_projection_version": "memory-feedback-fields-v1",
+  "fixed_projection_version": "memory-feedback-fields-v2",
+  "cause": "The round-trip feedback envelope added coordinate_frame_id; v1 treated that known field as an unknown envelope extension and safely retained the full event.",
+  "minimal_fix": "Recognize coordinate_frame_id as a known envelope field and preserve its exact value; keep all other unknown envelope fields and every critical event unprojected.",
+  "source_sha256": {
+    "experiment.json": "b1bf76735967450b077fe28246e40fd0552fa7874e86ddebed6a43c30f9be8a1",
+    "summary.json": "2ae7173ea8a5961ff3a43d064b7b239775c58e923fc6d867947fab81b485251f",
+    "memory/index.sqlite3": "c802cd8dcd6df619744de4eab98af95f8b93a6764935c2af588e2adbc214266c",
+    "outbound/memory-agent.jsonl": "06217b185c8112507a4185a488b9426336589a30e63a262c070c4f49591d0899"
+  },
+  "fix_source_sha256": "05261cd0c024f970f9d801cdd6296d03e78404f4e5b766743f82ebb3898feb90",
+  "unique_robot_feedback": {
+    "count": 38,
+    "original_utf8_bytes": 498258,
+    "offline_fixed_utf8_bytes": 168919,
+    "byte_reduction_fraction": 0.6609808573068571
+  },
+  "actual_memory_requests": {
+    "count": 41,
+    "reported_original_utf8_bytes": 2498854,
+    "reported_projected_utf8_bytes": 2498854,
+    "offline_fixed_projection_utf8_bytes_for_identical_request_batches": 854114,
+    "offline_byte_reduction_fraction_for_identical_request_batches": 0.6581977178338551,
+    "note": "This weights repeated input batches exactly as recorded. It does not predict requests a model would choose with different input."
+  },
+  "critical_events": {
+    "count": 1,
+    "all_verbatim_preserved": true
+  },
+  "feedback_preservation_checks": [
+    {
+      "seq": 2,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 3,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 4,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 5,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 6,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 7,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 8,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 9,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 10,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 11,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 12,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 13,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 14,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 15,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 16,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 17,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 18,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 19,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 20,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 21,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 22,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 23,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 24,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 25,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 26,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 27,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 28,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 29,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 30,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 31,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 32,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 33,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 34,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 35,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 36,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 37,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 38,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    },
+    {
+      "seq": 39,
+      "projected": true,
+      "top_level_source_metadata_unchanged": true,
+      "frame_identity_retained": true,
+      "call_result_and_scope_retained": true,
+      "measured_post_state_retained": true,
+      "every_retained_post_field_unchanged": true,
+      "before_observation_available_in_original_ledger": true,
+      "full_event_lookup_available": true
+    }
+  ],
+  "request_batch_size_comparisons": [
+    {
+      "attempt": 1,
+      "event_seqs": [
+        1
+      ],
+      "actual_run_original_bytes": 6218,
+      "actual_run_projected_bytes": 6218,
+      "offline_fixed_projection_bytes": 6218
+    },
+    {
+      "attempt": 2,
+      "event_seqs": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "actual_run_original_bytes": 90119,
+      "actual_run_projected_bytes": 90119,
+      "offline_fixed_projection_bytes": 28509
+    },
+    {
+      "attempt": 3,
+      "event_seqs": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "actual_run_original_bytes": 90119,
+      "actual_run_projected_bytes": 90119,
+      "offline_fixed_projection_bytes": 28509
+    },
+    {
+      "attempt": 4,
+      "event_seqs": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "actual_run_original_bytes": 90119,
+      "actual_run_projected_bytes": 90119,
+      "offline_fixed_projection_bytes": 28509
+    },
+    {
+      "attempt": 5,
+      "event_seqs": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "actual_run_original_bytes": 90119,
+      "actual_run_projected_bytes": 90119,
+      "offline_fixed_projection_bytes": 28509
+    },
+    {
+      "attempt": 6,
+      "event_seqs": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "actual_run_original_bytes": 90119,
+      "actual_run_projected_bytes": 90119,
+      "offline_fixed_projection_bytes": 28509
+    },
+    {
+      "attempt": 7,
+      "event_seqs": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "actual_run_original_bytes": 80179,
+      "actual_run_projected_bytes": 80179,
+      "offline_fixed_projection_bytes": 27404
+    },
+    {
+      "attempt": 8,
+      "event_seqs": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "actual_run_original_bytes": 80179,
+      "actual_run_projected_bytes": 80179,
+      "offline_fixed_projection_bytes": 27404
+    },
+    {
+      "attempt": 9,
+      "event_seqs": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "actual_run_original_bytes": 80179,
+      "actual_run_projected_bytes": 80179,
+      "offline_fixed_projection_bytes": 27404
+    },
+    {
+      "attempt": 10,
+      "event_seqs": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "actual_run_original_bytes": 80179,
+      "actual_run_projected_bytes": 80179,
+      "offline_fixed_projection_bytes": 27404
+    },
+    {
+      "attempt": 11,
+      "event_seqs": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "actual_run_original_bytes": 80179,
+      "actual_run_projected_bytes": 80179,
+      "offline_fixed_projection_bytes": 27404
+    },
+    {
+      "attempt": 12,
+      "event_seqs": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "actual_run_original_bytes": 80179,
+      "actual_run_projected_bytes": 80179,
+      "offline_fixed_projection_bytes": 27404
+    },
+    {
+      "attempt": 13,
+      "event_seqs": [
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "actual_run_original_bytes": 80179,
+      "actual_run_projected_bytes": 80179,
+      "offline_fixed_projection_bytes": 27404
+    },
+    {
+      "attempt": 14,
+      "event_seqs": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "actual_run_original_bytes": 54557,
+      "actual_run_projected_bytes": 54557,
+      "offline_fixed_projection_bytes": 18711
+    },
+    {
+      "attempt": 15,
+      "event_seqs": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "actual_run_original_bytes": 54557,
+      "actual_run_projected_bytes": 54557,
+      "offline_fixed_projection_bytes": 18711
+    },
+    {
+      "attempt": 16,
+      "event_seqs": [
+        16,
+        17,
+        18,
+        19
+      ],
+      "actual_run_original_bytes": 54557,
+      "actual_run_projected_bytes": 54557,
+      "offline_fixed_projection_bytes": 18711
+    },
+    {
+      "attempt": 17,
+      "event_seqs": [
+        20,
+        21
+      ],
+      "actual_run_original_bytes": 27143,
+      "actual_run_projected_bytes": 27143,
+      "offline_fixed_projection_bytes": 9229
+    },
+    {
+      "attempt": 18,
+      "event_seqs": [
+        20,
+        21
+      ],
+      "actual_run_original_bytes": 27143,
+      "actual_run_projected_bytes": 27143,
+      "offline_fixed_projection_bytes": 9229
+    },
+    {
+      "attempt": 19,
+      "event_seqs": [
+        20,
+        21
+      ],
+      "actual_run_original_bytes": 27143,
+      "actual_run_projected_bytes": 27143,
+      "offline_fixed_projection_bytes": 9229
+    },
+    {
+      "attempt": 20,
+      "event_seqs": [
+        20,
+        21
+      ],
+      "actual_run_original_bytes": 27143,
+      "actual_run_projected_bytes": 27143,
+      "offline_fixed_projection_bytes": 9229
+    },
+    {
+      "attempt": 21,
+      "event_seqs": [
+        20,
+        21
+      ],
+      "actual_run_original_bytes": 27143,
+      "actual_run_projected_bytes": 27143,
+      "offline_fixed_projection_bytes": 9229
+    },
+    {
+      "attempt": 22,
+      "event_seqs": [
+        22,
+        23,
+        24,
+        25
+      ],
+      "actual_run_original_bytes": 54519,
+      "actual_run_projected_bytes": 54519,
+      "offline_fixed_projection_bytes": 18675
+    },
+    {
+      "attempt": 23,
+      "event_seqs": [
+        22,
+        23,
+        24,
+        25
+      ],
+      "actual_run_original_bytes": 54519,
+      "actual_run_projected_bytes": 54519,
+      "offline_fixed_projection_bytes": 18675
+    },
+    {
+      "attempt": 24,
+      "event_seqs": [
+        22,
+        23,
+        24,
+        25
+      ],
+      "actual_run_original_bytes": 54519,
+      "actual_run_projected_bytes": 54519,
+      "offline_fixed_projection_bytes": 18675
+    },
+    {
+      "attempt": 25,
+      "event_seqs": [
+        26,
+        27
+      ],
+      "actual_run_original_bytes": 27097,
+      "actual_run_projected_bytes": 27097,
+      "offline_fixed_projection_bytes": 9204
+    },
+    {
+      "attempt": 26,
+      "event_seqs": [
+        26,
+        27
+      ],
+      "actual_run_original_bytes": 27097,
+      "actual_run_projected_bytes": 27097,
+      "offline_fixed_projection_bytes": 9204
+    },
+    {
+      "attempt": 27,
+      "event_seqs": [
+        26,
+        27
+      ],
+      "actual_run_original_bytes": 27097,
+      "actual_run_projected_bytes": 27097,
+      "offline_fixed_projection_bytes": 9204
+    },
+    {
+      "attempt": 28,
+      "event_seqs": [
+        26,
+        27
+      ],
+      "actual_run_original_bytes": 27097,
+      "actual_run_projected_bytes": 27097,
+      "offline_fixed_projection_bytes": 9204
+    },
+    {
+      "attempt": 29,
+      "event_seqs": [
+        26,
+        27
+      ],
+      "actual_run_original_bytes": 27097,
+      "actual_run_projected_bytes": 27097,
+      "offline_fixed_projection_bytes": 9204
+    },
+    {
+      "attempt": 30,
+      "event_seqs": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "actual_run_original_bytes": 108712,
+      "actual_run_projected_bytes": 108712,
+      "offline_fixed_projection_bytes": 37088
+    },
+    {
+      "attempt": 31,
+      "event_seqs": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "actual_run_original_bytes": 108712,
+      "actual_run_projected_bytes": 108712,
+      "offline_fixed_projection_bytes": 37088
+    },
+    {
+      "attempt": 32,
+      "event_seqs": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "actual_run_original_bytes": 108712,
+      "actual_run_projected_bytes": 108712,
+      "offline_fixed_projection_bytes": 37088
+    },
+    {
+      "attempt": 33,
+      "event_seqs": [
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "actual_run_original_bytes": 108712,
+      "actual_run_projected_bytes": 108712,
+      "offline_fixed_projection_bytes": 37088
+    },
+    {
+      "attempt": 34,
+      "event_seqs": [
+        36,
+        37,
+        38,
+        39
+      ],
+      "actual_run_original_bytes": 55939,
+      "actual_run_projected_bytes": 55939,
+      "offline_fixed_projection_bytes": 20106
+    },
+    {
+      "attempt": 35,
+      "event_seqs": [
+        36,
+        37,
+        38,
+        39
+      ],
+      "actual_run_original_bytes": 55939,
+      "actual_run_projected_bytes": 55939,
+      "offline_fixed_projection_bytes": 20106
+    },
+    {
+      "attempt": 36,
+      "event_seqs": [
+        36,
+        37,
+        38,
+        39
+      ],
+      "actual_run_original_bytes": 55939,
+      "actual_run_projected_bytes": 55939,
+      "offline_fixed_projection_bytes": 20106
+    },
+    {
+      "attempt": 37,
+      "event_seqs": [
+        36,
+        37,
+        38,
+        39
+      ],
+      "actual_run_original_bytes": 55939,
+      "actual_run_projected_bytes": 55939,
+      "offline_fixed_projection_bytes": 20106
+    },
+    {
+      "attempt": 38,
+      "event_seqs": [
+        36,
+        37,
+        38,
+        39
+      ],
+      "actual_run_original_bytes": 55939,
+      "actual_run_projected_bytes": 55939,
+      "offline_fixed_projection_bytes": 20106
+    },
+    {
+      "attempt": 39,
+      "event_seqs": [
+        36,
+        37,
+        38,
+        39
+      ],
+      "actual_run_original_bytes": 55939,
+      "actual_run_projected_bytes": 55939,
+      "offline_fixed_projection_bytes": 20106
+    },
+    {
+      "attempt": 40,
+      "event_seqs": [
+        36,
+        37,
+        38,
+        39
+      ],
+      "actual_run_original_bytes": 55939,
+      "actual_run_projected_bytes": 55939,
+      "offline_fixed_projection_bytes": 20106
+    },
+    {
+      "attempt": 41,
+      "event_seqs": [
+        36,
+        37,
+        38,
+        39
+      ],
+      "actual_run_original_bytes": 55939,
+      "actual_run_projected_bytes": 55939,
+      "offline_fixed_projection_bytes": 20106
+    }
+  ],
+  "validation": {
+    "pytest_command": ".venv/bin/python -m pytest tests/test_md_memory_replay.py tests/test_md_memory_optimization.py -q",
+    "tests_passed": 16,
+    "unknown_extra_envelope_field_still_falls_back": true,
+    "critical_feedback_still_verbatim": true,
+    "all_38_events_projected_and_checked": true,
+    "source_hashes_unchanged": true
+  },
+  "limits_zh": [
+    "这是运行完成后的兼容修复与离线字段投影核验；实际成绩仍属于冻结版本987fbb3。",
+    "没有以新投影重跑模型，不能声称实际运行已获得这些输入缩减或token、延迟、费用改善。",
+    "字节统计仅覆盖紧凑JSON事件输入，不含系统提示、工具schema、历史回复和图像编码；字节不等于模型token。",
+    "唯一38条反馈与按实际请求次数重复计入的批次体积是不同口径，分别列出。",
+    "原始账本、图像索引、动作请求、执行结果、实测后状态、坐标标识和关键事件均保留；本修复不生成或校正语义路线。"
+  ]
+}

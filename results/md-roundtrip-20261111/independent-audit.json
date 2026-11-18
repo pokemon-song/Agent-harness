@@ -1,0 +1,1052 @@
+{
+  "schema": "md-roundtrip-independent-audit-v1",
+  "run": "20261111-200743-md-roundtrip-280c8d",
+  "audited_utc": "2026-11-11T12:32:35.362639+00:00",
+  "scope": "Read-only audit of public calls/results, immutable MD and registered evidence, measured trajectory and raw recording hashes. No model API calls, physics rerun, private reasoning inspection, or source/raw edits. Only this JSON and findings.md are written.",
+  "source_freeze": {
+    "commit": "987fbb3fcf55eb3098935cd245031faa5f2dcdf2",
+    "application_version": "0.5.0.dev4",
+    "source_file_count": 67,
+    "independently_checked_clean_HEAD_and_all_hashes_before_post_run_changes": true,
+    "post_run_change_note": "After the source check and completed live run, owner began a compatibility fix for coordinate_frame_id in memory context projection plus documentation. This experiment remains a 987fbb3 result; no rerun using that fix is claimed."
+  },
+  "protocol_checks": {
+    "frozen_commit_clean_987fbb3": true,
+    "all_67_source_hashes_independently_matched_before_post_run_changes": true,
+    "outbound_raw_call_counts_and_usage_match": true,
+    "outbound_all_responses_have_complete_usage": true,
+    "outbound_manifest_frozen_source_identity": true,
+    "outbound_prompt_and_tools_hashes": true,
+    "outbound_budgets_respected": true,
+    "outbound_finish_stop_safety_cleanup": true,
+    "outbound_path_and_sim_time_recomputed": true,
+    "outbound_model_observations_exclude_private_scores_and_reference_path": true,
+    "outbound_shared_frame_and_reference_all_inputs": true,
+    "return_raw_call_counts_and_usage_match": true,
+    "return_all_responses_have_complete_usage": true,
+    "return_manifest_frozen_source_identity": true,
+    "return_prompt_and_tools_hashes": true,
+    "return_budgets_respected": true,
+    "return_finish_stop_safety_cleanup": true,
+    "return_path_and_sim_time_recomputed": true,
+    "return_model_observations_exclude_private_scores_and_reference_path": true,
+    "return_shared_frame_and_reference_all_inputs": true,
+    "global_trajectory_exactly_initial_plus_two_unreset_legs": true,
+    "simulation_clock_strictly_increasing": true,
+    "turnaround_is_outbound_last_measured_pose": true,
+    "return_starts_at_exact_same_world_pose_and_time": true,
+    "trajectory_seam_index_and_origin_match_manifests": true,
+    "fresh_return_history_tracks_and_read_receipts": true,
+    "return_odometry_exact_transform_of_shared_world_origin": true,
+    "same_world_config_no_B_reset": true,
+    "private_outbound_reference_hash_matches_measured_path": true,
+    "independent_route_distances_coverage_and_lengths_match": true,
+    "reverse_gate_and_same_positive_y_cabinet_side_independently_verified": true,
+    "route_acceptance_thresholds_pass": true,
+    "outbound_actual_B_standoff_and_stages_pass": true,
+    "mission_success_matches_both_legs": true,
+    "all_versioned_MD_manifest_evidence_hashes_valid": true,
+    "all_registered_evidence_image_hashes_valid": true,
+    "all_39_events_processed_into_final_revision9": true,
+    "return_memory_snapshot_equals_outbound_final": true,
+    "memory_hashes_unchanged_early_return_to_completed_return": true,
+    "readonly_sqlite_audit_did_not_write_memory": true,
+    "return_memory_mode_readonly_no_memory_model": true,
+    "outbound_memory_read_receipts_match_immutable_documents": true,
+    "return_memory_read_receipts_match_immutable_documents": true,
+    "return_read_route_before_first_executed_motion": true,
+    "every_return_motion_has_valid_revision9_route_read_receipt": true,
+    "no_program_generated_route_or_action_replay_in_public_task": true,
+    "total_138_requests_complete_usage_matches_summary": true,
+    "single_recording_model_and_states_hashes": true,
+    "recording_covers_same_whole_mission_clock": true,
+    "no_final_errors_or_cleanup_failures": true
+  },
+  "protocol_check_count": 50,
+  "protocol_checks_passed": true,
+  "failed_checks": [],
+  "mission_success": true,
+  "route_geometry_independently_confirmed": true,
+  "memory_semantics_fully_correct": false,
+  "memory_causal_dependency_demonstrated": false,
+  "accounting": {
+    "api_requests": 138,
+    "complete_responses": 138,
+    "known_usage": {
+      "prompt_tokens": 2881052,
+      "completion_tokens": 326862,
+      "total_tokens": 3207914
+    },
+    "usage_complete": true,
+    "unknown_usage_attempts": 0,
+    "wall_elapsed_s": 1234.8109466229998,
+    "sim_elapsed_s": 118.95999999990183,
+    "path_length_m": 13.23468467472144,
+    "note": "Memory and planner run partly concurrently. Do not sum their API latency totals as mission wall time."
+  },
+  "phases": {
+    "outbound": {
+      "success": true,
+      "termination": "finish",
+      "planner_requests": 59,
+      "memory_requests": 41,
+      "complete_responses": 100,
+      "planner_usage": {
+        "prompt_tokens": 1034483,
+        "completion_tokens": 126566,
+        "total_tokens": 1161049
+      },
+      "memory_usage": {
+        "prompt_tokens": 1144047,
+        "completion_tokens": 153558,
+        "total_tokens": 1297605
+      },
+      "planner_response_latency_s": {
+        "count": 59,
+        "sum_s": 775.4881979390066,
+        "median_s": 8.612242470000638,
+        "max_s": 63.08395770199968
+      },
+      "memory_response_latency_s": {
+        "count": 41,
+        "sum_s": 766.3693818179981,
+        "median_s": 14.759089769999264,
+        "max_s": 67.66356464899945
+      },
+      "wall_elapsed_s": 928.1126498810008,
+      "sim_elapsed_s": 56.88000000002477,
+      "model_wait_s": 775.486522835994,
+      "memory_wait_s": 147.34808341400094,
+      "path_length_m": 6.730193976972153,
+      "memory_reads": [
+        {
+          "turn": 0,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 1,
+          "document_revision": 1,
+          "sha256": "5281bcd78c01ed7a5a12df1f1dfa0b57d2f62aa63e63a315c80f2307abd154b6"
+        },
+        {
+          "turn": 4,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 1,
+          "document_revision": 1,
+          "sha256": "5281bcd78c01ed7a5a12df1f1dfa0b57d2f62aa63e63a315c80f2307abd154b6"
+        },
+        {
+          "turn": 16,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 1,
+          "document_revision": 1,
+          "sha256": "5281bcd78c01ed7a5a12df1f1dfa0b57d2f62aa63e63a315c80f2307abd154b6"
+        },
+        {
+          "turn": 19,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 2,
+          "document_revision": 2,
+          "sha256": "68a04d2df668e13310485654716b42d1ad68c10271d014927a72f354c8f22157"
+        },
+        {
+          "turn": 26,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 3,
+          "document_revision": 3,
+          "sha256": "2bc7c60f42b586bbdb900e0b02dc603d965f5d315e45d5b2acbe528b063b3b59"
+        },
+        {
+          "turn": 31,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 4,
+          "document_revision": 4,
+          "sha256": "6bd320cdb7236b071438116b6915324730144bec3cbca91ea26800e72dacf110"
+        },
+        {
+          "turn": 40,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 5,
+          "document_revision": 5,
+          "sha256": "78043f8fc7a41ca0af4e76ec4b01c1e39df1bee034b1039b0ad1a2f8165f8fdc"
+        },
+        {
+          "turn": 43,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 6,
+          "document_revision": 6,
+          "sha256": "425edaa412f2328275fdb10b336765296640aafe3ea40db84dde6a431c6ec3f8"
+        },
+        {
+          "turn": 56,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 7,
+          "document_revision": 7,
+          "sha256": "dd8eafd969cee347d34dde405f77b4beffdde4d80a353f8563667ac4e0f26c1c"
+        }
+      ],
+      "tool_errors": [
+        {
+          "role": "planner",
+          "turn_or_attempt": 17,
+          "tool": "turn",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "planner",
+          "turn_or_attempt": 24,
+          "tool": "turn",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "planner",
+          "turn_or_attempt": 29,
+          "tool": "move_relative",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "planner",
+          "turn_or_attempt": 38,
+          "tool": "turn",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "planner",
+          "turn_or_attempt": 41,
+          "tool": "turn",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "planner",
+          "turn_or_attempt": 47,
+          "tool": "move_relative",
+          "code": "INVALID_ARGUMENTS"
+        },
+        {
+          "role": "planner",
+          "turn_or_attempt": 54,
+          "tool": "turn",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "memory",
+          "turn_or_attempt": 7,
+          "tool": "memory_read",
+          "code": "ONE_TOOL_PER_TURN"
+        },
+        {
+          "role": "memory",
+          "turn_or_attempt": 7,
+          "tool": "memory_read",
+          "code": "ONE_TOOL_PER_TURN"
+        },
+        {
+          "role": "memory",
+          "turn_or_attempt": 7,
+          "tool": "memory_read",
+          "code": "ONE_TOOL_PER_TURN"
+        },
+        {
+          "role": "memory",
+          "turn_or_attempt": 19,
+          "tool": "commit_memory",
+          "code": "BODY_TOO_LONG"
+        },
+        {
+          "role": "memory",
+          "turn_or_attempt": 20,
+          "tool": "commit_memory",
+          "code": "BODY_TOO_LONG"
+        },
+        {
+          "role": "memory",
+          "turn_or_attempt": 27,
+          "tool": "commit_memory",
+          "code": "BODY_TOO_LONG"
+        },
+        {
+          "role": "memory",
+          "turn_or_attempt": 28,
+          "tool": "commit_memory",
+          "code": "BODY_TOO_LONG"
+        },
+        {
+          "role": "memory",
+          "turn_or_attempt": 34,
+          "tool": "memory_read",
+          "code": "ONE_TOOL_PER_TURN"
+        },
+        {
+          "role": "memory",
+          "turn_or_attempt": 34,
+          "tool": "memory_read",
+          "code": "ONE_TOOL_PER_TURN"
+        }
+      ],
+      "collision_physics_steps": 0,
+      "fallen": false,
+      "evaluation": {
+        "success": true,
+        "goal_kind": "composite",
+        "distance_to_target_center_m": 1.0354994649065987,
+        "distance_error_m": 0.03549946490659872,
+        "heading_error_rad": 0.07782547330447054,
+        "standoff_m": 1.0,
+        "distance_tolerance_m": 0.18,
+        "stopped": true,
+        "speed_mps": 0.002467371057294235,
+        "fallen": false,
+        "collision": false,
+        "collision_physics_steps": 0,
+        "target_xy_m": [
+          5.6,
+          0.0
+        ],
+        "base_xy_m": [
+          4.564500819773008,
+          -0.0007678353217312032
+        ],
+        "sim_time_s": 57.88000000002477,
+        "source": "privileged_simulator_evaluator",
+        "cabinet_cleared": true,
+        "passage_crossed": true,
+        "beyond_exit": true,
+        "stages_in_order": true,
+        "events": [
+          {
+            "kind": "cabinet_clearance",
+            "trajectory_index": 993,
+            "fraction": 0.20766021459452852,
+            "sim_time_s": 20.864153204291206,
+            "crossing_y_m": 1.0171490666696599
+          },
+          {
+            "kind": "passage_crossing",
+            "trajectory_index": 2180,
+            "fraction": 0.11073595975147778,
+            "sim_time_s": 44.60221471920357,
+            "crossing_y_m": 0.08998893897822045
+          },
+          {
+            "kind": "passage_exit",
+            "trajectory_index": 2416,
+            "fraction": 0.9037946180757912,
+            "sim_time_s": 49.33807589237585,
+            "crossing_y_m": -0.0022050902308504406
+          }
+        ],
+        "cabinet_exit_x_m": 2.3,
+        "gate_x_m": 3.4,
+        "finish_x_min_m": 4.2,
+        "stages": {
+          "avoid_drawers": true,
+          "pass_gate": true,
+          "approach_b": true
+        },
+        "stage_completion_rate": 1.0
+      }
+    },
+    "return": {
+      "success": true,
+      "termination": "finish",
+      "planner_requests": 38,
+      "memory_requests": 0,
+      "complete_responses": 38,
+      "planner_usage": {
+        "prompt_tokens": 702522,
+        "completion_tokens": 46738,
+        "total_tokens": 749260
+      },
+      "memory_usage": {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+      },
+      "planner_response_latency_s": {
+        "count": 38,
+        "sum_s": 299.49989057699895,
+        "median_s": 6.183845104499596,
+        "max_s": 36.83664918799877
+      },
+      "memory_response_latency_s": {
+        "count": 0,
+        "sum_s": 0,
+        "median_s": null,
+        "max_s": null
+      },
+      "wall_elapsed_s": 304.7371400539996,
+      "sim_elapsed_s": 62.07999999987705,
+      "model_wait_s": 299.4987255220003,
+      "memory_wait_s": 0.0,
+      "path_length_m": 6.504490697749285,
+      "memory_reads": [
+        {
+          "turn": 0,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 9,
+          "document_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b"
+        },
+        {
+          "turn": 1,
+          "path": "episodes/outbound_01_measurements.md",
+          "snapshot_revision": 9,
+          "document_revision": 7,
+          "sha256": "90533275c7ba2e747702ef3c484fd1e7c9db9fc5b6017171a558cfe5e99fdbf3"
+        },
+        {
+          "turn": 2,
+          "path": "episodes/outbound_02_crossing_and_approach.md",
+          "snapshot_revision": 9,
+          "document_revision": 8,
+          "sha256": "b0400891f3ab7b7073a83c23d080325acf529d6f439f00c5286053882ce71f1b"
+        },
+        {
+          "turn": 3,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 9,
+          "document_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b"
+        },
+        {
+          "turn": 8,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 9,
+          "document_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b"
+        },
+        {
+          "turn": 12,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 9,
+          "document_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b"
+        },
+        {
+          "turn": 14,
+          "path": "episodes/outbound_01_measurements.md",
+          "snapshot_revision": 9,
+          "document_revision": 7,
+          "sha256": "90533275c7ba2e747702ef3c484fd1e7c9db9fc5b6017171a558cfe5e99fdbf3"
+        },
+        {
+          "turn": 18,
+          "path": "MEMORY.md",
+          "snapshot_revision": 9,
+          "document_revision": 9,
+          "sha256": "06cf285a6df7335d3d3182462cedb2b11bcc170b918f07a986256e29fabb2f1c"
+        },
+        {
+          "turn": 19,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 9,
+          "document_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b"
+        },
+        {
+          "turn": 24,
+          "path": "MEMORY.md",
+          "snapshot_revision": 9,
+          "document_revision": 9,
+          "sha256": "06cf285a6df7335d3d3182462cedb2b11bcc170b918f07a986256e29fabb2f1c"
+        },
+        {
+          "turn": 26,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 9,
+          "document_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b"
+        },
+        {
+          "turn": 29,
+          "path": "episodes/outbound_01_measurements.md",
+          "snapshot_revision": 9,
+          "document_revision": 7,
+          "sha256": "90533275c7ba2e747702ef3c484fd1e7c9db9fc5b6017171a558cfe5e99fdbf3"
+        },
+        {
+          "turn": 35,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "snapshot_revision": 9,
+          "document_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b"
+        }
+      ],
+      "tool_errors": [
+        {
+          "role": "planner",
+          "turn_or_attempt": 15,
+          "tool": "move_relative",
+          "code": "INVALID_ARGUMENTS"
+        }
+      ],
+      "collision_physics_steps": 0,
+      "fallen": false,
+      "evaluation": {
+        "success": true,
+        "source": "privileged_roundtrip_evaluator",
+        "acceptance_scope": "Geometry only; caller must check outbound B arrival, stop, collision, fall and budgets",
+        "boundaries_continuous": true,
+        "outbound_stages_in_order": true,
+        "return_stages_in_order": true,
+        "outbound_cabinet_side": "positive_y",
+        "same_cabinet_side": true,
+        "outside_gate_crossings": 0,
+        "return_distance_to_start_m": 0.17149581340060271,
+        "returned_to_start": true,
+        "outbound_path_length_m": 6.730193976972153,
+        "return_path_length_m": 6.5044906977492865,
+        "retrace_max_deviation_m": 0.16698915181494436,
+        "retrace_mean_deviation_m": 0.08669466887895494,
+        "retrace_p95_deviation_m": 0.15403296023392743,
+        "outbound_coverage": 1.0,
+        "return_corridor_fraction": 1.0,
+        "retrace_corridor_passed": true,
+        "outbound_sample_count": 136,
+        "return_sample_count": 132,
+        "sample_spacing_m": 0.05,
+        "retrace_tolerance_m": 0.5,
+        "min_outbound_coverage": 0.95,
+        "return_tolerance_m": 0.3,
+        "invalid_path": false,
+        "invalid_samples": 0,
+        "invalid_details": [],
+        "events": [
+          {
+            "leg": "outbound",
+            "kind": "cabinet",
+            "direction": "forward",
+            "trajectory_index": 815,
+            "fraction": 0.9982318464676286,
+            "sim_time_s": 17.299964636930643,
+            "crossing_xy_m": [
+              1.65,
+              0.9719049563383555
+            ],
+            "side": "positive_y"
+          },
+          {
+            "leg": "outbound",
+            "kind": "gate",
+            "direction": "forward",
+            "trajectory_index": 2181,
+            "fraction": 0.11073595975147778,
+            "sim_time_s": 44.60221471920357,
+            "crossing_xy_m": [
+              3.4,
+              0.08998893897822045
+            ],
+            "inside_opening": true
+          },
+          {
+            "leg": "return",
+            "kind": "gate",
+            "direction": "reverse",
+            "trajectory_index": 1114,
+            "fraction": 0.45234032272369673,
+            "sim_time_s": 80.14904680644908,
+            "crossing_xy_m": [
+              3.4,
+              0.035950913011490525
+            ],
+            "inside_opening": true
+          },
+          {
+            "leg": "return",
+            "kind": "cabinet",
+            "direction": "reverse",
+            "trajectory_index": 2291,
+            "fraction": 0.6907845132860526,
+            "sim_time_s": 103.69381569020545,
+            "crossing_xy_m": [
+              1.65,
+              0.8176248084001129
+            ],
+            "side": "positive_y"
+          }
+        ],
+        "geometry_success": true,
+        "goal_kind": "roundtrip_return",
+        "state_valid": true,
+        "stopped": true,
+        "speed_mps": 0.0034399684896449373,
+        "yaw_rate_radps": 0.01386964016464147,
+        "fallen": false,
+        "collision": false,
+        "collision_physics_steps": 0,
+        "heading_required": false
+      }
+    }
+  },
+  "geometry_recomputation": {
+    "outbound_path_length_m": 6.730193976972153,
+    "return_path_length_m": 6.5044906977492865,
+    "retrace_max_deviation_m": 0.1669891518149445,
+    "retrace_mean_deviation_m": 0.08669466887895486,
+    "retrace_p95_deviation_m": 0.15403296023392837,
+    "outbound_coverage": 1.0,
+    "return_corridor_fraction": 1.0,
+    "outbound_sample_count": 136,
+    "return_sample_count": 132,
+    "return_distance_to_start_m": 0.17149581340060271
+  },
+  "independent_crossings": [
+    {
+      "leg": "outbound",
+      "kind": "cabinet",
+      "direction": "forward",
+      "xy_m": [
+        1.65,
+        0.9719049563383555
+      ],
+      "sim_time_s": 17.299964636930643
+    },
+    {
+      "leg": "outbound",
+      "kind": "gate",
+      "direction": "forward",
+      "xy_m": [
+        3.4,
+        0.08998893897822045
+      ],
+      "sim_time_s": 44.60221471920357
+    },
+    {
+      "leg": "return",
+      "kind": "gate",
+      "direction": "reverse",
+      "xy_m": [
+        3.4,
+        0.035950913011490525
+      ],
+      "sim_time_s": 80.14904680644908
+    },
+    {
+      "leg": "return",
+      "kind": "cabinet",
+      "direction": "reverse",
+      "xy_m": [
+        1.65,
+        0.8176248084001129
+      ],
+      "sim_time_s": 103.69381569020545
+    }
+  ],
+  "continuous_origin_and_seam": {
+    "shared_odometry_origin": [
+      -0.0015189879768714258,
+      0.006109811166518311,
+      0.018318982226654158
+    ],
+    "boundary_world_pose": {
+      "sim_time_s": 57.88000000002477,
+      "base_xyz_m": [
+        4.564500819773008,
+        -0.0007678353217312032,
+        0.3626810464803128
+      ],
+      "yaw_rad": 0.07856698541347477
+    },
+    "first_return_local_odometry": {
+      "translation_m": [
+        4.565127700608787,
+        -0.09051664995896885
+      ],
+      "yaw_rad": 0.060248003186820616,
+      "reference": "mission_start_body_horizontal",
+      "source": "simulated_proprioception"
+    },
+    "coordinate_transform_xy_error_m": 0.0,
+    "return_start_index": 2844,
+    "history_cleared": true,
+    "tracked_points_cleared": true,
+    "physical_world_reset": false
+  },
+  "return_motion_read_proof": [
+    {
+      "turn": 4,
+      "tool": "turn",
+      "read_receipt_paths": [
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 5,
+      "tool": "turn",
+      "read_receipt_paths": [
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 6,
+      "tool": "turn",
+      "read_receipt_paths": [
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 7,
+      "tool": "turn",
+      "read_receipt_paths": [
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 9,
+      "tool": "turn",
+      "read_receipt_paths": [
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 10,
+      "tool": "turn",
+      "read_receipt_paths": [
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 11,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 16,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 20,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "MEMORY.md",
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 21,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "MEMORY.md",
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 22,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "MEMORY.md",
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 23,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "MEMORY.md",
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 27,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "MEMORY.md",
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 28,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "MEMORY.md",
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 30,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "MEMORY.md",
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 31,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "MEMORY.md",
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 32,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "MEMORY.md",
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 33,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "MEMORY.md",
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    },
+    {
+      "turn": 34,
+      "tool": "move_relative",
+      "read_receipt_paths": [
+        "MEMORY.md",
+        "episodes/outbound_01_measurements.md",
+        "episodes/outbound_02_crossing_and_approach.md",
+        "tasks/outbound_drawers_gate_B.md"
+      ],
+      "selected_revision": 9,
+      "needs_refresh": false,
+      "required_reads": []
+    }
+  ],
+  "memory": {
+    "revision": 9,
+    "processed_event_seq": 39,
+    "pending_event_count": 0,
+    "committed_versions": 10,
+    "documents": {
+      "MEMORY.md": {
+        "revision": 9,
+        "evidence_seqs": [
+          39,
+          37
+        ],
+        "sha256": "06cf285a6df7335d3d3182462cedb2b11bcc170b918f07a986256e29fabb2f1c"
+      },
+      "episodes/outbound_01_measurements.md": {
+        "revision": 7,
+        "evidence_seqs": [
+          26,
+          27
+        ],
+        "sha256": "90533275c7ba2e747702ef3c484fd1e7c9db9fc5b6017171a558cfe5e99fdbf3"
+      },
+      "episodes/outbound_02_crossing_and_approach.md": {
+        "revision": 8,
+        "evidence_seqs": [
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35
+        ],
+        "sha256": "b0400891f3ab7b7073a83c23d080325acf529d6f439f00c5286053882ce71f1b"
+      },
+      "episodes/outbound_03_finish_return_start.md": {
+        "revision": 9,
+        "evidence_seqs": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "sha256": "6347d24dc2d198f1951a9126add116dd0d2aedf7fffbcae22996a1f770a6d2e7"
+      },
+      "tasks/outbound_drawers_gate_B.md": {
+        "revision": 9,
+        "evidence_seqs": [
+          36,
+          37,
+          38,
+          39
+        ],
+        "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b"
+      }
+    },
+    "readonly_file_count": 79,
+    "early_return_to_final_hashes_independently_equal": true,
+    "memory_tree_sha256": "5a64f207ae89404b34ce0efefa099e5bea55f6e6a78b4f80777dad7a01dc8933",
+    "event_bytes_original": 2498854,
+    "event_bytes_projected": 2498854,
+    "projection_note": "Both counters are 2,498,854 in this live run. Unknown coordinate_frame_id envelope caused conservative projection fallback; no event-field compression savings were achieved in these counters. A later offline fix is separate.",
+    "core_route_quality": "The final MD preserves measured mission-frame origin, positive-y cabinet side, observed turns/positions, gate estimate, B finish observation and uncertainty. The predicted return paragraph is labeled predicted and says to replan using fresh perception. The planner actually read the route and episode documents before moving."
+  },
+  "semantic_findings": [
+    {
+      "severity": "minor_numeric",
+      "path": "tasks/outbound_drawers_gate_B.md",
+      "document_revision": 9,
+      "finding": "Range 1.0059 m with target 1.0 ± 0.18 m is described as 0.93 m margin; nearest tolerance-boundary margin is 0.1741 m. The measured range remains inside tolerance.",
+      "fully_correct": false
+    },
+    {
+      "severity": "minor_numeric",
+      "path": "episodes/outbound_03_finish_return_start.md",
+      "document_revision": 9,
+      "finding": "Table calls the change from (4.5677,-0.0961) to (4.5662,-0.0922) 15 mm backlash; these printed coordinates imply about 4.18 mm. Backlash as a cause is an interpretation, not independently measured here.",
+      "printed_coordinate_difference_m": 0.004178516483155256,
+      "fully_correct": false
+    },
+    {
+      "severity": "provenance_granularity",
+      "path": "tasks/outbound_drawers_gate_B.md",
+      "document_revision": 9,
+      "finding": "Current frontmatter cites only seq 36–39 while the body retains earlier route facts. Immutable older versions/episode fragments and body seq references support tracing, but valid event IDs do not establish direct complete support for every current sentence.",
+      "whole_document_support_completeness_proven": false
+    },
+    {
+      "severity": "workflow_precision",
+      "path": "episodes/outbound_03_finish_return_start.md",
+      "document_revision": 9,
+      "finding": "Tracked points are described as cleared by finish; the observed reset occurs when the fresh return Harness/planner context is constructed at B. The actual return first observation does have no tracked points."
+    },
+    {
+      "severity": "intermediate_only",
+      "document_revision": 2,
+      "finding": "An early document described height 0.363 m as within the advertised 0.36 m posture limit. That specific claim was removed from the final version."
+    }
+  ],
+  "recording": {
+    "model_sha256": "c8ca5bf584ef61990a8904467e307700038d7410536bbe6376d55617108d3bb0",
+    "states_sha256": "6a36e1537862b3fb3642d9ea1b6c60bacd2184be475e2cfa8d90738215f284db",
+    "sample_count": 11940,
+    "sim_start_s": 1.0000000000000007,
+    "sim_end_s": 119.95999999990183,
+    "video_render_and_decode": "Performed separately by experiment owner; excluded from this independent audit."
+  },
+  "limitations": [
+    "Single successful trial without an empty-memory or matched no-memory return control; read-before-motion and route agreement do not prove causal necessity of memory.",
+    "A real MuJoCo rollout uses paused simulation during inference and idealized simulated proprioceptive odometry, not a real-robot SLAM validation.",
+    "Retracing means measured 5 cm arclength samples pass a 0.50 m corridor and 95% coverage criterion, not identical footsteps.",
+    "Valid hashes/evidence IDs and task success do not prove all natural-language memory facts correct.",
+    "The returned pose follows an additional final stop after the last MD finish observation; live perception/odometry supersede the earlier MD pose."
+  ],
+  "raw_artifact_sha256": {
+    "outbound/manifest.json": "9f8a072fa734c6c18dac39ed8a9ad25636e22d5a7d3274130f0f8aaa5a9d8581",
+    "outbound/metrics.json": "873202c250cc14626d8b8ef8578dedfb725f484feeb4183974802f90c4b6e748",
+    "outbound/events.jsonl": "67ddac3500be323cb999d47db2fd5d6861027984db20043e3dbcdff6700467d2",
+    "outbound/memory-agent.jsonl": "06217b185c8112507a4185a488b9426336589a30e63a262c070c4f49591d0899",
+    "outbound/trajectory.jsonl": "61774dd0ffe19118f05c25d1cfd79350ed89b1f8907988898885985c6463c765",
+    "outbound/memory-initial.json": "7671256269fd13922527299b2309e8ac1ffad075a7b68feb675a2620444289f6",
+    "outbound/memory-final.json": "7d0c5cb324167049a7a019cf580a17f8efc8e50ddb71c74688d6171a22a96084",
+    "outbound/system_prompt.txt": "f3a92ea0b670321a70c6e9f44f6f27eca702c01bd9610d2d915f80bea25efd40",
+    "outbound/memory-system-prompt.txt": "0305b30fed3e2e91b3b997f8d2b7b79ab531092a3c4525fb8a3722162940e379",
+    "outbound/tools.json": "26440bf051e858c3d5415632904aa112963bd61b08a3cbee1c3a182d6da65c0e",
+    "outbound/memory-tools.json": "fbf28d42158ccb00987dca2b8573d2b179baeea46bf1d203cce8f3e88750a9b9",
+    "outbound/robot_profile.json": "cfa54838a06e5d863ad0b256036e36e1e482e1a7d1ae86642d9b4311617645fb",
+    "return/manifest.json": "53e20b4f7d7a38935963c0d1df8c028a7ecdf7585e881e23cabf3de08a30300e",
+    "return/metrics.json": "50e1ab0d3ebff29924c326623cca4ec8eafd7e1299736feedc85e51e2c796363",
+    "return/events.jsonl": "12e49c258057feedc532d6405f9f1e4fb083ecc94afd418b44e6e4e0bacb8511",
+    "return/trajectory.jsonl": "26dee16e449f93c891a718dbd7ed8f24138d0ff3287d49d8424a99813671a008",
+    "return/memory-initial.json": "7d0c5cb324167049a7a019cf580a17f8efc8e50ddb71c74688d6171a22a96084",
+    "return/memory-final.json": "7d0c5cb324167049a7a019cf580a17f8efc8e50ddb71c74688d6171a22a96084",
+    "return/system_prompt.txt": "f3a92ea0b670321a70c6e9f44f6f27eca702c01bd9610d2d915f80bea25efd40",
+    "return/memory-system-prompt.txt": "0305b30fed3e2e91b3b997f8d2b7b79ab531092a3c4525fb8a3722162940e379",
+    "return/tools.json": "26440bf051e858c3d5415632904aa112963bd61b08a3cbee1c3a182d6da65c0e",
+    "return/memory-tools.json": "fbf28d42158ccb00987dca2b8573d2b179baeea46bf1d203cce8f3e88750a9b9",
+    "return/robot_profile.json": "cfa54838a06e5d863ad0b256036e36e1e482e1a7d1ae86642d9b4311617645fb",
+    "experiment.json": "b1bf76735967450b077fe28246e40fd0552fa7874e86ddebed6a43c30f9be8a1",
+    "summary.json": "2ae7173ea8a5961ff3a43d064b7b239775c58e923fc6d867947fab81b485251f",
+    "initial-state.private.json": "5e6cbfb38937c9d0c8dbb48431eaac6754a67ecc82be0999e84ead8bd6f7ffc7",
+    "turnaround.private.json": "b6ed5deee70436a7c4e1e10269adcafa896c2506e6eff00f7bcacf7e8372008a",
+    "trajectory.jsonl": "03a286ddcb4e6d414e4b67c9febdefc77100dffd8fe69bec96721d80bf699c72",
+    "third_person/metadata.json": "acf4e3b900221ba787e8f8a9119f62f5bc997da65c8c2e23317e8ce30c0db076",
+    "third_person/model.mjb": "c8ca5bf584ef61990a8904467e307700038d7410536bbe6376d55617108d3bb0",
+    "third_person/states.npz": "6a36e1537862b3fb3642d9ea1b6c60bacd2184be475e2cfa8d90738215f284db"
+  }
+}

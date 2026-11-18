@@ -1,5 +1,7 @@
 # 通用机器人 Agent＋Harness（首个适配：Go2）
 
+复现“绕柜、过绿门、到 B 后原路返回”，请从[给测试同学的任务说明](docs/roundtrip-handoff.zh-CN.md)开始。实测记录附有[完整回放](results/md-roundtrip-20261111/third_person/third-person-sim.mp4)。
+
 **feature 演示版 `0.5.0.dev4`：单班去 B，再根据去程 MD 记忆原路返回。** 保留原抽屉柜／绿门／B 场景；到 B 只清空规划上下文，物理世界、机器人状态和共同里程计原点连续。去程记忆 Agent 自主保存地标和实测路线，返程规划器读取实际 MD，独立验收同侧绕柜、反向过门、路线覆盖和回到起点。每段限时增至 1,800 秒，详见 [单班往返任务](docs/md-roundtrip-task.md)。旧 [记忆优化验证](docs/md-memory-optimization.md)、[异步 MD Demo](docs/async-md-memory-demo.md) 和 [六阶段复测](docs/md-complex-memory-test.md) 保留。
 
 ```bash

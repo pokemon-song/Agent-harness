@@ -1,0 +1,1714 @@
+{
+  "experiment_kind": "md-roundtrip-v1",
+  "generated_at": "2026-11-11T20:36:15.335283+08:00",
+  "experiment": "20261111-200743-md-roundtrip-280c8d",
+  "mission_success": true,
+  "reported_mission_success": true,
+  "is_llm_result": true,
+  "simulator_used": true,
+  "git": {
+    "commit": "987fbb3fcf55eb3098935cd245031faa5f2dcdf2",
+    "dirty": false
+  },
+  "model": "deepseek-flash",
+  "phases": [
+    {
+      "phase": "outbound",
+      "label": "去程：绕柜、过门、到 B",
+      "success": true,
+      "termination": "finish",
+      "error": null,
+      "wall_elapsed_s": 928.1126498810008,
+      "sim_elapsed_s": 56.88000000002477,
+      "path_length_m": 6.730193976972153,
+      "model_wait_s": 775.486522835994,
+      "memory_wait_s": 147.34808341400094,
+      "action_execution_wall_s": 3.613209370012555,
+      "planner": {
+        "attempts": 59,
+        "completed_responses": 59,
+        "logged_requests": 59,
+        "logged_responses": 59,
+        "known_usage": {
+          "prompt_tokens": 1034483,
+          "completion_tokens": 126566,
+          "total_tokens": 1161049
+        },
+        "usage_complete": true,
+        "unknown_usage_attempts": 0,
+        "committed_batches": null,
+        "request_errors": [],
+        "worker_lifecycle_errors": []
+      },
+      "memory_agent": {
+        "attempts": 41,
+        "completed_responses": 41,
+        "logged_requests": 41,
+        "logged_responses": 41,
+        "known_usage": {
+          "prompt_tokens": 1144047,
+          "completion_tokens": 153558,
+          "total_tokens": 1297605
+        },
+        "usage_complete": true,
+        "unknown_usage_attempts": 0,
+        "committed_batches": 9,
+        "request_errors": [],
+        "worker_lifecycle_errors": [],
+        "preempted_batches": 0,
+        "superseded_errors": [],
+        "event_bytes_original": 2498854,
+        "event_bytes_projected": 2498854
+      },
+      "memory_mode": "read_write",
+      "snapshots": {
+        "initial": {
+          "revision": 0,
+          "scope": "roundtrip-82c2daea3ebf493a825a40d1d3d78685",
+          "files": 0,
+          "processed_event_seq": 0,
+          "latest_event_seq": 0,
+          "acknowledged_event_seqs": [],
+          "pending_event_count": 0,
+          "processed_critical_event_seq": 0,
+          "pending_critical_events": 0,
+          "artifact": "outbound/memory-initial.json"
+        },
+        "final": {
+          "revision": 9,
+          "scope": "roundtrip-82c2daea3ebf493a825a40d1d3d78685",
+          "files": 5,
+          "processed_event_seq": 39,
+          "latest_event_seq": 39,
+          "acknowledged_event_seqs": [],
+          "pending_event_count": 0,
+          "processed_critical_event_seq": 1,
+          "pending_critical_events": 0,
+          "artifact": "outbound/memory-final.json"
+        }
+      },
+      "memory_reads": [
+        {
+          "turn": 0,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 1,
+          "snapshot_revision": 1,
+          "sha256": "5281bcd78c01ed7a5a12df1f1dfa0b57d2f62aa63e63a315c80f2307abd154b6",
+          "href": "memory/revisions/00000001-40c947e9f009470e903ce5ff9c35ff1c/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 4,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 1,
+          "snapshot_revision": 1,
+          "sha256": "5281bcd78c01ed7a5a12df1f1dfa0b57d2f62aa63e63a315c80f2307abd154b6",
+          "href": "memory/revisions/00000001-40c947e9f009470e903ce5ff9c35ff1c/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 16,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 1,
+          "snapshot_revision": 1,
+          "sha256": "5281bcd78c01ed7a5a12df1f1dfa0b57d2f62aa63e63a315c80f2307abd154b6",
+          "href": "memory/revisions/00000001-40c947e9f009470e903ce5ff9c35ff1c/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 19,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 2,
+          "snapshot_revision": 2,
+          "sha256": "68a04d2df668e13310485654716b42d1ad68c10271d014927a72f354c8f22157",
+          "href": "memory/revisions/00000002-2991c5d07cb64fa295ac8eb75cc6fa13/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 26,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 3,
+          "snapshot_revision": 3,
+          "sha256": "2bc7c60f42b586bbdb900e0b02dc603d965f5d315e45d5b2acbe528b063b3b59",
+          "href": "memory/revisions/00000003-899dec438fc44e7abbdab987f925e8f5/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 31,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 4,
+          "snapshot_revision": 4,
+          "sha256": "6bd320cdb7236b071438116b6915324730144bec3cbca91ea26800e72dacf110",
+          "href": "memory/revisions/00000004-7e3c22a9aaca465397de6d90b6fc2d0b/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 40,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 5,
+          "snapshot_revision": 5,
+          "sha256": "78043f8fc7a41ca0af4e76ec4b01c1e39df1bee034b1039b0ad1a2f8165f8fdc",
+          "href": "memory/revisions/00000005-06952a025d99439b94dd12a70e5c410d/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 43,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 6,
+          "snapshot_revision": 6,
+          "sha256": "425edaa412f2328275fdb10b336765296640aafe3ea40db84dde6a431c6ec3f8",
+          "href": "memory/revisions/00000006-54b3e61ffb3b4f489e1ba9d4eba98c24/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 56,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 7,
+          "snapshot_revision": 7,
+          "sha256": "dd8eafd969cee347d34dde405f77b4beffdde4d80a353f8563667ac4e0f26c1c",
+          "href": "memory/revisions/00000007-fc60e571604a4b2499b6794da0b2560d/tasks/outbound_drawers_gate_B.md"
+        }
+      ],
+      "first_successful_motion_turn": 5,
+      "read_before_first_motion": true,
+      "tool_errors": [
+        {
+          "role": "planner",
+          "turn": 17,
+          "attempt": null,
+          "tool": "turn",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "planner",
+          "turn": 24,
+          "attempt": null,
+          "tool": "turn",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "planner",
+          "turn": 29,
+          "attempt": null,
+          "tool": "move_relative",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "planner",
+          "turn": 38,
+          "attempt": null,
+          "tool": "turn",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "planner",
+          "turn": 41,
+          "attempt": null,
+          "tool": "turn",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "planner",
+          "turn": 47,
+          "attempt": null,
+          "tool": "move_relative",
+          "code": "INVALID_ARGUMENTS"
+        },
+        {
+          "role": "planner",
+          "turn": 54,
+          "attempt": null,
+          "tool": "turn",
+          "code": "MEMORY_CHANGED"
+        },
+        {
+          "role": "memory",
+          "turn": null,
+          "attempt": 7,
+          "tool": "memory_read",
+          "code": "ONE_TOOL_PER_TURN"
+        },
+        {
+          "role": "memory",
+          "turn": null,
+          "attempt": 7,
+          "tool": "memory_read",
+          "code": "ONE_TOOL_PER_TURN"
+        },
+        {
+          "role": "memory",
+          "turn": null,
+          "attempt": 7,
+          "tool": "memory_read",
+          "code": "ONE_TOOL_PER_TURN"
+        },
+        {
+          "role": "memory",
+          "turn": null,
+          "attempt": 19,
+          "tool": "commit_memory",
+          "code": "BODY_TOO_LONG"
+        },
+        {
+          "role": "memory",
+          "turn": null,
+          "attempt": 20,
+          "tool": "commit_memory",
+          "code": "BODY_TOO_LONG"
+        },
+        {
+          "role": "memory",
+          "turn": null,
+          "attempt": 27,
+          "tool": "commit_memory",
+          "code": "BODY_TOO_LONG"
+        },
+        {
+          "role": "memory",
+          "turn": null,
+          "attempt": 28,
+          "tool": "commit_memory",
+          "code": "BODY_TOO_LONG"
+        },
+        {
+          "role": "memory",
+          "turn": null,
+          "attempt": 34,
+          "tool": "memory_read",
+          "code": "ONE_TOOL_PER_TURN"
+        },
+        {
+          "role": "memory",
+          "turn": null,
+          "attempt": 34,
+          "tool": "memory_read",
+          "code": "ONE_TOOL_PER_TURN"
+        }
+      ],
+      "evaluation": {
+        "success": true,
+        "goal_kind": "composite",
+        "distance_to_target_center_m": 1.0354994649065987,
+        "distance_error_m": 0.03549946490659872,
+        "heading_error_rad": 0.07782547330447054,
+        "standoff_m": 1.0,
+        "distance_tolerance_m": 0.18,
+        "stopped": true,
+        "speed_mps": 0.002467371057294235,
+        "fallen": false,
+        "collision": false,
+        "collision_physics_steps": 0,
+        "target_xy_m": [
+          5.6,
+          0.0
+        ],
+        "base_xy_m": [
+          4.564500819773008,
+          -0.0007678353217312032
+        ],
+        "sim_time_s": 57.88000000002477,
+        "source": "privileged_simulator_evaluator",
+        "cabinet_cleared": true,
+        "passage_crossed": true,
+        "beyond_exit": true,
+        "stages_in_order": true,
+        "events": [
+          {
+            "kind": "cabinet_clearance",
+            "trajectory_index": 993,
+            "fraction": 0.20766021459452852,
+            "sim_time_s": 20.864153204291206,
+            "crossing_y_m": 1.0171490666696599
+          },
+          {
+            "kind": "passage_crossing",
+            "trajectory_index": 2180,
+            "fraction": 0.11073595975147778,
+            "sim_time_s": 44.60221471920357,
+            "crossing_y_m": 0.08998893897822045
+          },
+          {
+            "kind": "passage_exit",
+            "trajectory_index": 2416,
+            "fraction": 0.9037946180757912,
+            "sim_time_s": 49.33807589237585,
+            "crossing_y_m": -0.0022050902308504406
+          }
+        ],
+        "cabinet_exit_x_m": 2.3,
+        "gate_x_m": 3.4,
+        "finish_x_min_m": 4.2,
+        "stages": {
+          "avoid_drawers": true,
+          "pass_gate": true,
+          "approach_b": true
+        },
+        "stage_completion_rate": 1.0
+      },
+      "return_evaluation": null,
+      "artifact_warnings": [],
+      "frames": [
+        {
+          "src": "outbound/frames/000-frame-00002.png",
+          "phase": "outbound",
+          "turn": 0
+        },
+        {
+          "src": "outbound/frames/001-frame-00002.png",
+          "phase": "outbound",
+          "turn": 1
+        },
+        {
+          "src": "outbound/frames/002-frame-00002.png",
+          "phase": "outbound",
+          "turn": 2
+        },
+        {
+          "src": "outbound/frames/003-frame-00002.png",
+          "phase": "outbound",
+          "turn": 3
+        },
+        {
+          "src": "outbound/frames/004-frame-00002.png",
+          "phase": "outbound",
+          "turn": 4
+        },
+        {
+          "src": "outbound/frames/005-frame-00002.png",
+          "phase": "outbound",
+          "turn": 5
+        },
+        {
+          "src": "outbound/frames/006-frame-00003.png",
+          "phase": "outbound",
+          "turn": 6
+        },
+        {
+          "src": "outbound/frames/007-frame-00003.png",
+          "phase": "outbound",
+          "turn": 7
+        },
+        {
+          "src": "outbound/frames/008-frame-00003.png",
+          "phase": "outbound",
+          "turn": 8
+        },
+        {
+          "src": "outbound/frames/009-frame-00003.png",
+          "phase": "outbound",
+          "turn": 9
+        },
+        {
+          "src": "outbound/frames/010-frame-00004.png",
+          "phase": "outbound",
+          "turn": 10
+        },
+        {
+          "src": "outbound/frames/011-frame-00004.png",
+          "phase": "outbound",
+          "turn": 11
+        },
+        {
+          "src": "outbound/frames/012-frame-00005.png",
+          "phase": "outbound",
+          "turn": 12
+        },
+        {
+          "src": "outbound/frames/013-frame-00005.png",
+          "phase": "outbound",
+          "turn": 13
+        },
+        {
+          "src": "outbound/frames/014-frame-00006.png",
+          "phase": "outbound",
+          "turn": 14
+        },
+        {
+          "src": "outbound/frames/015-frame-00006.png",
+          "phase": "outbound",
+          "turn": 15
+        },
+        {
+          "src": "outbound/frames/016-frame-00006.png",
+          "phase": "outbound",
+          "turn": 16
+        },
+        {
+          "src": "outbound/frames/017-frame-00006.png",
+          "phase": "outbound",
+          "turn": 17
+        },
+        {
+          "src": "outbound/frames/018-frame-00006.png",
+          "phase": "outbound",
+          "turn": 18
+        },
+        {
+          "src": "outbound/frames/019-frame-00006.png",
+          "phase": "outbound",
+          "turn": 19
+        },
+        {
+          "src": "outbound/frames/020-frame-00006.png",
+          "phase": "outbound",
+          "turn": 20
+        },
+        {
+          "src": "outbound/frames/021-frame-00007.png",
+          "phase": "outbound",
+          "turn": 21
+        },
+        {
+          "src": "outbound/frames/022-frame-00007.png",
+          "phase": "outbound",
+          "turn": 22
+        },
+        {
+          "src": "outbound/frames/023-frame-00008.png",
+          "phase": "outbound",
+          "turn": 23
+        },
+        {
+          "src": "outbound/frames/024-frame-00009.png",
+          "phase": "outbound",
+          "turn": 24
+        },
+        {
+          "src": "outbound/frames/025-frame-00009.png",
+          "phase": "outbound",
+          "turn": 25
+        },
+        {
+          "src": "outbound/frames/026-frame-00009.png",
+          "phase": "outbound",
+          "turn": 26
+        },
+        {
+          "src": "outbound/frames/027-frame-00009.png",
+          "phase": "outbound",
+          "turn": 27
+        },
+        {
+          "src": "outbound/frames/028-frame-00009.png",
+          "phase": "outbound",
+          "turn": 28
+        },
+        {
+          "src": "outbound/frames/029-frame-00009.png",
+          "phase": "outbound",
+          "turn": 29
+        },
+        {
+          "src": "outbound/frames/030-frame-00009.png",
+          "phase": "outbound",
+          "turn": 30
+        },
+        {
+          "src": "outbound/frames/031-frame-00009.png",
+          "phase": "outbound",
+          "turn": 31
+        },
+        {
+          "src": "outbound/frames/032-frame-00009.png",
+          "phase": "outbound",
+          "turn": 32
+        },
+        {
+          "src": "outbound/frames/033-frame-00009.png",
+          "phase": "outbound",
+          "turn": 33
+        },
+        {
+          "src": "outbound/frames/034-frame-00010.png",
+          "phase": "outbound",
+          "turn": 34
+        },
+        {
+          "src": "outbound/frames/035-frame-00011.png",
+          "phase": "outbound",
+          "turn": 35
+        },
+        {
+          "src": "outbound/frames/036-frame-00012.png",
+          "phase": "outbound",
+          "turn": 36
+        },
+        {
+          "src": "outbound/frames/037-frame-00012.png",
+          "phase": "outbound",
+          "turn": 37
+        },
+        {
+          "src": "outbound/frames/038-frame-00012.png",
+          "phase": "outbound",
+          "turn": 38
+        },
+        {
+          "src": "outbound/frames/039-frame-00012.png",
+          "phase": "outbound",
+          "turn": 39
+        },
+        {
+          "src": "outbound/frames/040-frame-00012.png",
+          "phase": "outbound",
+          "turn": 40
+        },
+        {
+          "src": "outbound/frames/041-frame-00012.png",
+          "phase": "outbound",
+          "turn": 41
+        },
+        {
+          "src": "outbound/frames/042-frame-00012.png",
+          "phase": "outbound",
+          "turn": 42
+        },
+        {
+          "src": "outbound/frames/043-frame-00012.png",
+          "phase": "outbound",
+          "turn": 43
+        },
+        {
+          "src": "outbound/frames/044-frame-00012.png",
+          "phase": "outbound",
+          "turn": 44
+        },
+        {
+          "src": "outbound/frames/045-frame-00013.png",
+          "phase": "outbound",
+          "turn": 45
+        },
+        {
+          "src": "outbound/frames/046-frame-00013.png",
+          "phase": "outbound",
+          "turn": 46
+        },
+        {
+          "src": "outbound/frames/047-frame-00014.png",
+          "phase": "outbound",
+          "turn": 47
+        },
+        {
+          "src": "outbound/frames/048-frame-00014.png",
+          "phase": "outbound",
+          "turn": 48
+        },
+        {
+          "src": "outbound/frames/049-frame-00015.png",
+          "phase": "outbound",
+          "turn": 49
+        },
+        {
+          "src": "outbound/frames/050-frame-00016.png",
+          "phase": "outbound",
+          "turn": 50
+        },
+        {
+          "src": "outbound/frames/051-frame-00016.png",
+          "phase": "outbound",
+          "turn": 51
+        },
+        {
+          "src": "outbound/frames/052-frame-00017.png",
+          "phase": "outbound",
+          "turn": 52
+        },
+        {
+          "src": "outbound/frames/053-frame-00017.png",
+          "phase": "outbound",
+          "turn": 53
+        },
+        {
+          "src": "outbound/frames/054-frame-00018.png",
+          "phase": "outbound",
+          "turn": 54
+        },
+        {
+          "src": "outbound/frames/055-frame-00018.png",
+          "phase": "outbound",
+          "turn": 55
+        },
+        {
+          "src": "outbound/frames/056-frame-00018.png",
+          "phase": "outbound",
+          "turn": 56
+        },
+        {
+          "src": "outbound/frames/057-frame-00018.png",
+          "phase": "outbound",
+          "turn": 57
+        },
+        {
+          "src": "outbound/frames/058-frame-00018.png",
+          "phase": "outbound",
+          "turn": 58
+        }
+      ]
+    },
+    {
+      "phase": "return",
+      "label": "返程：读取去程记忆并原路返回",
+      "success": true,
+      "termination": "finish",
+      "error": null,
+      "wall_elapsed_s": 304.7371400539996,
+      "sim_elapsed_s": 62.07999999987705,
+      "path_length_m": 6.5044906977492865,
+      "model_wait_s": 299.4987255220003,
+      "memory_wait_s": 0.0,
+      "action_execution_wall_s": 4.127933640997071,
+      "planner": {
+        "attempts": 38,
+        "completed_responses": 38,
+        "logged_requests": 38,
+        "logged_responses": 38,
+        "known_usage": {
+          "prompt_tokens": 702522,
+          "completion_tokens": 46738,
+          "total_tokens": 749260
+        },
+        "usage_complete": true,
+        "unknown_usage_attempts": 0,
+        "committed_batches": null,
+        "request_errors": [],
+        "worker_lifecycle_errors": []
+      },
+      "memory_agent": {
+        "attempts": 0,
+        "completed_responses": 0,
+        "logged_requests": 0,
+        "logged_responses": 0,
+        "known_usage": {},
+        "usage_complete": true,
+        "unknown_usage_attempts": 0,
+        "committed_batches": 0,
+        "request_errors": [],
+        "worker_lifecycle_errors": []
+      },
+      "memory_mode": "read_only",
+      "snapshots": {
+        "initial": {
+          "revision": 9,
+          "scope": "roundtrip-82c2daea3ebf493a825a40d1d3d78685",
+          "files": 5,
+          "processed_event_seq": 39,
+          "latest_event_seq": 39,
+          "acknowledged_event_seqs": [],
+          "pending_event_count": 0,
+          "processed_critical_event_seq": 1,
+          "pending_critical_events": 0,
+          "artifact": "return/memory-initial.json"
+        },
+        "final": {
+          "revision": 9,
+          "scope": "roundtrip-82c2daea3ebf493a825a40d1d3d78685",
+          "files": 5,
+          "processed_event_seq": 39,
+          "latest_event_seq": 39,
+          "acknowledged_event_seqs": [],
+          "pending_event_count": 0,
+          "processed_critical_event_seq": 1,
+          "pending_critical_events": 0,
+          "artifact": "return/memory-final.json"
+        }
+      },
+      "memory_reads": [
+        {
+          "turn": 0,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 9,
+          "snapshot_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 1,
+          "path": "episodes/outbound_01_measurements.md",
+          "revision": 7,
+          "snapshot_revision": 9,
+          "sha256": "90533275c7ba2e747702ef3c484fd1e7c9db9fc5b6017171a558cfe5e99fdbf3",
+          "href": "memory/revisions/00000007-fc60e571604a4b2499b6794da0b2560d/episodes/outbound_01_measurements.md"
+        },
+        {
+          "turn": 2,
+          "path": "episodes/outbound_02_crossing_and_approach.md",
+          "revision": 8,
+          "snapshot_revision": 9,
+          "sha256": "b0400891f3ab7b7073a83c23d080325acf529d6f439f00c5286053882ce71f1b",
+          "href": "memory/revisions/00000008-2cdda31722614671b711599739c983d9/episodes/outbound_02_crossing_and_approach.md"
+        },
+        {
+          "turn": 3,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 9,
+          "snapshot_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 8,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 9,
+          "snapshot_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 12,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 9,
+          "snapshot_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 14,
+          "path": "episodes/outbound_01_measurements.md",
+          "revision": 7,
+          "snapshot_revision": 9,
+          "sha256": "90533275c7ba2e747702ef3c484fd1e7c9db9fc5b6017171a558cfe5e99fdbf3",
+          "href": "memory/revisions/00000007-fc60e571604a4b2499b6794da0b2560d/episodes/outbound_01_measurements.md"
+        },
+        {
+          "turn": 18,
+          "path": "MEMORY.md",
+          "revision": 9,
+          "snapshot_revision": 9,
+          "sha256": "06cf285a6df7335d3d3182462cedb2b11bcc170b918f07a986256e29fabb2f1c",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/MEMORY.md"
+        },
+        {
+          "turn": 19,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 9,
+          "snapshot_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 24,
+          "path": "MEMORY.md",
+          "revision": 9,
+          "snapshot_revision": 9,
+          "sha256": "06cf285a6df7335d3d3182462cedb2b11bcc170b918f07a986256e29fabb2f1c",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/MEMORY.md"
+        },
+        {
+          "turn": 26,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 9,
+          "snapshot_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/tasks/outbound_drawers_gate_B.md"
+        },
+        {
+          "turn": 29,
+          "path": "episodes/outbound_01_measurements.md",
+          "revision": 7,
+          "snapshot_revision": 9,
+          "sha256": "90533275c7ba2e747702ef3c484fd1e7c9db9fc5b6017171a558cfe5e99fdbf3",
+          "href": "memory/revisions/00000007-fc60e571604a4b2499b6794da0b2560d/episodes/outbound_01_measurements.md"
+        },
+        {
+          "turn": 35,
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "revision": 9,
+          "snapshot_revision": 9,
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/tasks/outbound_drawers_gate_B.md"
+        }
+      ],
+      "first_successful_motion_turn": 4,
+      "read_before_first_motion": true,
+      "tool_errors": [
+        {
+          "role": "planner",
+          "turn": 15,
+          "attempt": null,
+          "tool": "move_relative",
+          "code": "INVALID_ARGUMENTS"
+        }
+      ],
+      "evaluation": {
+        "success": true,
+        "source": "privileged_roundtrip_evaluator",
+        "acceptance_scope": "Geometry only; caller must check outbound B arrival, stop, collision, fall and budgets",
+        "boundaries_continuous": true,
+        "outbound_stages_in_order": true,
+        "return_stages_in_order": true,
+        "outbound_cabinet_side": "positive_y",
+        "same_cabinet_side": true,
+        "outside_gate_crossings": 0,
+        "return_distance_to_start_m": 0.17149581340060271,
+        "returned_to_start": true,
+        "outbound_path_length_m": 6.730193976972153,
+        "return_path_length_m": 6.5044906977492865,
+        "retrace_max_deviation_m": 0.16698915181494436,
+        "retrace_mean_deviation_m": 0.08669466887895494,
+        "retrace_p95_deviation_m": 0.15403296023392743,
+        "outbound_coverage": 1.0,
+        "return_corridor_fraction": 1.0,
+        "retrace_corridor_passed": true,
+        "outbound_sample_count": 136,
+        "return_sample_count": 132,
+        "sample_spacing_m": 0.05,
+        "retrace_tolerance_m": 0.5,
+        "min_outbound_coverage": 0.95,
+        "return_tolerance_m": 0.3,
+        "invalid_path": false,
+        "invalid_samples": 0,
+        "invalid_details": [],
+        "events": [
+          {
+            "leg": "outbound",
+            "kind": "cabinet",
+            "direction": "forward",
+            "trajectory_index": 815,
+            "fraction": 0.9982318464676286,
+            "sim_time_s": 17.299964636930643,
+            "crossing_xy_m": [
+              1.65,
+              0.9719049563383555
+            ],
+            "side": "positive_y"
+          },
+          {
+            "leg": "outbound",
+            "kind": "gate",
+            "direction": "forward",
+            "trajectory_index": 2181,
+            "fraction": 0.11073595975147778,
+            "sim_time_s": 44.60221471920357,
+            "crossing_xy_m": [
+              3.4,
+              0.08998893897822045
+            ],
+            "inside_opening": true
+          },
+          {
+            "leg": "return",
+            "kind": "gate",
+            "direction": "reverse",
+            "trajectory_index": 1114,
+            "fraction": 0.45234032272369673,
+            "sim_time_s": 80.14904680644908,
+            "crossing_xy_m": [
+              3.4,
+              0.035950913011490525
+            ],
+            "inside_opening": true
+          },
+          {
+            "leg": "return",
+            "kind": "cabinet",
+            "direction": "reverse",
+            "trajectory_index": 2291,
+            "fraction": 0.6907845132860526,
+            "sim_time_s": 103.69381569020545,
+            "crossing_xy_m": [
+              1.65,
+              0.8176248084001129
+            ],
+            "side": "positive_y"
+          }
+        ],
+        "geometry_success": true,
+        "goal_kind": "roundtrip_return",
+        "state_valid": true,
+        "stopped": true,
+        "speed_mps": 0.0034399684896449373,
+        "yaw_rate_radps": 0.01386964016464147,
+        "fallen": false,
+        "collision": false,
+        "collision_physics_steps": 0,
+        "heading_required": false
+      },
+      "return_evaluation": {
+        "success": true,
+        "geometry_success": true,
+        "returned_to_start": true,
+        "state_valid": true,
+        "return_distance_to_start_m": 0.17149581340060271,
+        "return_tolerance_m": 0.3,
+        "retrace_tolerance_m": 0.5,
+        "outbound_path_length_m": 6.730193976972153,
+        "return_path_length_m": 6.5044906977492865,
+        "retrace_max_deviation_m": 0.16698915181494436,
+        "retrace_mean_deviation_m": 0.08669466887895494,
+        "retrace_p95_deviation_m": 0.15403296023392743,
+        "outbound_coverage": 1.0,
+        "return_corridor_fraction": 1.0,
+        "outbound_stages_in_order": true,
+        "return_stages_in_order": true,
+        "same_cabinet_side": true,
+        "retrace_corridor_passed": true,
+        "boundaries_continuous": true,
+        "invalid_path": false,
+        "invalid_samples": 0,
+        "heading_required": false,
+        "stopped": true,
+        "speed_mps": 0.0034399684896449373,
+        "yaw_rate_radps": 0.01386964016464147,
+        "fallen": false,
+        "collision": false,
+        "collision_physics_steps": 0,
+        "source": "privileged_roundtrip_evaluator",
+        "events": [
+          {
+            "leg": "outbound",
+            "kind": "cabinet",
+            "direction": "forward",
+            "trajectory_index": 815,
+            "fraction": 0.9982318464676286,
+            "sim_time_s": 17.299964636930643,
+            "crossing_xy_m": [
+              1.65,
+              0.9719049563383555
+            ],
+            "side": "positive_y"
+          },
+          {
+            "leg": "outbound",
+            "kind": "gate",
+            "direction": "forward",
+            "trajectory_index": 2181,
+            "fraction": 0.11073595975147778,
+            "sim_time_s": 44.60221471920357,
+            "crossing_xy_m": [
+              3.4,
+              0.08998893897822045
+            ],
+            "inside_opening": true
+          },
+          {
+            "leg": "return",
+            "kind": "gate",
+            "direction": "reverse",
+            "trajectory_index": 1114,
+            "fraction": 0.45234032272369673,
+            "sim_time_s": 80.14904680644908,
+            "crossing_xy_m": [
+              3.4,
+              0.035950913011490525
+            ],
+            "inside_opening": true
+          },
+          {
+            "leg": "return",
+            "kind": "cabinet",
+            "direction": "reverse",
+            "trajectory_index": 2291,
+            "fraction": 0.6907845132860526,
+            "sim_time_s": 103.69381569020545,
+            "crossing_xy_m": [
+              1.65,
+              0.8176248084001129
+            ],
+            "side": "positive_y"
+          }
+        ]
+      },
+      "artifact_warnings": [],
+      "frames": [
+        {
+          "src": "return/frames/000-frame-00021.png",
+          "phase": "return",
+          "turn": 0
+        },
+        {
+          "src": "return/frames/001-frame-00021.png",
+          "phase": "return",
+          "turn": 1
+        },
+        {
+          "src": "return/frames/002-frame-00021.png",
+          "phase": "return",
+          "turn": 2
+        },
+        {
+          "src": "return/frames/003-frame-00021.png",
+          "phase": "return",
+          "turn": 3
+        },
+        {
+          "src": "return/frames/004-frame-00021.png",
+          "phase": "return",
+          "turn": 4
+        },
+        {
+          "src": "return/frames/005-frame-00022.png",
+          "phase": "return",
+          "turn": 5
+        },
+        {
+          "src": "return/frames/006-frame-00023.png",
+          "phase": "return",
+          "turn": 6
+        },
+        {
+          "src": "return/frames/007-frame-00024.png",
+          "phase": "return",
+          "turn": 7
+        },
+        {
+          "src": "return/frames/008-frame-00025.png",
+          "phase": "return",
+          "turn": 8
+        },
+        {
+          "src": "return/frames/009-frame-00025.png",
+          "phase": "return",
+          "turn": 9
+        },
+        {
+          "src": "return/frames/010-frame-00026.png",
+          "phase": "return",
+          "turn": 10
+        },
+        {
+          "src": "return/frames/011-frame-00027.png",
+          "phase": "return",
+          "turn": 11
+        },
+        {
+          "src": "return/frames/012-frame-00028.png",
+          "phase": "return",
+          "turn": 12
+        },
+        {
+          "src": "return/frames/013-frame-00028.png",
+          "phase": "return",
+          "turn": 13
+        },
+        {
+          "src": "return/frames/014-frame-00028.png",
+          "phase": "return",
+          "turn": 14
+        },
+        {
+          "src": "return/frames/015-frame-00028.png",
+          "phase": "return",
+          "turn": 15
+        },
+        {
+          "src": "return/frames/016-frame-00028.png",
+          "phase": "return",
+          "turn": 16
+        },
+        {
+          "src": "return/frames/017-frame-00029.png",
+          "phase": "return",
+          "turn": 17
+        },
+        {
+          "src": "return/frames/018-frame-00029.png",
+          "phase": "return",
+          "turn": 18
+        },
+        {
+          "src": "return/frames/019-frame-00029.png",
+          "phase": "return",
+          "turn": 19
+        },
+        {
+          "src": "return/frames/020-frame-00029.png",
+          "phase": "return",
+          "turn": 20
+        },
+        {
+          "src": "return/frames/021-frame-00030.png",
+          "phase": "return",
+          "turn": 21
+        },
+        {
+          "src": "return/frames/022-frame-00031.png",
+          "phase": "return",
+          "turn": 22
+        },
+        {
+          "src": "return/frames/023-frame-00032.png",
+          "phase": "return",
+          "turn": 23
+        },
+        {
+          "src": "return/frames/024-frame-00033.png",
+          "phase": "return",
+          "turn": 24
+        },
+        {
+          "src": "return/frames/025-frame-00033.png",
+          "phase": "return",
+          "turn": 25
+        },
+        {
+          "src": "return/frames/026-frame-00033.png",
+          "phase": "return",
+          "turn": 26
+        },
+        {
+          "src": "return/frames/027-frame-00033.png",
+          "phase": "return",
+          "turn": 27
+        },
+        {
+          "src": "return/frames/028-frame-00034.png",
+          "phase": "return",
+          "turn": 28
+        },
+        {
+          "src": "return/frames/029-frame-00035.png",
+          "phase": "return",
+          "turn": 29
+        },
+        {
+          "src": "return/frames/030-frame-00035.png",
+          "phase": "return",
+          "turn": 30
+        },
+        {
+          "src": "return/frames/031-frame-00036.png",
+          "phase": "return",
+          "turn": 31
+        },
+        {
+          "src": "return/frames/032-frame-00037.png",
+          "phase": "return",
+          "turn": 32
+        },
+        {
+          "src": "return/frames/033-frame-00038.png",
+          "phase": "return",
+          "turn": 33
+        },
+        {
+          "src": "return/frames/034-frame-00039.png",
+          "phase": "return",
+          "turn": 34
+        },
+        {
+          "src": "return/frames/035-frame-00040.png",
+          "phase": "return",
+          "turn": 35
+        },
+        {
+          "src": "return/frames/036-frame-00040.png",
+          "phase": "return",
+          "turn": 36
+        },
+        {
+          "src": "return/frames/037-frame-00041.png",
+          "phase": "return",
+          "turn": 37
+        }
+      ]
+    }
+  ],
+  "not_run": [],
+  "api_requests": 138,
+  "model_request_attempts": 138,
+  "reported_api_requests": 138,
+  "complete_responses": 138,
+  "reported_complete_responses": 138,
+  "known_usage": {
+    "prompt_tokens": 2881052,
+    "completion_tokens": 326862,
+    "total_tokens": 3207914
+  },
+  "reported_known_usage": {
+    "prompt_tokens": 2881052,
+    "completion_tokens": 326862,
+    "total_tokens": 3207914
+  },
+  "unknown_usage_attempts": 0,
+  "reported_unknown_usage_attempts": 0,
+  "usage_complete": true,
+  "checks": {
+    "same_physical_boundary": true,
+    "return_memory_unchanged": true,
+    "fresh_return_history": true,
+    "shared_coordinate_frame": true,
+    "same_simulation_clock": true,
+    "return_read_memory": true,
+    "source_frozen": true
+  },
+  "return_not_run_reason": null,
+  "error": null,
+  "cleanup_errors": [],
+  "accounting_errors": [],
+  "coordinate_frame_id": "roundtrip-82c2daea3ebf493a825a40d1d3d78685",
+  "wall_elapsed_s": 1234.8109466229998,
+  "sim_elapsed_s": 118.95999999990183,
+  "path_length_m": 13.23468467472144,
+  "memory_versions": [
+    {
+      "revision": 0,
+      "processed_event_seq": 0,
+      "acknowledged_event_seqs": [],
+      "manifest": "memory/revisions/00000000-067f230967174f62acd3a013014a34a3/manifest.json",
+      "changed_documents": []
+    },
+    {
+      "revision": 1,
+      "processed_event_seq": 1,
+      "acknowledged_event_seqs": [],
+      "manifest": "memory/revisions/00000001-40c947e9f009470e903ce5ff9c35ff1c/manifest.json",
+      "changed_documents": [
+        {
+          "path": "MEMORY.md",
+          "href": "memory/revisions/00000001-40c947e9f009470e903ce5ff9c35ff1c/MEMORY.md",
+          "sha256": "2ec051e8643e26fa1e9199a3cf260ee8ff8217aca3312aa5ba5ae3fedb8633f3",
+          "revision": 1,
+          "status": "confirmed",
+          "evidence_count": 1
+        },
+        {
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "href": "memory/revisions/00000001-40c947e9f009470e903ce5ff9c35ff1c/tasks/outbound_drawers_gate_B.md",
+          "sha256": "5281bcd78c01ed7a5a12df1f1dfa0b57d2f62aa63e63a315c80f2307abd154b6",
+          "revision": 1,
+          "status": "confirmed",
+          "evidence_count": 1
+        }
+      ]
+    },
+    {
+      "revision": 2,
+      "processed_event_seq": 9,
+      "acknowledged_event_seqs": [],
+      "manifest": "memory/revisions/00000002-2991c5d07cb64fa295ac8eb75cc6fa13/manifest.json",
+      "changed_documents": [
+        {
+          "path": "episodes/outbound_01_measurements.md",
+          "href": "memory/revisions/00000002-2991c5d07cb64fa295ac8eb75cc6fa13/episodes/outbound_01_measurements.md",
+          "sha256": "c9202c741659ed9df5fafceb7e731113861451810a6ec52b5d8626f6c904f223",
+          "revision": 2,
+          "status": "confirmed",
+          "evidence_count": 8
+        },
+        {
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "href": "memory/revisions/00000002-2991c5d07cb64fa295ac8eb75cc6fa13/tasks/outbound_drawers_gate_B.md",
+          "sha256": "68a04d2df668e13310485654716b42d1ad68c10271d014927a72f354c8f22157",
+          "revision": 2,
+          "status": "confirmed",
+          "evidence_count": 8
+        }
+      ]
+    },
+    {
+      "revision": 3,
+      "processed_event_seq": 15,
+      "acknowledged_event_seqs": [],
+      "manifest": "memory/revisions/00000003-899dec438fc44e7abbdab987f925e8f5/manifest.json",
+      "changed_documents": [
+        {
+          "path": "episodes/outbound_01_measurements.md",
+          "href": "memory/revisions/00000003-899dec438fc44e7abbdab987f925e8f5/episodes/outbound_01_measurements.md",
+          "sha256": "c596d1c52d6bfc19596db8254c07be3d1a7eea67019818b9ce5a824460bd738f",
+          "revision": 3,
+          "status": "confirmed",
+          "evidence_count": 6
+        },
+        {
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "href": "memory/revisions/00000003-899dec438fc44e7abbdab987f925e8f5/tasks/outbound_drawers_gate_B.md",
+          "sha256": "2bc7c60f42b586bbdb900e0b02dc603d965f5d315e45d5b2acbe528b063b3b59",
+          "revision": 3,
+          "status": "confirmed",
+          "evidence_count": 6
+        }
+      ]
+    },
+    {
+      "revision": 4,
+      "processed_event_seq": 19,
+      "acknowledged_event_seqs": [],
+      "manifest": "memory/revisions/00000004-7e3c22a9aaca465397de6d90b6fc2d0b/manifest.json",
+      "changed_documents": [
+        {
+          "path": "episodes/outbound_01_measurements.md",
+          "href": "memory/revisions/00000004-7e3c22a9aaca465397de6d90b6fc2d0b/episodes/outbound_01_measurements.md",
+          "sha256": "a9c21a1b8313117dd5a284347597d6422081a684a54e663b19175797fa3f01a7",
+          "revision": 4,
+          "status": "confirmed",
+          "evidence_count": 4
+        },
+        {
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "href": "memory/revisions/00000004-7e3c22a9aaca465397de6d90b6fc2d0b/tasks/outbound_drawers_gate_B.md",
+          "sha256": "6bd320cdb7236b071438116b6915324730144bec3cbca91ea26800e72dacf110",
+          "revision": 4,
+          "status": "confirmed",
+          "evidence_count": 4
+        }
+      ]
+    },
+    {
+      "revision": 5,
+      "processed_event_seq": 21,
+      "acknowledged_event_seqs": [],
+      "manifest": "memory/revisions/00000005-06952a025d99439b94dd12a70e5c410d/manifest.json",
+      "changed_documents": [
+        {
+          "path": "episodes/outbound_01_measurements.md",
+          "href": "memory/revisions/00000005-06952a025d99439b94dd12a70e5c410d/episodes/outbound_01_measurements.md",
+          "sha256": "f6ea6b84f660faad6f1f2b0fe2a2e3ff8537be687e5108933ae1e92f61c53ff6",
+          "revision": 5,
+          "status": "confirmed",
+          "evidence_count": 6
+        },
+        {
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "href": "memory/revisions/00000005-06952a025d99439b94dd12a70e5c410d/tasks/outbound_drawers_gate_B.md",
+          "sha256": "78043f8fc7a41ca0af4e76ec4b01c1e39df1bee034b1039b0ad1a2f8165f8fdc",
+          "revision": 5,
+          "status": "confirmed",
+          "evidence_count": 6
+        }
+      ]
+    },
+    {
+      "revision": 6,
+      "processed_event_seq": 25,
+      "acknowledged_event_seqs": [],
+      "manifest": "memory/revisions/00000006-54b3e61ffb3b4f489e1ba9d4eba98c24/manifest.json",
+      "changed_documents": [
+        {
+          "path": "episodes/outbound_01_measurements.md",
+          "href": "memory/revisions/00000006-54b3e61ffb3b4f489e1ba9d4eba98c24/episodes/outbound_01_measurements.md",
+          "sha256": "05c68d42ab81fdb9a3784f2b7c9a71d63679ce9c7626ad560387a7d83042620b",
+          "revision": 6,
+          "status": "confirmed",
+          "evidence_count": 10
+        },
+        {
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "href": "memory/revisions/00000006-54b3e61ffb3b4f489e1ba9d4eba98c24/tasks/outbound_drawers_gate_B.md",
+          "sha256": "425edaa412f2328275fdb10b336765296640aafe3ea40db84dde6a431c6ec3f8",
+          "revision": 6,
+          "status": "confirmed",
+          "evidence_count": 10
+        }
+      ]
+    },
+    {
+      "revision": 7,
+      "processed_event_seq": 27,
+      "acknowledged_event_seqs": [],
+      "manifest": "memory/revisions/00000007-fc60e571604a4b2499b6794da0b2560d/manifest.json",
+      "changed_documents": [
+        {
+          "path": "episodes/outbound_01_measurements.md",
+          "href": "memory/revisions/00000007-fc60e571604a4b2499b6794da0b2560d/episodes/outbound_01_measurements.md",
+          "sha256": "90533275c7ba2e747702ef3c484fd1e7c9db9fc5b6017171a558cfe5e99fdbf3",
+          "revision": 7,
+          "status": "confirmed",
+          "evidence_count": 2
+        },
+        {
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "href": "memory/revisions/00000007-fc60e571604a4b2499b6794da0b2560d/tasks/outbound_drawers_gate_B.md",
+          "sha256": "dd8eafd969cee347d34dde405f77b4beffdde4d80a353f8563667ac4e0f26c1c",
+          "revision": 7,
+          "status": "confirmed",
+          "evidence_count": 2
+        }
+      ]
+    },
+    {
+      "revision": 8,
+      "processed_event_seq": 35,
+      "acknowledged_event_seqs": [],
+      "manifest": "memory/revisions/00000008-2cdda31722614671b711599739c983d9/manifest.json",
+      "changed_documents": [
+        {
+          "path": "MEMORY.md",
+          "href": "memory/revisions/00000008-2cdda31722614671b711599739c983d9/MEMORY.md",
+          "sha256": "563533622971d6b6ce82bc50b69931820b473bf97594fd51dfa7bdc93c30fd11",
+          "revision": 8,
+          "status": "confirmed",
+          "evidence_count": 2
+        },
+        {
+          "path": "episodes/outbound_02_crossing_and_approach.md",
+          "href": "memory/revisions/00000008-2cdda31722614671b711599739c983d9/episodes/outbound_02_crossing_and_approach.md",
+          "sha256": "b0400891f3ab7b7073a83c23d080325acf529d6f439f00c5286053882ce71f1b",
+          "revision": 8,
+          "status": "confirmed",
+          "evidence_count": 8
+        },
+        {
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "href": "memory/revisions/00000008-2cdda31722614671b711599739c983d9/tasks/outbound_drawers_gate_B.md",
+          "sha256": "0978b0089bef4b9284955ee7ea91e69c519b3c8737d40735718ef350dbd1a031",
+          "revision": 8,
+          "status": "confirmed",
+          "evidence_count": 9
+        }
+      ]
+    },
+    {
+      "revision": 9,
+      "processed_event_seq": 39,
+      "acknowledged_event_seqs": [],
+      "manifest": "memory/revisions/00000009-44493da2390442e398900d2422161c72/manifest.json",
+      "changed_documents": [
+        {
+          "path": "MEMORY.md",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/MEMORY.md",
+          "sha256": "06cf285a6df7335d3d3182462cedb2b11bcc170b918f07a986256e29fabb2f1c",
+          "revision": 9,
+          "status": "confirmed",
+          "evidence_count": 2
+        },
+        {
+          "path": "episodes/outbound_03_finish_return_start.md",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/episodes/outbound_03_finish_return_start.md",
+          "sha256": "6347d24dc2d198f1951a9126add116dd0d2aedf7fffbcae22996a1f770a6d2e7",
+          "revision": 9,
+          "status": "confirmed",
+          "evidence_count": 4
+        },
+        {
+          "path": "tasks/outbound_drawers_gate_B.md",
+          "href": "memory/revisions/00000009-44493da2390442e398900d2422161c72/tasks/outbound_drawers_gate_B.md",
+          "sha256": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b",
+          "revision": 9,
+          "status": "confirmed",
+          "evidence_count": 4
+        }
+      ]
+    }
+  ],
+  "video": {
+    "decoded_all_frames": true,
+    "frame_count": 2975,
+    "fps": 25,
+    "duration_s": 119.0,
+    "decoded_duration_s": 119.0,
+    "file": "third-person-sim.mp4",
+    "sha256": "de740ae993dac052ae9947942ef478db26da87d0359fe9ea45f98409894826a9",
+    "bytes": 5452452,
+    "source_duration_s": 118.95999999990183,
+    "first_source_index": 0,
+    "last_source_index": 11939,
+    "first_source_sim_time_s": 1.0000000000000007,
+    "last_source_sim_time_s": 119.95999999990183,
+    "first_source_wall_time_s": 0.04367647199978819,
+    "last_source_wall_time_s": 1233.153921291001,
+    "first_and_final_states_included": true,
+    "unique_rendered_samples": 2975,
+    "src": "third_person/third-person-sim.mp4",
+    "manifest": "third_person/video-manifest.json",
+    "timebase": "sim",
+    "state_reconstruction": "mj_setState + mj_forward; never mj_step",
+    "reset_cards": false
+  },
+  "render_error": null,
+  "warnings": [],
+  "source_artifact_sha256": {
+    "experiment.json": "b1bf76735967450b077fe28246e40fd0552fa7874e86ddebed6a43c30f9be8a1",
+    "initial-state.private.json": "5e6cbfb38937c9d0c8dbb48431eaac6754a67ecc82be0999e84ead8bd6f7ffc7",
+    "memory/evidence/0229b127b1c04dc49ae2390e43ed2b27.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "memory/evidence/0ae1f69ae3a44e87b16f2002813d31c5.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "memory/evidence/0d4c0cd4aab94c7ea3efabe9aa44642c.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "memory/evidence/1afe8cc5118c426ca859a932e7f909f6.png": "7f25c946c559ea16d228c767587ab3446fd58df354bce0df0772bdd9e2fa4bb7",
+    "memory/evidence/25763d96f132486fa7207c00b9c62c16.png": "bd39cdef9122e9b8a7cbbde2e08567343e9f9aafcfd67f198fbaf97720e7bda0",
+    "memory/evidence/2cc9151da8204abe9a3d7bb247a026de.png": "86d51a504df125935f9485b3951c59dfc509f7e49efe9c008b9be6a01a858da1",
+    "memory/evidence/379bffe82bd94ffda72f7cc3bc830383.png": "0587253bc59bdf324513dbd9e002568139f19857a1f7fe0c9bbe4d5207063ee3",
+    "memory/evidence/3ac023ed9e594ddc998257eba64cd2ca.png": "60e7de1e638cf4eafe384da4be42c3e715bbe5debac7b374dc13a23573515c2a",
+    "memory/evidence/3b71260341214e1abb6244448f93c1f7.png": "86d51a504df125935f9485b3951c59dfc509f7e49efe9c008b9be6a01a858da1",
+    "memory/evidence/4e96b708524c458baf92b3936a5c9bb4.png": "bd39cdef9122e9b8a7cbbde2e08567343e9f9aafcfd67f198fbaf97720e7bda0",
+    "memory/evidence/4fc45b940cb1452cb937662fc02fc7a2.png": "eef20b160d70a8ac1f70f8961d3da5f0d04c9b5c1a31305ff4defe727edb79ae",
+    "memory/evidence/5198024e394e4a5eb6bbdeb370a4f709.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "memory/evidence/598f394ff62c4c7f8c86e98c50beb645.png": "e206d8c8e521b784f2e8a4995c344bd40e4449bbb5cc8047e9ea09ff859789a5",
+    "memory/evidence/6bf80ab63825463e8a827314f07a8969.png": "7a531eb28493203dd7a551c8cf746e0866eceebccb1c79c74efc4cd7dd2dee34",
+    "memory/evidence/720908dc46c548dfb934e866226da547.png": "7f25c946c559ea16d228c767587ab3446fd58df354bce0df0772bdd9e2fa4bb7",
+    "memory/evidence/73584fcd50e14a4c8ddc46740cfe2b8f.png": "7a531eb28493203dd7a551c8cf746e0866eceebccb1c79c74efc4cd7dd2dee34",
+    "memory/evidence/77f1f0704ba24b45a4bdcc138fc61a28.png": "d0fd8846b9c405e4d45daf9cca910f8ea71fe1b91f5990b04902a9ce87d1254c",
+    "memory/evidence/86b37f3433c647318332fb76007acbd1.png": "7f25c946c559ea16d228c767587ab3446fd58df354bce0df0772bdd9e2fa4bb7",
+    "memory/evidence/8896cf6520774575b4c1fbf75dc9690b.png": "e206d8c8e521b784f2e8a4995c344bd40e4449bbb5cc8047e9ea09ff859789a5",
+    "memory/evidence/9ed9c079986747fb8ff01300118870c0.png": "4dd22c4a6e31dcd18726e920ee4b5db19c05d3a63a26c666a6cf4964b27e03b7",
+    "memory/evidence/a080ba142d5e41c892322586b3815307.png": "7f25c946c559ea16d228c767587ab3446fd58df354bce0df0772bdd9e2fa4bb7",
+    "memory/evidence/a25b5adbbed34db8943c157214b987ea.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "memory/evidence/a39cac85fafc4f94838b513285c5ae3f.png": "069ab9f38a80204958d93180dd38f3c47d10697de9521072da6de813be548a97",
+    "memory/evidence/aa98ee4d36ed4bc5993c669e40856adb.png": "f23935f95809a65b8e6ff12154c9537f59b69cfacfb86298469494532fcd3d4e",
+    "memory/evidence/ab8ad3c6e25a46e49b0eff65d21ed5c9.png": "b7d672fc7b609657443b38432e6db999ff323cee07f667967c2080e89d5a1095",
+    "memory/evidence/abb9a877d3844fd194e8aa14eaadfe78.png": "eef20b160d70a8ac1f70f8961d3da5f0d04c9b5c1a31305ff4defe727edb79ae",
+    "memory/evidence/b6a770b909ab4ffea97fa66f3388cb29.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "memory/evidence/bb42dabcd591424baab92913d64a76e9.png": "069ab9f38a80204958d93180dd38f3c47d10697de9521072da6de813be548a97",
+    "memory/evidence/c1cc015dd88a43899a36edb9f3063ecf.png": "86d51a504df125935f9485b3951c59dfc509f7e49efe9c008b9be6a01a858da1",
+    "memory/evidence/ccb09e96479147688c216a3561f00db0.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "memory/evidence/d574a7c129ce438cad1e980c0fec6aeb.png": "0dfbbe7c3b152c74036950bf98e3988a4e8568ebf331beaaf44eef9c2ae97b1e",
+    "memory/evidence/d72f0c3c42e34de8aa4e2929f4e61595.png": "0587253bc59bdf324513dbd9e002568139f19857a1f7fe0c9bbe4d5207063ee3",
+    "memory/evidence/ddc346744f914ea087ffcf01e9a97987.png": "f8cc20cf84ad88e2d449b599db0b7ee02450a6395ccba3c625199597091e0d04",
+    "memory/evidence/dea4ea4f34414697a33488ebac7291ba.png": "f23935f95809a65b8e6ff12154c9537f59b69cfacfb86298469494532fcd3d4e",
+    "memory/evidence/e7cf9a202923434798499c5b86cf65b6.png": "f4d150acd5127617582aac9033d96800597d7d69223ab5835b92ab1ed5b43c92",
+    "memory/evidence/f06ef0c783d74c67b901043d9eaf9190.png": "f8cc20cf84ad88e2d449b599db0b7ee02450a6395ccba3c625199597091e0d04",
+    "memory/evidence/f197bd00be6f45f0973cd52f61efc89c.png": "86d51a504df125935f9485b3951c59dfc509f7e49efe9c008b9be6a01a858da1",
+    "memory/evidence/f33375a1b9a44ed6b7ae01b31a2cb448.png": "b7d672fc7b609657443b38432e6db999ff323cee07f667967c2080e89d5a1095",
+    "memory/evidence/f981d3d620ce484f97da384a75b8fe24.png": "f23935f95809a65b8e6ff12154c9537f59b69cfacfb86298469494532fcd3d4e",
+    "memory/index.sqlite3": "c802cd8dcd6df619744de4eab98af95f8b93a6764935c2af588e2adbc214266c",
+    "memory/revisions/00000000-067f230967174f62acd3a013014a34a3/manifest.json": "520bf8b3f289f076ba64d6522826ee72e4321bb57d0bc2e55c69017a78afe867",
+    "memory/revisions/00000001-40c947e9f009470e903ce5ff9c35ff1c/MEMORY.md": "2ec051e8643e26fa1e9199a3cf260ee8ff8217aca3312aa5ba5ae3fedb8633f3",
+    "memory/revisions/00000001-40c947e9f009470e903ce5ff9c35ff1c/manifest.json": "0136847813083a0f21991a6ce6faf7e34a6310fb138be0dba82537f42508771b",
+    "memory/revisions/00000001-40c947e9f009470e903ce5ff9c35ff1c/tasks/outbound_drawers_gate_B.md": "5281bcd78c01ed7a5a12df1f1dfa0b57d2f62aa63e63a315c80f2307abd154b6",
+    "memory/revisions/00000002-2991c5d07cb64fa295ac8eb75cc6fa13/MEMORY.md": "2ec051e8643e26fa1e9199a3cf260ee8ff8217aca3312aa5ba5ae3fedb8633f3",
+    "memory/revisions/00000002-2991c5d07cb64fa295ac8eb75cc6fa13/episodes/outbound_01_measurements.md": "c9202c741659ed9df5fafceb7e731113861451810a6ec52b5d8626f6c904f223",
+    "memory/revisions/00000002-2991c5d07cb64fa295ac8eb75cc6fa13/manifest.json": "4074397bdc02cec069628d2e9c882e1fad9e4b6a1c7cb3315f2eb931e4822595",
+    "memory/revisions/00000002-2991c5d07cb64fa295ac8eb75cc6fa13/tasks/outbound_drawers_gate_B.md": "68a04d2df668e13310485654716b42d1ad68c10271d014927a72f354c8f22157",
+    "memory/revisions/00000003-899dec438fc44e7abbdab987f925e8f5/MEMORY.md": "2ec051e8643e26fa1e9199a3cf260ee8ff8217aca3312aa5ba5ae3fedb8633f3",
+    "memory/revisions/00000003-899dec438fc44e7abbdab987f925e8f5/episodes/outbound_01_measurements.md": "c596d1c52d6bfc19596db8254c07be3d1a7eea67019818b9ce5a824460bd738f",
+    "memory/revisions/00000003-899dec438fc44e7abbdab987f925e8f5/manifest.json": "fcbaff2e66803e363a99a8cf603c4aa4988654edc62e88b53d3f18bf69bbe67c",
+    "memory/revisions/00000003-899dec438fc44e7abbdab987f925e8f5/tasks/outbound_drawers_gate_B.md": "2bc7c60f42b586bbdb900e0b02dc603d965f5d315e45d5b2acbe528b063b3b59",
+    "memory/revisions/00000004-7e3c22a9aaca465397de6d90b6fc2d0b/MEMORY.md": "2ec051e8643e26fa1e9199a3cf260ee8ff8217aca3312aa5ba5ae3fedb8633f3",
+    "memory/revisions/00000004-7e3c22a9aaca465397de6d90b6fc2d0b/episodes/outbound_01_measurements.md": "a9c21a1b8313117dd5a284347597d6422081a684a54e663b19175797fa3f01a7",
+    "memory/revisions/00000004-7e3c22a9aaca465397de6d90b6fc2d0b/manifest.json": "1ac643bde332f114e6a05010e0847776f04eb3446c7864a9713d5b8c71eb4d4b",
+    "memory/revisions/00000004-7e3c22a9aaca465397de6d90b6fc2d0b/tasks/outbound_drawers_gate_B.md": "6bd320cdb7236b071438116b6915324730144bec3cbca91ea26800e72dacf110",
+    "memory/revisions/00000005-06952a025d99439b94dd12a70e5c410d/MEMORY.md": "2ec051e8643e26fa1e9199a3cf260ee8ff8217aca3312aa5ba5ae3fedb8633f3",
+    "memory/revisions/00000005-06952a025d99439b94dd12a70e5c410d/episodes/outbound_01_measurements.md": "f6ea6b84f660faad6f1f2b0fe2a2e3ff8537be687e5108933ae1e92f61c53ff6",
+    "memory/revisions/00000005-06952a025d99439b94dd12a70e5c410d/manifest.json": "3ed78d0bac93bf32e7f617093ec41177c3c1f3980306b99c2d7c20a0d2b060b8",
+    "memory/revisions/00000005-06952a025d99439b94dd12a70e5c410d/tasks/outbound_drawers_gate_B.md": "78043f8fc7a41ca0af4e76ec4b01c1e39df1bee034b1039b0ad1a2f8165f8fdc",
+    "memory/revisions/00000006-54b3e61ffb3b4f489e1ba9d4eba98c24/MEMORY.md": "2ec051e8643e26fa1e9199a3cf260ee8ff8217aca3312aa5ba5ae3fedb8633f3",
+    "memory/revisions/00000006-54b3e61ffb3b4f489e1ba9d4eba98c24/episodes/outbound_01_measurements.md": "05c68d42ab81fdb9a3784f2b7c9a71d63679ce9c7626ad560387a7d83042620b",
+    "memory/revisions/00000006-54b3e61ffb3b4f489e1ba9d4eba98c24/manifest.json": "5f978df283345ed0ab4e9c800c6c9bcbc6374318687e7989b4e5224bb0abb343",
+    "memory/revisions/00000006-54b3e61ffb3b4f489e1ba9d4eba98c24/tasks/outbound_drawers_gate_B.md": "425edaa412f2328275fdb10b336765296640aafe3ea40db84dde6a431c6ec3f8",
+    "memory/revisions/00000007-fc60e571604a4b2499b6794da0b2560d/MEMORY.md": "2ec051e8643e26fa1e9199a3cf260ee8ff8217aca3312aa5ba5ae3fedb8633f3",
+    "memory/revisions/00000007-fc60e571604a4b2499b6794da0b2560d/episodes/outbound_01_measurements.md": "90533275c7ba2e747702ef3c484fd1e7c9db9fc5b6017171a558cfe5e99fdbf3",
+    "memory/revisions/00000007-fc60e571604a4b2499b6794da0b2560d/manifest.json": "560a5b0961a53a8d26b6f929e1bd2f921a94762fa41d48d90b8aaa5129c7b40f",
+    "memory/revisions/00000007-fc60e571604a4b2499b6794da0b2560d/tasks/outbound_drawers_gate_B.md": "dd8eafd969cee347d34dde405f77b4beffdde4d80a353f8563667ac4e0f26c1c",
+    "memory/revisions/00000008-2cdda31722614671b711599739c983d9/MEMORY.md": "563533622971d6b6ce82bc50b69931820b473bf97594fd51dfa7bdc93c30fd11",
+    "memory/revisions/00000008-2cdda31722614671b711599739c983d9/episodes/outbound_01_measurements.md": "90533275c7ba2e747702ef3c484fd1e7c9db9fc5b6017171a558cfe5e99fdbf3",
+    "memory/revisions/00000008-2cdda31722614671b711599739c983d9/episodes/outbound_02_crossing_and_approach.md": "b0400891f3ab7b7073a83c23d080325acf529d6f439f00c5286053882ce71f1b",
+    "memory/revisions/00000008-2cdda31722614671b711599739c983d9/manifest.json": "66f1903d6aa56c06c75361d1ca9beacdd79135e4193089b82b1573a2bf84d32a",
+    "memory/revisions/00000008-2cdda31722614671b711599739c983d9/tasks/outbound_drawers_gate_B.md": "0978b0089bef4b9284955ee7ea91e69c519b3c8737d40735718ef350dbd1a031",
+    "memory/revisions/00000009-44493da2390442e398900d2422161c72/MEMORY.md": "06cf285a6df7335d3d3182462cedb2b11bcc170b918f07a986256e29fabb2f1c",
+    "memory/revisions/00000009-44493da2390442e398900d2422161c72/episodes/outbound_01_measurements.md": "90533275c7ba2e747702ef3c484fd1e7c9db9fc5b6017171a558cfe5e99fdbf3",
+    "memory/revisions/00000009-44493da2390442e398900d2422161c72/episodes/outbound_02_crossing_and_approach.md": "b0400891f3ab7b7073a83c23d080325acf529d6f439f00c5286053882ce71f1b",
+    "memory/revisions/00000009-44493da2390442e398900d2422161c72/episodes/outbound_03_finish_return_start.md": "6347d24dc2d198f1951a9126add116dd0d2aedf7fffbcae22996a1f770a6d2e7",
+    "memory/revisions/00000009-44493da2390442e398900d2422161c72/manifest.json": "e1d8c2b26e9c0204e7cd9f57460812131bebc701647f959aa7f8958129aafa73",
+    "memory/revisions/00000009-44493da2390442e398900d2422161c72/tasks/outbound_drawers_gate_B.md": "5099a7a9bece4703372f0c581840fd8422e8913666b68ff3999a7ebeac88447b",
+    "outbound/events.jsonl": "67ddac3500be323cb999d47db2fd5d6861027984db20043e3dbcdff6700467d2",
+    "outbound/frames/000-frame-00002.png": "7f25c946c559ea16d228c767587ab3446fd58df354bce0df0772bdd9e2fa4bb7",
+    "outbound/frames/001-frame-00002.png": "7f25c946c559ea16d228c767587ab3446fd58df354bce0df0772bdd9e2fa4bb7",
+    "outbound/frames/002-frame-00002.png": "7f25c946c559ea16d228c767587ab3446fd58df354bce0df0772bdd9e2fa4bb7",
+    "outbound/frames/003-frame-00002.png": "7f25c946c559ea16d228c767587ab3446fd58df354bce0df0772bdd9e2fa4bb7",
+    "outbound/frames/004-frame-00002.png": "7f25c946c559ea16d228c767587ab3446fd58df354bce0df0772bdd9e2fa4bb7",
+    "outbound/frames/005-frame-00002.png": "7f25c946c559ea16d228c767587ab3446fd58df354bce0df0772bdd9e2fa4bb7",
+    "outbound/frames/006-frame-00003.png": "86d51a504df125935f9485b3951c59dfc509f7e49efe9c008b9be6a01a858da1",
+    "outbound/frames/007-frame-00003.png": "86d51a504df125935f9485b3951c59dfc509f7e49efe9c008b9be6a01a858da1",
+    "outbound/frames/008-frame-00003.png": "86d51a504df125935f9485b3951c59dfc509f7e49efe9c008b9be6a01a858da1",
+    "outbound/frames/009-frame-00003.png": "86d51a504df125935f9485b3951c59dfc509f7e49efe9c008b9be6a01a858da1",
+    "outbound/frames/010-frame-00004.png": "f8cc20cf84ad88e2d449b599db0b7ee02450a6395ccba3c625199597091e0d04",
+    "outbound/frames/011-frame-00004.png": "f8cc20cf84ad88e2d449b599db0b7ee02450a6395ccba3c625199597091e0d04",
+    "outbound/frames/012-frame-00005.png": "069ab9f38a80204958d93180dd38f3c47d10697de9521072da6de813be548a97",
+    "outbound/frames/013-frame-00005.png": "069ab9f38a80204958d93180dd38f3c47d10697de9521072da6de813be548a97",
+    "outbound/frames/014-frame-00006.png": "f23935f95809a65b8e6ff12154c9537f59b69cfacfb86298469494532fcd3d4e",
+    "outbound/frames/015-frame-00006.png": "f23935f95809a65b8e6ff12154c9537f59b69cfacfb86298469494532fcd3d4e",
+    "outbound/frames/016-frame-00006.png": "f23935f95809a65b8e6ff12154c9537f59b69cfacfb86298469494532fcd3d4e",
+    "outbound/frames/017-frame-00006.png": "f23935f95809a65b8e6ff12154c9537f59b69cfacfb86298469494532fcd3d4e",
+    "outbound/frames/018-frame-00006.png": "f23935f95809a65b8e6ff12154c9537f59b69cfacfb86298469494532fcd3d4e",
+    "outbound/frames/019-frame-00006.png": "f23935f95809a65b8e6ff12154c9537f59b69cfacfb86298469494532fcd3d4e",
+    "outbound/frames/020-frame-00006.png": "f23935f95809a65b8e6ff12154c9537f59b69cfacfb86298469494532fcd3d4e",
+    "outbound/frames/021-frame-00007.png": "0587253bc59bdf324513dbd9e002568139f19857a1f7fe0c9bbe4d5207063ee3",
+    "outbound/frames/022-frame-00007.png": "0587253bc59bdf324513dbd9e002568139f19857a1f7fe0c9bbe4d5207063ee3",
+    "outbound/frames/023-frame-00008.png": "60e7de1e638cf4eafe384da4be42c3e715bbe5debac7b374dc13a23573515c2a",
+    "outbound/frames/024-frame-00009.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "outbound/frames/025-frame-00009.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "outbound/frames/026-frame-00009.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "outbound/frames/027-frame-00009.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "outbound/frames/028-frame-00009.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "outbound/frames/029-frame-00009.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "outbound/frames/030-frame-00009.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "outbound/frames/031-frame-00009.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "outbound/frames/032-frame-00009.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "outbound/frames/033-frame-00009.png": "5f2b202f1df28618d38e3cf67db5fb3b1f17a23058a5ca4c6931ed87cce00231",
+    "outbound/frames/034-frame-00010.png": "d0fd8846b9c405e4d45daf9cca910f8ea71fe1b91f5990b04902a9ce87d1254c",
+    "outbound/frames/035-frame-00011.png": "4dd22c4a6e31dcd18726e920ee4b5db19c05d3a63a26c666a6cf4964b27e03b7",
+    "outbound/frames/036-frame-00012.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "outbound/frames/037-frame-00012.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "outbound/frames/038-frame-00012.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "outbound/frames/039-frame-00012.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "outbound/frames/040-frame-00012.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "outbound/frames/041-frame-00012.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "outbound/frames/042-frame-00012.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "outbound/frames/043-frame-00012.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "outbound/frames/044-frame-00012.png": "a6a3a7ab8fefb2403962c1850c55a687d80c636c0d91503ad0d33f4a02344e8c",
+    "outbound/frames/045-frame-00013.png": "e206d8c8e521b784f2e8a4995c344bd40e4449bbb5cc8047e9ea09ff859789a5",
+    "outbound/frames/046-frame-00013.png": "e206d8c8e521b784f2e8a4995c344bd40e4449bbb5cc8047e9ea09ff859789a5",
+    "outbound/frames/047-frame-00014.png": "7a531eb28493203dd7a551c8cf746e0866eceebccb1c79c74efc4cd7dd2dee34",
+    "outbound/frames/048-frame-00014.png": "7a531eb28493203dd7a551c8cf746e0866eceebccb1c79c74efc4cd7dd2dee34",
+    "outbound/frames/049-frame-00015.png": "f4d150acd5127617582aac9033d96800597d7d69223ab5835b92ab1ed5b43c92",
+    "outbound/frames/050-frame-00016.png": "bd39cdef9122e9b8a7cbbde2e08567343e9f9aafcfd67f198fbaf97720e7bda0",
+    "outbound/frames/051-frame-00016.png": "bd39cdef9122e9b8a7cbbde2e08567343e9f9aafcfd67f198fbaf97720e7bda0",
+    "outbound/frames/052-frame-00017.png": "eef20b160d70a8ac1f70f8961d3da5f0d04c9b5c1a31305ff4defe727edb79ae",
+    "outbound/frames/053-frame-00017.png": "eef20b160d70a8ac1f70f8961d3da5f0d04c9b5c1a31305ff4defe727edb79ae",
+    "outbound/frames/054-frame-00018.png": "b7d672fc7b609657443b38432e6db999ff323cee07f667967c2080e89d5a1095",
+    "outbound/frames/055-frame-00018.png": "b7d672fc7b609657443b38432e6db999ff323cee07f667967c2080e89d5a1095",
+    "outbound/frames/056-frame-00018.png": "b7d672fc7b609657443b38432e6db999ff323cee07f667967c2080e89d5a1095",
+    "outbound/frames/057-frame-00018.png": "b7d672fc7b609657443b38432e6db999ff323cee07f667967c2080e89d5a1095",
+    "outbound/frames/058-frame-00018.png": "b7d672fc7b609657443b38432e6db999ff323cee07f667967c2080e89d5a1095",
+    "outbound/frames/final-frame-00020.png": "d903f372f6d3b53d54500911a83760b726ec3e661ca51868c729235173f9e682",
+    "outbound/manifest.json": "9f8a072fa734c6c18dac39ed8a9ad25636e22d5a7d3274130f0f8aaa5a9d8581",
+    "outbound/memory-agent.jsonl": "06217b185c8112507a4185a488b9426336589a30e63a262c070c4f49591d0899",
+    "outbound/memory-final.json": "7d0c5cb324167049a7a019cf580a17f8efc8e50ddb71c74688d6171a22a96084",
+    "outbound/memory-initial.json": "7671256269fd13922527299b2309e8ac1ffad075a7b68feb675a2620444289f6",
+    "outbound/memory-system-prompt.txt": "0305b30fed3e2e91b3b997f8d2b7b79ab531092a3c4525fb8a3722162940e379",
+    "outbound/memory-tools.json": "fbf28d42158ccb00987dca2b8573d2b179baeea46bf1d203cce8f3e88750a9b9",
+    "outbound/metrics.json": "873202c250cc14626d8b8ef8578dedfb725f484feeb4183974802f90c4b6e748",
+    "outbound/robot_profile.json": "cfa54838a06e5d863ad0b256036e36e1e482e1a7d1ae86642d9b4311617645fb",
+    "outbound/system_prompt.txt": "f3a92ea0b670321a70c6e9f44f6f27eca702c01bd9610d2d915f80bea25efd40",
+    "outbound/tools.json": "26440bf051e858c3d5415632904aa112963bd61b08a3cbee1c3a182d6da65c0e",
+    "outbound/trajectory.jsonl": "61774dd0ffe19118f05c25d1cfd79350ed89b1f8907988898885985c6463c765",
+    "return/events.jsonl": "12e49c258057feedc532d6405f9f1e4fb083ecc94afd418b44e6e4e0bacb8511",
+    "return/frames/000-frame-00021.png": "d903f372f6d3b53d54500911a83760b726ec3e661ca51868c729235173f9e682",
+    "return/frames/001-frame-00021.png": "d903f372f6d3b53d54500911a83760b726ec3e661ca51868c729235173f9e682",
+    "return/frames/002-frame-00021.png": "d903f372f6d3b53d54500911a83760b726ec3e661ca51868c729235173f9e682",
+    "return/frames/003-frame-00021.png": "d903f372f6d3b53d54500911a83760b726ec3e661ca51868c729235173f9e682",
+    "return/frames/004-frame-00021.png": "d903f372f6d3b53d54500911a83760b726ec3e661ca51868c729235173f9e682",
+    "return/frames/005-frame-00022.png": "ae5ba987fd8bd20568ac4e19b5c82ca92b235c9ccaa7866fbab13a277fd4cd4d",
+    "return/frames/006-frame-00023.png": "13a2dd3ebd2525c0c5bb22e4c08dbdf49b87217e2231bbdd30e355515b818aa6",
+    "return/frames/007-frame-00024.png": "cc95f98f667a97866686c11d196ddd680ede69a57a249527ca21183743bd538d",
+    "return/frames/008-frame-00025.png": "00a81f010d4b77093206caff88da9b2d1d48682ee7504fc8cd61c1389a1003f9",
+    "return/frames/009-frame-00025.png": "00a81f010d4b77093206caff88da9b2d1d48682ee7504fc8cd61c1389a1003f9",
+    "return/frames/010-frame-00026.png": "b490a75cd5fd36a11d3ab88fa6285abe1315d88cbe74f1fd5a295ee005e16b50",
+    "return/frames/011-frame-00027.png": "f3e5b5dc32f28aee1e0702a3a78d7844b78114d6cadecfd047eea45cedd97780",
+    "return/frames/012-frame-00028.png": "01708f8b23c8b8efd1ad085bc5251caa65d3c431867e36e0e3683f5a94052207",
+    "return/frames/013-frame-00028.png": "01708f8b23c8b8efd1ad085bc5251caa65d3c431867e36e0e3683f5a94052207",
+    "return/frames/014-frame-00028.png": "01708f8b23c8b8efd1ad085bc5251caa65d3c431867e36e0e3683f5a94052207",
+    "return/frames/015-frame-00028.png": "01708f8b23c8b8efd1ad085bc5251caa65d3c431867e36e0e3683f5a94052207",
+    "return/frames/016-frame-00028.png": "01708f8b23c8b8efd1ad085bc5251caa65d3c431867e36e0e3683f5a94052207",
+    "return/frames/017-frame-00029.png": "0c4d1defae814fe66027f76219c037058c173179f0945bb79fd191458c2b098c",
+    "return/frames/018-frame-00029.png": "0c4d1defae814fe66027f76219c037058c173179f0945bb79fd191458c2b098c",
+    "return/frames/019-frame-00029.png": "0c4d1defae814fe66027f76219c037058c173179f0945bb79fd191458c2b098c",
+    "return/frames/020-frame-00029.png": "0c4d1defae814fe66027f76219c037058c173179f0945bb79fd191458c2b098c",
+    "return/frames/021-frame-00030.png": "06de94a3130bbf9f24ff3cdb99d4760fb64d9beda01141c50a169c03403cd89f",
+    "return/frames/022-frame-00031.png": "66074838f17c85e8b7be9efe66ee165f15fdbdbbb349ab89e4f35cddc92a9f48",
+    "return/frames/023-frame-00032.png": "35d37a0e3f4e3b63ad7a7402cbd9277fd62c5874409d1e986bd20a0f1fcc64a5",
+    "return/frames/024-frame-00033.png": "1712e67ab7483d52727c3219866be920cf6917d088efe68ea0ee62341dbce32c",
+    "return/frames/025-frame-00033.png": "1712e67ab7483d52727c3219866be920cf6917d088efe68ea0ee62341dbce32c",
+    "return/frames/026-frame-00033.png": "1712e67ab7483d52727c3219866be920cf6917d088efe68ea0ee62341dbce32c",
+    "return/frames/027-frame-00033.png": "1712e67ab7483d52727c3219866be920cf6917d088efe68ea0ee62341dbce32c",
+    "return/frames/028-frame-00034.png": "73229f6e5a6e642793dfe7601cc9a4f0956d2a9addd22b18aee8befee0960892",
+    "return/frames/029-frame-00035.png": "72f85dc530488f516517f347c994b4da71ae1b07b054cb74071aff82b4548f0d",
+    "return/frames/030-frame-00035.png": "72f85dc530488f516517f347c994b4da71ae1b07b054cb74071aff82b4548f0d",
+    "return/frames/031-frame-00036.png": "2d37a738d05570dfeae35f32f69c5cd14a97355544b54cb82bc2916ed6ade4a4",
+    "return/frames/032-frame-00037.png": "bb142d5bf7b8ac932a2a98f856b69121b709c4ef9e99ea75ed0e06663ef3c6c9",
+    "return/frames/033-frame-00038.png": "b0a9a7fe903934c6ff7dfd04dfd23779c836ecbada6d28193fee12e549995a54",
+    "return/frames/034-frame-00039.png": "ca733f1f3ef9d15fdb4da522f34f26eb2f6e3e8dd6ddccf1d0da5b44cb7aabba",
+    "return/frames/035-frame-00040.png": "510e5f4d0ac3cff1c5a8a7e812583f00fe897919d6775b57641c97d1ebdb0f54",
+    "return/frames/036-frame-00040.png": "510e5f4d0ac3cff1c5a8a7e812583f00fe897919d6775b57641c97d1ebdb0f54",
+    "return/frames/037-frame-00041.png": "38fc8f212e46a51dd831518cfa8a51b6b974ddba740af85e98d76b8f16b5ec89",
+    "return/frames/final-frame-00043.png": "f162192aa6ec3a5f41620b47d3c1f0acd25cedae23de263daa6a3cb9c11c56c9",
+    "return/manifest.json": "53e20b4f7d7a38935963c0d1df8c028a7ecdf7585e881e23cabf3de08a30300e",
+    "return/memory-final.json": "7d0c5cb324167049a7a019cf580a17f8efc8e50ddb71c74688d6171a22a96084",
+    "return/memory-initial.json": "7d0c5cb324167049a7a019cf580a17f8efc8e50ddb71c74688d6171a22a96084",
+    "return/memory-system-prompt.txt": "0305b30fed3e2e91b3b997f8d2b7b79ab531092a3c4525fb8a3722162940e379",
+    "return/memory-tools.json": "fbf28d42158ccb00987dca2b8573d2b179baeea46bf1d203cce8f3e88750a9b9",
+    "return/metrics.json": "50e1ab0d3ebff29924c326623cca4ec8eafd7e1299736feedc85e51e2c796363",
+    "return/robot_profile.json": "cfa54838a06e5d863ad0b256036e36e1e482e1a7d1ae86642d9b4311617645fb",
+    "return/system_prompt.txt": "f3a92ea0b670321a70c6e9f44f6f27eca702c01bd9610d2d915f80bea25efd40",
+    "return/tools.json": "26440bf051e858c3d5415632904aa112963bd61b08a3cbee1c3a182d6da65c0e",
+    "return/trajectory.jsonl": "26dee16e449f93c891a718dbd7ed8f24138d0ff3287d49d8424a99813671a008",
+    "summary.json": "2ae7173ea8a5961ff3a43d064b7b239775c58e923fc6d867947fab81b485251f",
+    "third_person/metadata.json": "acf4e3b900221ba787e8f8a9119f62f5bc997da65c8c2e23317e8ce30c0db076",
+    "third_person/model.mjb": "c8ca5bf584ef61990a8904467e307700038d7410536bbe6376d55617108d3bb0",
+    "third_person/states.npz": "6a36e1537862b3fb3642d9ea1b6c60bacd2184be475e2cfa8d90738215f284db",
+    "trajectory.jsonl": "03a286ddcb4e6d414e4b67c9febdefc77100dffd8fe69bec96721d80bf699c72",
+    "turnaround.private.json": "b6ed5deee70436a7c4e1e10269adcafa896c2506e6eff00f7bcacf7e8372008a"
+  },
+  "report_generation_api_requests": 0,
+  "causal_memory_benefit_established": false
+}
