@@ -26,3 +26,21 @@ python -m go2_demo occluded-return --mode render --runs-dir runs/paired-return
 ```
 
 `shared/documents/` 保存实际的交接记忆。`direct/` 和 `query/` 各自保存评分、分角色用量、规划事件、前视图像和完整连续轨迹。录像 `video/full.mp4` 包含共同的去程以及该组独立的返程，按仿真时间播放。每组的 `manifest.json` 留存代码、A 处观测、去程轨迹和文档的哈希值。
+
+## 根据当前位置询问返程路段
+
+`local-query` 把规划器提问时的公开里程计和任务阶段传给记忆模型。在去程路点中找出离当前位置最近的记录及按返程顺序相邻的两个记录，作为选取证据的提示。记忆模型从同一套冻结文档中选取至多三条记录，并指出证据缺口。记录过机身位置的路点仍须结合当前观测检查通行条件。缓存按问题、位姿、阶段和本轮文档隔离。
+
+在已完成 `prepare` 的运行目录执行新版完整返程并生成录像：
+
+```bash
+python -m go2_demo occluded-return --mode local-query "${common[@]}" --api-key-file "$MODEL_API_KEY_FILE"
+python -m go2_demo occluded-return --mode render --runs-dir runs/paired-return
+```
+
+可单独复测原问答组第 6 次决策。在同一张图、同一物理状态和同一份五轮公开历史下，仅替换当前回答。旧进程未归档的模型内部历史无法还原，所以对照组也重新请求模型。两组使用相同的原问题、工具和 8,192 输出 token 预算；每个样本只提请规划器做一次决策，物理工具在各自恢复的同一状态上执行。再次查询记忆单列为追问。每个返回工具的样本留存执行结果和执行后的图片。以下命令有一次记忆选择和十次规划请求。
+
+```bash
+python scripts/retest_occluded_frame.py --archive runs/outbound-seed0-input --assets-dir assets \
+    --out runs/frame6-local-comparison --api-key-file "$MODEL_API_KEY_FILE" --pairs 5
+```

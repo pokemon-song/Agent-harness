@@ -45,12 +45,20 @@ class ReturnPlanner(APIModel):
     """Record returned provider usage even if a response fails tool parsing."""
 
     raw_usage = None
+    response_finish_reason = None
 
     async def _request(self, payload, timeout_s):
         self.raw_usage = None
+        self.response_finish_reason = None
         body = await super()._request(payload, timeout_s)
         try:
-            self.raw_usage = json.loads(body).get("usage")
+            reply = json.loads(body)
+            self.raw_usage = reply.get("usage")
+            choices = reply.get("choices")
+            if isinstance(choices, list) and len(choices) == 1 and isinstance(choices[0], dict):
+                reason = choices[0].get("finish_reason")
+                if reason in ("length", "tool_calls", "stop", "content_filter"):
+                    self.response_finish_reason = reason
         except (ValueError, AttributeError):
             pass
         return body
@@ -102,6 +110,8 @@ def run_return(args, backend, harness, planner, recall, log):
             break
         frame = harness.frame
         obs = harness.observation()
+        if recall.mode == "local-query":
+            recall.set_location(obs["local_odometry"], "return_from_A_to_B")
         candidates, _ = detector.inspect(obs, frame.rgb, frame.depth_m, frame.intrinsics)
         obs["target_candidates"] = candidates["target_candidates"]
         obs["return_memory"] = recall.context()
@@ -127,7 +137,8 @@ def run_return(args, backend, harness, planner, recall, log):
         known_responses += int(all(type(usage.get(key)) is int for key in TOKEN_KEYS))
         latency = time.monotonic() - started
         if failure:
-            log.write("model_error", turn=turn, error_code=failure, latency_s=latency, usage=usage)
+            log.write("model_error", turn=turn, error_code=failure, latency_s=latency, usage=usage,
+                      finish_reason=getattr(planner, "response_finish_reason", None))
             if not prior_error and failure in {"MODEL_PROTOCOL_ERROR", "MODEL_TIMEOUT", "MODEL_TRANSPORT_ERROR"}:
                 prior_error = failure + ": return exactly one valid tool call"
                 protocol_failures += 1
@@ -227,7 +238,7 @@ def run(args):
         opts = dict(provider="deepseek", api_key_file=args.api_key_file, model_name=cfg["model"],
                     timeout_s=args.api_timeout, max_output_tokens=8192, trust_env=False)
         planner = ReturnPlanner.from_env(**opts, history_turns=HISTORY)
-        if args.mode == "query":
+        if args.mode in ("query", "local-query"):
             responder = RecallResponder.from_env(**opts, history_turns=0)
         recall = Recall(docs, args.mode, responder)
         print(f"{args.mode}: verified A handoff; starting live return", flush=True)
@@ -254,7 +265,7 @@ def run(args):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=("prepare", "direct", "query", "render"), required=True)
+    parser.add_argument("--mode", choices=("prepare", "direct", "query", "local-query", "render"), required=True)
     parser.add_argument("--archive", type=Path, help="Complete archived H2 episode containing the measured A stop")
     parser.add_argument("--assets-dir", type=Path, default=Path("assets"))
     parser.add_argument("--api-key-file", type=Path)
@@ -265,8 +276,13 @@ def main(argv=None):
     parser.add_argument("--api-timeout", type=float, default=90.)
     args = parser.parse_args(argv)
     if args.mode == "render":
-        for mode in ("direct", "query"):
-            render(args.runs_dir / mode / "video")
+        recordings = [args.runs_dir / mode / "video" for mode in ("direct", "query", "local-query")]
+        recordings = [p for p in recordings if (p / "capture.json").is_file()]
+        if not recordings:
+            parser.error("no completed recordings in --runs-dir")
+        for directory in recordings:
+            if not (directory / "video.json").exists():
+                render(directory)
         return 0
     if not args.archive or not args.archive.is_dir():
         parser.error("--archive requires a source episode")
