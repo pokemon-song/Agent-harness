@@ -1,0 +1,427 @@
+[
+  {
+    "pair": 1,
+    "arm": "original",
+    "calls": [
+      {
+        "call_id": "call_00_qWUmrIfev1ba7N2icXNu6197",
+        "name": "memory_query",
+        "arguments": {
+          "question": "去程路线航点与障碍：route/leg-01~03 中各步的实测里程计位置，途中柜子的位置/尺寸，以及 handoff/last-observation 的内容（在 A 处停稳时的里程计与朝向）"
+        }
+      }
+    ],
+    "error_code": null,
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 7801,
+      "completion_tokens": 1035,
+      "total_tokens": 8836,
+      "prompt_tokens_details": {
+        "cached_tokens": 1280
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 945
+      },
+      "prompt_cache_hit_tokens": 1280,
+      "prompt_cache_miss_tokens": 6521
+    },
+    "latency_s": 6.158295690001978,
+    "execution": {
+      "kind": "memory",
+      "status": "requested",
+      "error_code": null
+    }
+  },
+  {
+    "pair": 1,
+    "arm": "local",
+    "calls": [],
+    "error_code": "MODEL_PROTOCOL_ERROR",
+    "finish_reason": "length",
+    "usage": {
+      "prompt_tokens": 7910,
+      "completion_tokens": 8192,
+      "total_tokens": 16102,
+      "prompt_tokens_details": {
+        "cached_tokens": 1280
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 8192
+      },
+      "prompt_cache_hit_tokens": 1280,
+      "prompt_cache_miss_tokens": 6630
+    },
+    "latency_s": 43.40159377199598,
+    "execution": {
+      "kind": "protocol",
+      "status": "failed",
+      "error_code": "MODEL_PROTOCOL_ERROR"
+    }
+  },
+  {
+    "pair": 2,
+    "arm": "local",
+    "calls": [],
+    "error_code": "MODEL_PROTOCOL_ERROR",
+    "finish_reason": "length",
+    "usage": {
+      "prompt_tokens": 7910,
+      "completion_tokens": 8192,
+      "total_tokens": 16102,
+      "prompt_tokens_details": {
+        "cached_tokens": 7680
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 8192
+      },
+      "prompt_cache_hit_tokens": 7680,
+      "prompt_cache_miss_tokens": 230
+    },
+    "latency_s": 44.287256068993884,
+    "execution": {
+      "kind": "protocol",
+      "status": "failed",
+      "error_code": "MODEL_PROTOCOL_ERROR"
+    }
+  },
+  {
+    "pair": 2,
+    "arm": "original",
+    "calls": [
+      {
+        "call_id": "call_00_aNqOq7ETeTYSX1LRVEYT8844",
+        "name": "move_relative",
+        "arguments": {
+          "forward_m": 0.5,
+          "lateral_m": -0.3
+        }
+      }
+    ],
+    "error_code": null,
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 7801,
+      "completion_tokens": 3612,
+      "total_tokens": 11413,
+      "prompt_tokens_details": {
+        "cached_tokens": 7552
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 3549
+      },
+      "prompt_cache_hit_tokens": 7552,
+      "prompt_cache_miss_tokens": 249
+    },
+    "latency_s": 21.137895101004688,
+    "execution": {
+      "kind": "motion",
+      "status": "succeeded",
+      "error_code": null,
+      "result": {
+        "call_id": "call_00_aNqOq7ETeTYSX1LRVEYT8844",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.46119607297728205,
+            -0.234164534011087
+          ],
+          "yaw_delta_rad": 0.01918122501383568,
+          "position_error_m": 0.07642024165338483,
+          "heading_error_rad": 0.019181225013836123,
+          "elapsed_sim_s": 3.2000000000152795
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.019600493723015165,
+          "yaw_rate_radps": 0.015287517013987072
+        }
+      },
+      "translation_m": 0.5172377081364972,
+      "yaw_change_rad": 0.01918122501383568,
+      "elapsed_sim_s": 3.2000000000152795,
+      "collision": false,
+      "fallen": false
+    }
+  },
+  {
+    "pair": 3,
+    "arm": "original",
+    "calls": [
+      {
+        "call_id": "call_00_wjlZRYqjXCWQtbna8ZxN0630",
+        "name": "memory_query",
+        "arguments": {
+          "question": "请给出 handoff/last-observation.md 与 route/leg-02.md 的具体内容：去程结束时在蓝球 A 处停稳的实测里程计位姿（x,y,yaw），以及 leg-02 路段经过的里程计点和绕行方式。"
+        }
+      }
+    ],
+    "error_code": null,
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 7801,
+      "completion_tokens": 5470,
+      "total_tokens": 13271,
+      "prompt_tokens_details": {
+        "cached_tokens": 7552
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 5375
+      },
+      "prompt_cache_hit_tokens": 7552,
+      "prompt_cache_miss_tokens": 249
+    },
+    "latency_s": 30.691217116996995,
+    "execution": {
+      "kind": "memory",
+      "status": "requested",
+      "error_code": null
+    }
+  },
+  {
+    "pair": 3,
+    "arm": "local",
+    "calls": [
+      {
+        "call_id": "call_00_PeCgjkPvOXrtIWtv7Nwk9811",
+        "name": "turn",
+        "arguments": {
+          "yaw_rad": 0.33
+        }
+      }
+    ],
+    "error_code": null,
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 7910,
+      "completion_tokens": 2453,
+      "total_tokens": 10363,
+      "prompt_tokens_details": {
+        "cached_tokens": 7680
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 2411
+      },
+      "prompt_cache_hit_tokens": 7680,
+      "prompt_cache_miss_tokens": 230
+    },
+    "latency_s": 13.334220548000303,
+    "execution": {
+      "kind": "motion",
+      "status": "succeeded",
+      "error_code": null,
+      "result": {
+        "call_id": "call_00_PeCgjkPvOXrtIWtv7Nwk9811",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            -0.0007789340092989982,
+            0.01521253214349665
+          ],
+          "yaw_delta_rad": 0.2833193135224614,
+          "position_error_m": 0.015232461140858407,
+          "heading_error_rad": 0.0466806864775382,
+          "elapsed_sim_s": 2.380000000011364
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.008534205877296697,
+          "yaw_rate_radps": 0.008447561249150878
+        }
+      },
+      "translation_m": 0.015232461140858328,
+      "yaw_change_rad": 0.2833193135224614,
+      "elapsed_sim_s": 2.380000000011364,
+      "collision": false,
+      "fallen": false
+    }
+  },
+  {
+    "pair": 4,
+    "arm": "local",
+    "calls": [
+      {
+        "call_id": "call_00_D04Js2tYNLT8agGTa8XS0729",
+        "name": "track_point",
+        "arguments": {
+          "image_id": "frame-00066",
+          "u": 383,
+          "v": 200
+        }
+      }
+    ],
+    "error_code": null,
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 7910,
+      "completion_tokens": 3832,
+      "total_tokens": 11742,
+      "prompt_tokens_details": {
+        "cached_tokens": 7680
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 3758
+      },
+      "prompt_cache_hit_tokens": 7680,
+      "prompt_cache_miss_tokens": 230
+    },
+    "latency_s": 20.165656401994056,
+    "execution": {
+      "kind": "perception",
+      "status": "succeeded",
+      "error_code": null,
+      "result": {
+        "call_id": "call_00_D04Js2tYNLT8agGTa8XS0729",
+        "tool": "track_point",
+        "status": "succeeded",
+        "point": {
+          "point_id": "point-004",
+          "image_id": "frame-00066",
+          "timestamp_s": 133.1999999999079,
+          "valid": true,
+          "pixel_uv": [
+            383.0,
+            200.0
+          ],
+          "relative_xy_m": [
+            6.4553,
+            -1.2591
+          ],
+          "range_m": 6.577,
+          "bearing_rad": -0.1926,
+          "confidence": 1.0,
+          "loss_reason": null,
+          "source": "rgbd_optical_flow"
+        }
+      },
+      "translation_m": 0.0,
+      "yaw_change_rad": 0.0,
+      "elapsed_sim_s": 0.0,
+      "collision": false,
+      "fallen": false
+    }
+  },
+  {
+    "pair": 4,
+    "arm": "original",
+    "calls": [],
+    "error_code": "MODEL_PROTOCOL_ERROR",
+    "finish_reason": "length",
+    "usage": {
+      "prompt_tokens": 7801,
+      "completion_tokens": 8192,
+      "total_tokens": 15993,
+      "prompt_tokens_details": {
+        "cached_tokens": 7552
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 8192
+      },
+      "prompt_cache_hit_tokens": 7552,
+      "prompt_cache_miss_tokens": 249
+    },
+    "latency_s": 46.366613332997076,
+    "execution": {
+      "kind": "protocol",
+      "status": "failed",
+      "error_code": "MODEL_PROTOCOL_ERROR"
+    }
+  },
+  {
+    "pair": 5,
+    "arm": "original",
+    "calls": [],
+    "error_code": "MODEL_PROTOCOL_ERROR",
+    "finish_reason": "length",
+    "usage": {
+      "prompt_tokens": 7801,
+      "completion_tokens": 8192,
+      "total_tokens": 15993,
+      "prompt_tokens_details": {
+        "cached_tokens": 7552
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 8192
+      },
+      "prompt_cache_hit_tokens": 7552,
+      "prompt_cache_miss_tokens": 249
+    },
+    "latency_s": 43.61001925799792,
+    "execution": {
+      "kind": "protocol",
+      "status": "failed",
+      "error_code": "MODEL_PROTOCOL_ERROR"
+    }
+  },
+  {
+    "pair": 5,
+    "arm": "local",
+    "calls": [
+      {
+        "call_id": "call_00_BpvjHneZj2VwWPfu0M1s3269",
+        "name": "track_point",
+        "arguments": {
+          "image_id": "frame-00066",
+          "u": 355,
+          "v": 195
+        }
+      }
+    ],
+    "error_code": null,
+    "finish_reason": "tool_calls",
+    "usage": {
+      "prompt_tokens": 7910,
+      "completion_tokens": 5050,
+      "total_tokens": 12960,
+      "prompt_tokens_details": {
+        "cached_tokens": 7680
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 4976
+      },
+      "prompt_cache_hit_tokens": 7680,
+      "prompt_cache_miss_tokens": 230
+    },
+    "latency_s": 27.883032230005483,
+    "execution": {
+      "kind": "perception",
+      "status": "succeeded",
+      "error_code": null,
+      "result": {
+        "call_id": "call_00_BpvjHneZj2VwWPfu0M1s3269",
+        "tool": "track_point",
+        "status": "succeeded",
+        "point": {
+          "point_id": "point-004",
+          "image_id": "frame-00066",
+          "timestamp_s": 133.1999999999079,
+          "valid": true,
+          "pixel_uv": [
+            355.0,
+            195.0
+          ],
+          "relative_xy_m": [
+            3.676,
+            -0.3846
+          ],
+          "range_m": 3.6961,
+          "bearing_rad": -0.1042,
+          "confidence": 1.0,
+          "loss_reason": null,
+          "source": "rgbd_optical_flow"
+        }
+      },
+      "translation_m": 0.0,
+      "yaw_change_rad": 0.0,
+      "elapsed_sim_s": 0.0,
+      "collision": false,
+      "fallen": false
+    }
+  }
+]

@@ -1,0 +1,39 @@
+[
+  {
+    "turn": 1,
+    "answer": {
+      "question": "请提供去程（outbound）的公开记录：包括各段的里程计坐标、路径航点、遇到的柜子障碍物边缘与通道间隙，以及绿方块 B 的位置描述。",
+      "support": "partial",
+      "evidence": [
+        {
+          "path": "route/leg-03.md",
+          "id": "E022",
+          "excerpt": "去程步 118 / frame-00062 / t=123.12s：实测机身里程计 x=6.801, y=-2.080 m，yaw=1.802 rad；同一去程起点坐标系，x 向前、y 向左。"
+        },
+        {
+          "path": "route/leg-03.md",
+          "id": "E021",
+          "excerpt": "去程步 114 / frame-00059 / t=117.32s：实测机身里程计 x=6.992, y=-2.817 m，yaw=1.779 rad；同一去程起点坐标系，x 向前、y 向左。"
+        },
+        {
+          "path": "targets/target-B.md",
+          "id": "E006",
+          "excerpt": "去程步 1 / frame-00001 / t=1.00s：目标 B（绿方块）同色区域上的有效 RGB-D 跟踪点 point-001，机身前/左=(1.735,0.742) m；结合实测机身里程计，目标可见表面在去程起点坐标系约 (1.735,0.742) m。表面点与物体中心可能有偏差。"
+        }
+      ],
+      "queried_at": {
+        "stage": "return_from_A_to_B",
+        "reference": "episode_start_body_horizontal",
+        "translation_m": [
+          6.563950873309867,
+          -1.2734780796730512
+        ],
+        "yaw_rad": 1.8729336349118824
+      },
+      "source_gaps": [
+        "所引资料缺少该路段障碍物边缘的实测位置。",
+        "所引资料缺少该路段通行净空的实测值，历史机身路点不能确认当前净空。"
+      ]
+    }
+  }
+]
