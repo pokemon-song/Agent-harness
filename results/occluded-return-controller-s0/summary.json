@@ -1,0 +1,120 @@
+{
+  "task": "memory_ab_occluded_v1",
+  "seed": 0,
+  "first_collision_terminates": true,
+  "outbound": {
+    "frozen_decisions": 121,
+    "identical_handoff": true,
+    "public_fingerprint": {
+      "sim_time_s": 130.1399999998933,
+      "first_return_image_sha256": "cced5f566eb33c9018a168daaf946b80b3ef62bb06c05d62f6af6e0770440921",
+      "first_public_observation_sha256": "a5837919c8b08e104dbf32208b0c9f35079ac9ea8fdec7d31b07adb6ea29250c",
+      "outbound_trajectory_sha256": "57eaf06c53727ed1ebea9f2b8980aea88720c1da6c6a9f20ba861008605c89e4",
+      "documents": {
+        "targets/target-A.md": "0cc386e7333a1df3c696b2ebc138b293cee3e19aa5a5c807b4235a164991b6c6",
+        "targets/target-B.md": "6a54f1ebbe864e0624c5f44ae55df5fe81c8d75d64b515158c374bd3a6c90769",
+        "route/leg-01.md": "575aa684ed5757b9b1725e32e11e1ae2bf3d7aea129a37918731261cee6af625",
+        "route/leg-02.md": "ee0a1d50dbc7feb3a2e6e61888412cca9dc1a4888554d0fa148c38444f86b3df",
+        "route/leg-03.md": "b9f468dd42e09fec1757d43511a660cb1f4f1b138e3fc5a1770a9038945d2804",
+        "handoff/last-observation.md": "cb2f45c37e18960adcaf37b7fe421adb2f7584620450790b3b6d47a4e07aa0a7"
+      }
+    }
+  },
+  "arms": {
+    "local-query": {
+      "success": false,
+      "termination": "model_error",
+      "A_passed": true,
+      "B_passed": false,
+      "B_distance_at_handoff_m": 5.0935899612183855,
+      "B_final_center_distance_m": 5.0866748454040325,
+      "B_final_heading_error_rad": 0.37174836642510645,
+      "return_horizontal_path_m": 0.07219680904553118,
+      "return_net_displacement_m": 0.012730727648366243,
+      "return_sim_seconds": 3.660000000017476,
+      "collisions": 0,
+      "fallen": false,
+      "successful_tools": {
+        "memory_query": 27,
+        "track_point": 3,
+        "turn": 1,
+        "observe": 10,
+        "get_geometry": 2
+      },
+      "model_requests": 71
+    },
+    "hybrid": {
+      "success": true,
+      "termination": "finish",
+      "A_passed": true,
+      "B_passed": true,
+      "B_distance_at_handoff_m": 5.0935899612183855,
+      "B_final_center_distance_m": 1.1234940213016487,
+      "B_final_heading_error_rad": 0.05721133966100528,
+      "return_horizontal_path_m": 16.467626599232965,
+      "return_net_displacement_m": 6.028428114145527,
+      "return_sim_seconds": 153.6400000007336,
+      "collisions": 0,
+      "fallen": false,
+      "successful_tools": {
+        "turn": 17,
+        "move_relative": 34,
+        "track_point": 5,
+        "stop": 1,
+        "finish": 1
+      },
+      "model_requests": 3,
+      "native_tool_attempts": {
+        "turn": 17,
+        "move_relative": 35,
+        "track_point": 5,
+        "stop": 1,
+        "finish": 1
+      },
+      "first_translation_offset_s": 16.680000000079644,
+      "first_B_visual_track_offset_s": 144.7800000006913,
+      "stop_offset_s": 151.840000000725,
+      "finish_offset_s": 152.44000000072788,
+      "route_evidence_ids": [
+        "E023",
+        "E022",
+        "E021",
+        "E020",
+        "E019",
+        "E018",
+        "E017",
+        "E016",
+        "E015",
+        "E014",
+        "E013",
+        "E012",
+        "E011",
+        "E010",
+        "E009",
+        "E008",
+        "E007"
+      ],
+      "B_sighting_id": "E006"
+    }
+  },
+  "experiment_code_commit": "17bc702",
+  "inputs": {
+    "dataset": "datasets/occluded-return-seed0.zip",
+    "sha256": "bffbd7c6c11f65d12cb053075cd3c0c6ad2515ed2b6c4c7b9bf8df66eeb029db",
+    "outbound_action_policy": "replay and validate the previously recorded A stop",
+    "return_actions": "generated after the handoff"
+  },
+  "commands": {
+    "prepare": "python -m go2_demo occluded-return --mode prepare --archive <extracted-episode> --runs-dir <output>",
+    "local-query": "python -m go2_demo occluded-return --mode local-query --short-retry --archive <extracted-episode> --runs-dir <output> --api-key-file <key-file>",
+    "hybrid": "python -m go2_demo.occluded_route_run --archive <extracted-episode> --runs-dir <output> --api-key-file <key-file>"
+  },
+  "hybrid_preview": {
+    "path": "hybrid/return-6x.mp4",
+    "speed": 6,
+    "fps": 10,
+    "frames": 258,
+    "decoded_duration_s": 25.8,
+    "sha256": "8c06542e59140f9a278b608c666d6fb0dc4c48068cda36c2c1cecdaa6cf35d44"
+  }
+}

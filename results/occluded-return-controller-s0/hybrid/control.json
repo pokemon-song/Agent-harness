@@ -1,0 +1,3028 @@
+{
+  "termination": "finish",
+  "error": null,
+  "actions": [
+    {
+      "phase": "E022",
+      "call_id": "route-control-000",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": 0.59
+      },
+      "reply": {
+        "call_id": "route-control-000",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.0067826946090438585,
+            0.0009347602211878056
+          ],
+          "yaw_delta_rad": 0.5205382610189178,
+          "position_error_m": 0.006846803840527907,
+          "heading_error_rad": 0.0694617389810821,
+          "elapsed_sim_s": 2.860000000013656
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.03608231730520767,
+          "yaw_rate_radps": 0.018338181771656983
+        }
+      },
+      "time_before": 130.1399999998933,
+      "time_after": 132.99999999990695,
+      "odom_before": {
+        "translation_m": [
+          6.563950873309867,
+          -1.2734780796730512
+        ],
+        "yaw_rad": 1.8729336349118824,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.561040187254132,
+          -1.2672807714254635
+        ],
+        "yaw_rad": 2.3934718959308006,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E022",
+      "call_id": "route-control-001",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": 0.59
+      },
+      "reply": {
+        "call_id": "route-control-001",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.008502316628645713,
+            0.023971336919831145
+          ],
+          "yaw_delta_rad": 0.5453150834568481,
+          "position_error_m": 0.025434511628450923,
+          "heading_error_rad": 0.044684916543151765,
+          "elapsed_sim_s": 2.3200000000110776
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.013480790303942882,
+          "yaw_rate_radps": 0.008546365659453221
+        }
+      },
+      "time_before": 132.99999999990695,
+      "time_after": 135.31999999991802,
+      "odom_before": {
+        "translation_m": [
+          6.561040187254132,
+          -1.2672807714254635
+        ],
+        "yaw_rad": 2.3934718959308006,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.538501454187024,
+          -1.2790671997863992
+        ],
+        "yaw_rad": 2.9387869793876487,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E022",
+      "call_id": "route-control-002",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": 0.59
+      },
+      "reply": {
+        "call_id": "route-control-002",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.0019142534144796542,
+            0.021248473548869603
+          ],
+          "yaw_delta_rad": 0.5395404665909229,
+          "position_error_m": 0.021334525874550345,
+          "heading_error_rad": 0.05045953340907694,
+          "elapsed_sim_s": 2.500000000011937
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.013130195317257183,
+          "yaw_rate_radps": 0.003466146091759131
+        }
+      },
+      "time_before": 135.31999999991802,
+      "time_after": 137.81999999992996,
+      "odom_before": {
+        "translation_m": [
+          6.538501454187024,
+          -1.2790671997863992
+        ],
+        "yaw_rad": 2.9387869793876487,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.53234660151833,
+          -1.2994946270086052
+        ],
+        "yaw_rad": -2.8048578612010147,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E022",
+      "call_id": "route-control-003",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": 0.59
+      },
+      "reply": {
+        "call_id": "route-control-003",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.012231792749102842,
+            0.0016913593388195897
+          ],
+          "yaw_delta_rad": 0.5290414473236051,
+          "position_error_m": 0.01234817598959527,
+          "heading_error_rad": 0.06095855267639472,
+          "elapsed_sim_s": 3.4000000000162345
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.004140504216016587,
+          "yaw_rate_radps": 0.01557418139807611
+        }
+      },
+      "time_before": 137.81999999992996,
+      "time_after": 141.2199999999462,
+      "odom_before": {
+        "translation_m": [
+          6.53234660151833,
+          -1.2994946270086052
+        ],
+        "yaw_rad": -2.8048578612010147,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.521360601093158,
+          -1.3051324674575848
+        ],
+        "yaw_rad": -2.2758164138774095,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E022",
+      "call_id": "route-control-004",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": 0.59
+      },
+      "reply": {
+        "call_id": "route-control-004",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.011481123594041256,
+            0.01618094736234381
+          ],
+          "yaw_delta_rad": 0.5286244247890814,
+          "position_error_m": 0.019840344163461275,
+          "heading_error_rad": 0.06137557521091841,
+          "elapsed_sim_s": 2.9200000000139426
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.06260750992956289,
+          "yaw_rate_radps": 0.03314267673614671
+        }
+      },
+      "time_before": 141.2199999999462,
+      "time_after": 144.13999999996014,
+      "odom_before": {
+        "translation_m": [
+          6.521360601093158,
+          -1.3051324674575848
+        ],
+        "yaw_rad": -2.2758164138774095,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.526243654758025,
+          -1.3243625231889298
+        ],
+        "yaw_rad": -1.7471919890883283,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E022",
+      "call_id": "route-control-005",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": 0.4622608509333752
+      },
+      "reply": {
+        "call_id": "route-control-005",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.010922662113355786,
+            0.012073619817029736
+          ],
+          "yaw_delta_rad": 0.4100699961698746,
+          "position_error_m": 0.01628118064296048,
+          "heading_error_rad": 0.05219085476350038,
+          "elapsed_sim_s": 2.6800000000127966
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.010120591608240491,
+          "yaw_rate_radps": 0.00210290518920556
+        }
+      },
+      "time_before": 144.13999999996014,
+      "time_after": 146.81999999997294,
+      "odom_before": {
+        "translation_m": [
+          6.526243654758025,
+          -1.3243625231889298
+        ],
+        "yaw_rad": -1.7471919890883283,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.5362131891760376,
+          -1.3372344005429426
+        ],
+        "yaw_rad": -1.3371219929184537,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E022",
+      "call_id": "route-control-006",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5268679868045205,
+        "lateral_m": 0.05753368127063991
+      },
+      "reply": {
+        "call_id": "route-control-006",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4547995289415648,
+            0.06037878070687789
+          ],
+          "yaw_delta_rad": 0.006370637521857514,
+          "position_error_m": 0.0721245950390485,
+          "heading_error_rad": 0.006370637521857514,
+          "elapsed_sim_s": 2.8000000000133696
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.01618440789248204,
+          "yaw_rate_radps": 0.011265823069159804
+        }
+      },
+      "time_before": 146.81999999997294,
+      "time_after": 149.6199999999863,
+      "odom_before": {
+        "translation_m": [
+          6.5362131891760376,
+          -1.3372344005429426
+        ],
+        "yaw_rad": -1.3371219929184537,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.700261451329384,
+          -1.765692538952736
+        ],
+        "yaw_rad": -1.3307513553965962,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E022",
+      "call_id": "route-control-007",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.3292456305773295,
+        "lateral_m": 0.023124662245667657
+      },
+      "reply": {
+        "call_id": "route-control-007",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.25708377963592893,
+            0.025112220919224826
+          ],
+          "yaw_delta_rad": 0.0023556666631754375,
+          "position_error_m": 0.07218921748273584,
+          "heading_error_rad": 0.0023556666631754375,
+          "elapsed_sim_s": 2.2200000000106
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.016692035255705562,
+          "yaw_rate_radps": 0.008304502309916912
+        }
+      },
+      "time_before": 149.6199999999863,
+      "time_after": 151.8399999999969,
+      "odom_before": {
+        "translation_m": [
+          6.700261451329384,
+          -1.765692538952736
+        ],
+        "yaw_rad": -1.3307513553965962,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.785774356284226,
+          -2.0094346905752545
+        ],
+        "yaw_rad": -1.3283956887334207,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E021",
+      "call_id": "route-control-008",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5299846007397029,
+        "lateral_m": 0.00404017063721704
+      },
+      "reply": {
+        "call_id": "route-control-008",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.45974303157686863,
+            0.0168766798640629
+          ],
+          "yaw_delta_rad": -0.004583133321809374,
+          "position_error_m": 0.07140485983172377,
+          "heading_error_rad": 0.004583133321809374,
+          "elapsed_sim_s": 2.9200000000139426
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.023529152219986502,
+          "yaw_rate_radps": 0.006848242086050172
+        }
+      },
+      "time_before": 151.8399999999969,
+      "time_after": 154.76000000001085,
+      "odom_before": {
+        "translation_m": [
+          6.785774356284226,
+          -2.0094346905752545
+        ],
+        "yaw_rad": -1.3283956887334207,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.912511491794681,
+          -2.451685949351675
+        ],
+        "yaw_rad": -1.33297882205523,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E021",
+      "call_id": "route-control-009",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.37375815567316706,
+        "lateral_m": -0.008810198952737935
+      },
+      "reply": {
+        "call_id": "route-control-009",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.30605174951268255,
+            0.011496872751491862
+          ],
+          "yaw_delta_rad": 0.014914223107532099,
+          "position_error_m": 0.07068616976728342,
+          "heading_error_rad": 0.014914223107532099,
+          "elapsed_sim_s": 2.380000000011364
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.01661325573070658,
+          "yaw_rate_radps": 0.023358660336752927
+        }
+      },
+      "time_before": 154.76000000001085,
+      "time_after": 157.1400000000222,
+      "odom_before": {
+        "translation_m": [
+          6.912511491794681,
+          -2.451685949351675
+        ],
+        "yaw_rad": -1.33297882205523,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.9957850991194945,
+          -2.746415245123152
+        ],
+        "yaw_rad": -1.318064598947698,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E020",
+      "call_id": "route-control-010",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5296291348846598,
+        "lateral_m": -0.019823710079771455
+      },
+      "reply": {
+        "call_id": "route-control-010",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4654393866686481,
+            0.00171922476827145
+          ],
+          "yaw_delta_rad": 0.003612849535003626,
+          "position_error_m": 0.06770835855270758,
+          "heading_error_rad": 0.003612849535003626,
+          "elapsed_sim_s": 3.0000000000143245
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.016626345637114112,
+          "yaw_rate_radps": 0.0022827544899027543
+        }
+      },
+      "time_before": 157.1400000000222,
+      "time_after": 160.14000000003654,
+      "odom_before": {
+        "translation_m": [
+          6.9957850991194945,
+          -2.746415245123152
+        ],
+        "yaw_rad": -1.318064598947698,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          7.113832752407319,
+          -3.196639111604626
+        ],
+        "yaw_rad": -1.3144517494126946,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E020",
+      "call_id": "route-control-011",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5129297804267156,
+        "lateral_m": -0.0401977198554674
+      },
+      "reply": {
+        "call_id": "route-control-011",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4502694676282787,
+            -0.020491127178129547
+          ],
+          "yaw_delta_rad": 0.011256784956676924,
+          "position_error_m": 0.06568610655951881,
+          "heading_error_rad": 0.011256784956676924,
+          "elapsed_sim_s": 3.42000000001633
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.010865281676347316,
+          "yaw_rate_radps": 0.031221945014374114
+        }
+      },
+      "time_before": 160.14000000003654,
+      "time_after": 163.56000000005287,
+      "odom_before": {
+        "translation_m": [
+          7.113832752407319,
+          -3.196639111604626
+        ],
+        "yaw_rad": -1.3144517494126946,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          7.208175356311061,
+          -3.637390688867766
+        ],
+        "yaw_rad": -1.3031949644560177,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E019",
+      "call_id": "route-control-012",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5291109881407501,
+        "lateral_m": -0.030684885998143164
+      },
+      "reply": {
+        "call_id": "route-control-012",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.45851327676774273,
+            -0.010596560461318317
+          ],
+          "yaw_delta_rad": 0.013983129479735013,
+          "position_error_m": 0.07340012039485978,
+          "heading_error_rad": 0.013983129479735013,
+          "elapsed_sim_s": 3.0400000000145155
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.019363693995834083,
+          "yaw_rate_radps": 0.004995637137862788
+        }
+      },
+      "time_before": 163.56000000005287,
+      "time_after": 166.60000000006738,
+      "odom_before": {
+        "translation_m": [
+          7.208175356311061,
+          -3.637390688867766
+        ],
+        "yaw_rad": -1.3031949644560177,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          7.3191955415885905,
+          -4.082386453484516
+        ],
+        "yaw_rad": -1.2892118349762829,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E019",
+      "call_id": "route-control-013",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.52740211928398,
+        "lateral_m": -0.052411874367996235
+      },
+      "reply": {
+        "call_id": "route-control-013",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.45205534630166755,
+            -0.035531460747767335
+          ],
+          "yaw_delta_rad": 0.01562797556721085,
+          "position_error_m": 0.07721453595559621,
+          "heading_error_rad": 0.01562797556721085,
+          "elapsed_sim_s": 3.4400000000164255
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.02949107880216645,
+          "yaw_rate_radps": 0.031982873476522455
+        }
+      },
+      "time_before": 166.60000000006738,
+      "time_after": 170.0400000000838,
+      "odom_before": {
+        "translation_m": [
+          7.3191955415885905,
+          -4.082386453484516
+        ],
+        "yaw_rad": -1.2892118349762829,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          7.4106797136652665,
+          -4.526511623996429
+        ],
+        "yaw_rad": -1.273583859409072,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E018",
+      "call_id": "route-control-014",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": -0.59
+      },
+      "reply": {
+        "call_id": "route-control-014",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.008756067653120658,
+            0.0017833459281022478
+          ],
+          "yaw_delta_rad": -0.5222702675816677,
+          "position_error_m": 0.008935829197411104,
+          "heading_error_rad": 0.06772973241833213,
+          "elapsed_sim_s": 2.380000000011364
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.029811591694746536,
+          "yaw_rate_radps": 0.012656753384257995
+        }
+      },
+      "time_before": 170.0400000000838,
+      "time_after": 172.42000000009517,
+      "odom_before": {
+        "translation_m": [
+          7.4106797136652665,
+          -4.526511623996429
+        ],
+        "yaw_rad": -1.273583859409072,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          7.414949138767213,
+          -4.534361531813988
+        ],
+        "yaw_rad": -1.7958541269907398,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E018",
+      "call_id": "route-control-015",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": -0.59
+      },
+      "reply": {
+        "call_id": "route-control-015",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.01380422146582867,
+            -0.01160661943113918
+          ],
+          "yaw_delta_rad": -0.520004645535447,
+          "position_error_m": 0.018035247292370087,
+          "heading_error_rad": 0.06999535446455285,
+          "elapsed_sim_s": 2.980000000014229
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.007968620949003356,
+          "yaw_rate_radps": 0.03292189704825952
+        }
+      },
+      "time_before": 172.42000000009517,
+      "time_after": 175.4000000001094,
+      "odom_before": {
+        "translation_m": [
+          7.414949138767213,
+          -4.534361531813988
+        ],
+        "yaw_rad": -1.7958541269907398,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          7.400554636832453,
+          -4.545227462926744
+        ],
+        "yaw_rad": -2.3158587725261865,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E018",
+      "call_id": "route-control-016",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5262970154561809,
+        "lateral_m": -0.06254159833196224
+      },
+      "reply": {
+        "call_id": "route-control-016",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4604065256922221,
+            -0.03934595159794104
+          ],
+          "yaw_delta_rad": 0.0032756632290822374,
+          "position_error_m": 0.06985409557602079,
+          "heading_error_rad": 0.0032756632290822374,
+          "elapsed_sim_s": 2.8800000000137516
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.011225938391985308,
+          "yaw_rate_radps": 0.015355329400518772
+        }
+      },
+      "time_before": 175.4000000001094,
+      "time_after": 178.28000000012315,
+      "odom_before": {
+        "translation_m": [
+          7.400554636832453,
+          -4.545227462926744
+        ],
+        "yaw_rad": -2.3158587725261865,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          7.05946979038114,
+          -4.856969985416722
+        ],
+        "yaw_rad": -2.3125831092971043,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E018",
+      "call_id": "route-control-017",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.26791881133486617,
+        "lateral_m": -0.04809975461397081
+      },
+      "reply": {
+        "call_id": "route-control-017",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.20398989279698307,
+            -0.020636327853553203
+          ],
+          "yaw_delta_rad": 0.002042502323144735,
+          "position_error_m": 0.06957834745700744,
+          "heading_error_rad": 0.002042502323144735,
+          "elapsed_sim_s": 2.140000000010218
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.009043397829268725,
+          "yaw_rate_radps": 0.011286804744858435
+        }
+      },
+      "time_before": 178.28000000012315,
+      "time_after": 180.42000000013337,
+      "odom_before": {
+        "translation_m": [
+          7.05946979038114,
+          -4.856969985416722
+        ],
+        "yaw_rad": -2.3125831092971043,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.90643853794383,
+          -4.993422065533047
+        ],
+        "yaw_rad": -2.3105406069739596,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E017",
+      "call_id": "route-control-018",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.49664787318348935,
+        "lateral_m": -0.1850429411307462
+      },
+      "reply": {
+        "call_id": "route-control-018",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4333601193977825,
+            -0.14146454374392578
+          ],
+          "yaw_delta_rad": 0.0012093364323044753,
+          "position_error_m": 0.07684020105416074,
+          "heading_error_rad": 0.0012093364323044753,
+          "elapsed_sim_s": 3.02000000001442
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.008518154738068415,
+          "yaw_rate_radps": 0.0028772305359983322
+        }
+      },
+      "time_before": 180.42000000013337,
+      "time_after": 183.4400000001478,
+      "odom_before": {
+        "translation_m": [
+          6.90643853794383,
+          -4.993422065533047
+        ],
+        "yaw_rad": -2.3105406069739596,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.509819386911174,
+          -5.218158487270319
+        ],
+        "yaw_rad": -2.309331270541655,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E017",
+      "call_id": "route-control-019",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.3348569230453633,
+        "lateral_m": -0.14523107219063208
+      },
+      "reply": {
+        "call_id": "route-control-019",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.2748353842908031,
+            -0.09230650007302092
+          ],
+          "yaw_delta_rad": -0.008244770036344828,
+          "position_error_m": 0.08002246839667797,
+          "heading_error_rad": 0.008244770036344828,
+          "elapsed_sim_s": 2.7600000000131786
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.011131190247772864,
+          "yaw_rate_radps": 0.0068337857419797565
+        }
+      },
+      "time_before": 183.4400000001478,
+      "time_after": 186.20000000016097,
+      "odom_before": {
+        "translation_m": [
+          6.509819386911174,
+          -5.218158487270319
+        ],
+        "yaw_rad": -2.309331270541655,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          6.256542190539979,
+          -5.359245836853304
+        ],
+        "yaw_rad": -2.317576040578,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E016",
+      "call_id": "route-control-020",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.4762500171249422,
+        "lateral_m": -0.23256380025380616
+      },
+      "reply": {
+        "call_id": "route-control-020",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4259136194680889,
+            -0.17601511385689925
+          ],
+          "yaw_delta_rad": 0.0020056648787836195,
+          "position_error_m": 0.07570671609761268,
+          "heading_error_rad": 0.0020056648787836195,
+          "elapsed_sim_s": 2.9600000000141335
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.013873088143745778,
+          "yaw_rate_radps": 0.002146033728024706
+        }
+      },
+      "time_before": 186.20000000016097,
+      "time_after": 189.1600000001751,
+      "odom_before": {
+        "translation_m": [
+          6.256542190539979,
+          -5.359245836853304
+        ],
+        "yaw_rad": -2.317576040578,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          5.83805402368484,
+          -5.552252017471158
+        ],
+        "yaw_rad": -2.3155703756992163,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E016",
+      "call_id": "route-control-021",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.40101958172103463,
+        "lateral_m": -0.22882381313662775
+      },
+      "reply": {
+        "call_id": "route-control-021",
+        "tool": "move_relative",
+        "status": "timed_out",
+        "error_code": "MOTION_TIMEOUT",
+        "measured": {
+          "translation_start_frame_m": [
+            0.3139364654765935,
+            -0.15079771297464473
+          ],
+          "yaw_delta_rad": -0.004244966420073659,
+          "position_error_m": 0.11692536697111842,
+          "heading_error_rad": 0.004244966420073659,
+          "elapsed_sim_s": 8.600000000041064
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.021407937547047184,
+          "yaw_rate_radps": 0.003497758828744422
+        }
+      },
+      "time_before": 189.1600000001751,
+      "time_after": 197.76000000021617,
+      "odom_before": {
+        "translation_m": [
+          5.83805402368484,
+          -5.552252017471158
+        ],
+        "yaw_rad": -2.3155703756992163,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          5.514393426031518,
+          -5.68085945163036
+        ],
+        "yaw_rad": -2.31981534211929,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E015",
+      "call_id": "route-control-022",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": -0.59
+      },
+      "reply": {
+        "call_id": "route-control-022",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.014822027814322472,
+            0.02531378286771947
+          ],
+          "yaw_delta_rad": -0.533974704734399,
+          "position_error_m": 0.02933394128995619,
+          "heading_error_rad": 0.05602529526560085,
+          "elapsed_sim_s": 2.4000000000114596
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.014647874884131301,
+          "yaw_rate_radps": 0.011744059448037159
+        }
+      },
+      "time_before": 197.76000000021617,
+      "time_after": 200.16000000022763,
+      "odom_before": {
+        "translation_m": [
+          5.514393426031518,
+          -5.68085945163036
+        ],
+        "yaw_rad": -2.31981534211929,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          5.5228395321077155,
+          -5.708951147979143
+        ],
+        "yaw_rad": -2.853790046853689,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E015",
+      "call_id": "route-control-023",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": -0.5160274641122591
+      },
+      "reply": {
+        "call_id": "route-control-023",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.006633147753220829,
+            0.009013026163198804
+          ],
+          "yaw_delta_rad": -0.4532938681877958,
+          "position_error_m": 0.011190768058295403,
+          "heading_error_rad": 0.06273359592446326,
+          "elapsed_sim_s": 2.020000000009645
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.033035711560606355,
+          "yaw_rate_radps": 0.021572367065638358
+        }
+      },
+      "time_before": 200.16000000022763,
+      "time_after": 202.18000000023727,
+      "odom_before": {
+        "translation_m": [
+          5.5228395321077155,
+          -5.708951147979143
+        ],
+        "yaw_rad": -2.853790046853689,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          5.519037516814809,
+          -5.719476259353711
+        ],
+        "yaw_rad": 2.9761013921381014,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E015",
+      "call_id": "route-control-024",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5274118986147548,
+        "lateral_m": -0.05231337495879718
+      },
+      "reply": {
+        "call_id": "route-control-024",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4591025582581086,
+            -0.0389356175383311
+          ],
+          "yaw_delta_rad": 0.017411766713847143,
+          "position_error_m": 0.06960697072535899,
+          "heading_error_rad": 0.017411766713847143,
+          "elapsed_sim_s": 3.2800000000156615
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.011538142282283373,
+          "yaw_rate_radps": 0.013321399993224571
+        }
+      },
+      "time_before": 202.18000000023727,
+      "time_after": 205.46000000025293,
+      "odom_before": {
+        "translation_m": [
+          5.519037516814809,
+          -5.719476259353711
+        ],
+        "yaw_rad": 2.9761013921381014,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          5.072621559329375,
+          -5.605441465476603
+        ],
+        "yaw_rad": 2.9935131588519486,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E015",
+      "call_id": "route-control-025",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5256513221367738,
+        "lateral_m": -0.06775461265376427
+      },
+      "reply": {
+        "call_id": "route-control-025",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.45963359776423235,
+            -0.052121607147955246
+          ],
+          "yaw_delta_rad": 0.02343473771880067,
+          "position_error_m": 0.06784342851355232,
+          "heading_error_rad": 0.02343473771880067,
+          "elapsed_sim_s": 3.380000000016139
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.014071220538055191,
+          "yaw_rate_radps": 0.036545518881548396
+        }
+      },
+      "time_before": 205.46000000025293,
+      "time_after": 208.84000000026907,
+      "odom_before": {
+        "translation_m": [
+          5.072621559329375,
+          -5.605441465476603
+        ],
+        "yaw_rad": 2.9935131588519486,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          4.6257080418055585,
+          -5.486076420426273
+        ],
+        "yaw_rad": 3.0169478965707492,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E014",
+      "call_id": "route-control-026",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": -0.59
+      },
+      "reply": {
+        "call_id": "route-control-026",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            -0.008039910419726768,
+            -0.00951687153041715
+          ],
+          "yaw_delta_rad": -0.5338700103588319,
+          "position_error_m": 0.01245837081177533,
+          "heading_error_rad": 0.056129989641168,
+          "elapsed_sim_s": 2.700000000012892
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.005855681148433048,
+          "yaw_rate_radps": 0.008432442457686361
+        }
+      },
+      "time_before": 208.84000000026907,
+      "time_after": 211.54000000028196,
+      "odom_before": {
+        "translation_m": [
+          4.6257080418055585,
+          -5.486076420426273
+        ],
+        "yaw_rad": 3.0169478965707492,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          4.634868736673852,
+          -5.477632921577234
+        ],
+        "yaw_rad": 2.4830778862119174,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E014",
+      "call_id": "route-control-027",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5275006672667237,
+        "lateral_m": -0.051410563439445306
+      },
+      "reply": {
+        "call_id": "route-control-027",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4621336794995895,
+            -0.02992399614476241
+          ],
+          "yaw_delta_rad": 0.005883132141303982,
+          "position_error_m": 0.06880781688047985,
+          "heading_error_rad": 0.0058831321413035376,
+          "elapsed_sim_s": 2.9600000000141335
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.007450071496511516,
+          "yaw_rate_radps": 0.01614913008437586
+        }
+      },
+      "time_before": 211.54000000028196,
+      "time_after": 214.5000000002961,
+      "odom_before": {
+        "translation_m": [
+          4.634868736673852,
+          -5.477632921577234
+        ],
+        "yaw_rad": 2.4830778862119174,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          4.287678069679893,
+          -5.171166571017517
+        ],
+        "yaw_rad": 2.4889610183532214,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E014",
+      "call_id": "route-control-028",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5256265122828998,
+        "lateral_m": -0.06794681438680257
+      },
+      "reply": {
+        "call_id": "route-control-028",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.46295370882076253,
+            -0.04832306440726569
+          ],
+          "yaw_delta_rad": 0.016464983514574705,
+          "position_error_m": 0.06567322024282826,
+          "heading_error_rad": 0.01646498351457515,
+          "elapsed_sim_s": 3.4000000000162345
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.009666530649712929,
+          "yaw_rate_radps": 0.030845283060006834
+        }
+      },
+      "time_before": 214.5000000002961,
+      "time_after": 217.90000000031233,
+      "odom_before": {
+        "translation_m": [
+          4.287678069679893,
+          -5.171166571017517
+        ],
+        "yaw_rad": 2.4889610183532214,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          3.949212309064617,
+          -4.851632247421866
+        ],
+        "yaw_rad": 2.505426001867796,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E013",
+      "call_id": "route-control-029",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.520677851725199,
+        "lateral_m": -0.09896754378497868
+      },
+      "reply": {
+        "call_id": "route-control-029",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.45019100883031105,
+            -0.07547560335825197
+          ],
+          "yaw_delta_rad": 0.013576136764654745,
+          "position_error_m": 0.0742984945089837,
+          "heading_error_rad": 0.0135761367646543,
+          "elapsed_sim_s": 4.04000000001929
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.01650986272314235,
+          "yaw_rate_radps": 0.010677599976465503
+        }
+      },
+      "time_before": 217.90000000031233,
+      "time_after": 221.94000000033162,
+      "odom_before": {
+        "translation_m": [
+          3.949212309064617,
+          -4.851632247421866
+        ],
+        "yaw_rad": 2.505426001867796,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          3.6319293527057845,
+          -4.52345540982033
+        ],
+        "yaw_rad": 2.519002138632451,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E013",
+      "call_id": "route-control-030",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5173889558107588,
+        "lateral_m": -0.11492897113022772
+      },
+      "reply": {
+        "call_id": "route-control-030",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4518367082192066,
+            -0.08349135123331812
+          ],
+          "yaw_delta_rad": 0.002054963224318307,
+          "position_error_m": 0.07270090170752148,
+          "heading_error_rad": 0.002054963224318307,
+          "elapsed_sim_s": 2.940000000014038
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.008366770607235716,
+          "yaw_rate_radps": 0.014454901699611259
+        }
+      },
+      "time_before": 221.94000000033162,
+      "time_after": 224.88000000034566,
+      "odom_before": {
+        "translation_m": [
+          3.6319293527057845,
+          -4.52345540982033
+        ],
+        "yaw_rad": 2.519002138632451,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          3.3135577966869687,
+          -4.192144726407778
+        ],
+        "yaw_rad": 2.521057101856769,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E012",
+      "call_id": "route-control-031",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5137343629816051,
+        "lateral_m": -0.13029583374722445
+      },
+      "reply": {
+        "call_id": "route-control-031",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4476462663172675,
+            -0.09526821848577725
+          ],
+          "yaw_delta_rad": -0.0024584705741261814,
+          "position_error_m": 0.07479686057328071,
+          "heading_error_rad": 0.0024584705741261814,
+          "elapsed_sim_s": 3.140000000014993
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.007694944401788196,
+          "yaw_rate_radps": 0.020010689589283787
+        }
+      },
+      "time_before": 224.88000000034566,
+      "time_after": 228.02000000036065,
+      "odom_before": {
+        "translation_m": [
+          3.3135577966869687,
+          -4.192144726407778
+        ],
+        "yaw_rad": 2.521057101856769,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          3.0047631942425337,
+          -3.8543443316442034
+        ],
+        "yaw_rad": 2.518598631282643,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E012",
+      "call_id": "route-control-032",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5104449740215993,
+        "lateral_m": -0.14263915484918194
+      },
+      "reply": {
+        "call_id": "route-control-032",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.44576967486701374,
+            -0.10546597118618196
+          ],
+          "yaw_delta_rad": -0.0018723281442882822,
+          "position_error_m": 0.0745971842925609,
+          "heading_error_rad": 0.0018723281442882822,
+          "elapsed_sim_s": 3.02000000001442
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.007516383727363785,
+          "yaw_rate_radps": 0.01715033445115355
+        }
+      },
+      "time_before": 228.02000000036065,
+      "time_after": 231.04000000037507,
+      "odom_before": {
+        "translation_m": [
+          3.0047631942425337,
+          -3.8543443316442034
+        ],
+        "yaw_rad": 2.518598631282643,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          2.704274118277687,
+          -3.5085987758736614
+        ],
+        "yaw_rad": 2.5167263031383547,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E012",
+      "call_id": "route-control-033",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.19644145608306068,
+        "lateral_m": -0.07358775339553113
+      },
+      "reply": {
+        "call_id": "route-control-033",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.13955629260316954,
+            -0.02510935083724793
+          ],
+          "yaw_delta_rad": 0.003608549207080536,
+          "position_error_m": 0.07474006515074004,
+          "heading_error_rad": 0.003608549207080536,
+          "elapsed_sim_s": 2.420000000011555
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.013223655870102784,
+          "yaw_rate_radps": 0.0007669623781963185
+        }
+      },
+      "time_before": 231.04000000037507,
+      "time_after": 233.46000000038663,
+      "odom_before": {
+        "translation_m": [
+          2.704274118277687,
+          -3.5085987758736614
+        ],
+        "yaw_rad": 2.5167263031383547,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          2.605776890967009,
+          -3.4065951753650614
+        ],
+        "yaw_rad": 2.520334852345435,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E011",
+      "call_id": "route-control-034",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5078701763766877,
+        "lateral_m": -0.1515515884018117
+      },
+      "reply": {
+        "call_id": "route-control-034",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.44589348832835474,
+            -0.11209811489754519
+          ],
+          "yaw_delta_rad": -0.0005355982329904307,
+          "position_error_m": 0.07346894876743663,
+          "heading_error_rad": 0.0005355982329904307,
+          "elapsed_sim_s": 2.940000000014038
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.008566793363278752,
+          "yaw_rate_radps": 0.011337679109580508
+        }
+      },
+      "time_before": 233.46000000038663,
+      "time_after": 236.40000000040067,
+      "odom_before": {
+        "translation_m": [
+          2.605776890967009,
+          -3.4065951753650614
+        ],
+        "yaw_rad": 2.520334852345435,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          2.308447593894927,
+          -3.055906881577212
+        ],
+        "yaw_rad": 2.5197992541124448,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E011",
+      "call_id": "route-control-035",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5026463758240286,
+        "lateral_m": -0.16806731053649163
+      },
+      "reply": {
+        "call_id": "route-control-035",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.44227526673504924,
+            -0.12621421765646712
+          ],
+          "yaw_delta_rad": -0.0027934648857073086,
+          "position_error_m": 0.07345986792975738,
+          "heading_error_rad": 0.0027934648857073086,
+          "elapsed_sim_s": 2.980000000014229
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.008450212624414814,
+          "yaw_rate_radps": 0.013797902396874999
+        }
+      },
+      "time_before": 236.40000000040067,
+      "time_after": 239.3800000004149,
+      "odom_before": {
+        "translation_m": [
+          2.308447593894927,
+          -3.055906881577212
+        ],
+        "yaw_rad": 2.5197992541124448,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          2.022469727900133,
+          -2.6956929167378996
+        ],
+        "yaw_rad": 2.5170057892267375,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E010",
+      "call_id": "route-control-036",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5088369465003428,
+        "lateral_m": -0.1482732675710873
+      },
+      "reply": {
+        "call_id": "route-control-036",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4469328759984561,
+            -0.10976071504432505
+          ],
+          "yaw_delta_rad": -0.0012689321447050261,
+          "position_error_m": 0.07290631417668272,
+          "heading_error_rad": 0.0012689321447050261,
+          "elapsed_sim_s": 2.9600000000141335
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.008780492469922338,
+          "yaw_rate_radps": 0.013455645199010215
+        }
+      },
+      "time_before": 239.3800000004149,
+      "time_after": 242.34000000042903,
+      "odom_before": {
+        "translation_m": [
+          2.022469727900133,
+          -2.6956929167378996
+        ],
+        "yaw_rad": 2.5170057892267375,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          1.724099560448186,
+          -2.3453050553756807
+        ],
+        "yaw_rad": 2.5157368570820324,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E010",
+      "call_id": "route-control-037",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5046584764872879,
+        "lateral_m": -0.16192535968627517
+      },
+      "reply": {
+        "call_id": "route-control-037",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.44300769990278355,
+            -0.1212609472286365
+          ],
+          "yaw_delta_rad": -0.0024010212109972784,
+          "position_error_m": 0.07385399578897159,
+          "heading_error_rad": 0.0024010212109972784,
+          "elapsed_sim_s": 2.980000000014229
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.00822589292563536,
+          "yaw_rate_radps": 0.014846602705858667
+        }
+      },
+      "time_before": 242.34000000042903,
+      "time_after": 245.32000000044326,
+      "odom_before": {
+        "translation_m": [
+          1.724099560448186,
+          -2.3453050553756807
+        ],
+        "yaw_rad": 2.5157368570820324,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          1.4360921913770215,
+          -1.987517695542152
+        ],
+        "yaw_rad": 2.513335835871035,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E010",
+      "call_id": "route-control-038",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.22082078487979923,
+        "lateral_m": -0.09113555676772327
+      },
+      "reply": {
+        "call_id": "route-control-038",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.16789788644131948,
+            -0.03836238613356652
+          ],
+          "yaw_delta_rad": 0.005660935773082798,
+          "position_error_m": 0.07473848217559315,
+          "heading_error_rad": 0.005660935773082798,
+          "elapsed_sim_s": 2.4000000000114596
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.016864255677704467,
+          "yaw_rate_radps": 0.005160892337424763
+        }
+      },
+      "time_before": 245.32000000044326,
+      "time_after": 247.72000000045472,
+      "odom_before": {
+        "translation_m": [
+          1.4360921913770215,
+          -1.987517695542152
+        ],
+        "yaw_rad": 2.513335835871035,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          1.3228007873140757,
+          -1.8578009629793502
+        ],
+        "yaw_rad": 2.518996771644118,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E009",
+      "call_id": "route-control-039",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.5013322947890965,
+        "lateral_m": -0.17194746349248272
+      },
+      "reply": {
+        "call_id": "route-control-039",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4421142897172537,
+            -0.1291328936777249
+          ],
+          "yaw_delta_rad": 0.0018317423805127575,
+          "position_error_m": 0.07307434237207718,
+          "heading_error_rad": 0.0018317423805127575,
+          "elapsed_sim_s": 2.8800000000137516
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.009106538446118837,
+          "yaw_rate_radps": 0.005067496052544037
+        }
+      },
+      "time_before": 247.72000000045472,
+      "time_after": 250.60000000046847,
+      "odom_before": {
+        "translation_m": [
+          1.3228007873140757,
+          -1.8578009629793502
+        ],
+        "yaw_rad": 2.518996771644118,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          1.0389448652970192,
+          -1.4950804577172117
+        ],
+        "yaw_rad": 2.5208285140246307,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E009",
+      "call_id": "route-control-040",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.4945676810200779,
+        "lateral_m": -0.1905329601156252
+      },
+      "reply": {
+        "call_id": "route-control-040",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.43753304816887156,
+            -0.14559903560533385
+          ],
+          "yaw_delta_rad": 0.003688771011545189,
+          "position_error_m": 0.07260858707045936,
+          "heading_error_rad": 0.003688771011545189,
+          "elapsed_sim_s": 2.8800000000137516
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.010950030661287071,
+          "yaw_rate_radps": 0.002455553158166109
+        }
+      },
+      "time_before": 250.60000000046847,
+      "time_after": 253.48000000048222,
+      "odom_before": {
+        "translation_m": [
+          1.0389448652970192,
+          -1.4950804577172117
+        ],
+        "yaw_rad": 2.5208285140246307,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.7677291932091408,
+          -1.1221510989599963
+        ],
+        "yaw_rad": 2.524517285036176,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E008",
+      "call_id": "route-control-041",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.49226937114496955,
+        "lateral_m": -0.19639466956243043
+      },
+      "reply": {
+        "call_id": "route-control-041",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4337204531290374,
+            -0.15073960787494742
+          ],
+          "yaw_delta_rad": 0.0064372234203950995,
+          "position_error_m": 0.07424527229746165,
+          "heading_error_rad": 0.006437223420395544,
+          "elapsed_sim_s": 2.8800000000137516
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.012666727011210016,
+          "yaw_rate_radps": 0.004637728167742071
+        }
+      },
+      "time_before": 253.48000000048222,
+      "time_after": 256.360000000496,
+      "odom_before": {
+        "translation_m": [
+          0.7677291932091408,
+          -1.1221510989599963
+        ],
+        "yaw_rad": 2.524517285036176,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.5012237773344548,
+          -0.7482383763171166
+        ],
+        "yaw_rad": 2.530954508456571,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E008",
+      "call_id": "route-control-042",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.4843047560079593,
+        "lateral_m": -0.21528795439613227
+      },
+      "reply": {
+        "call_id": "route-control-042",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4179316158846015,
+            -0.17647676625693895
+          ],
+          "yaw_delta_rad": 0.02515809131100255,
+          "position_error_m": 0.076887593632593,
+          "heading_error_rad": 0.025158091311002995,
+          "elapsed_sim_s": 2.820000000013465
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.04055971535270213,
+          "yaw_rate_radps": 0.023880129229455392
+        }
+      },
+      "time_before": 256.360000000496,
+      "time_after": 259.18000000050944,
+      "odom_before": {
+        "translation_m": [
+          0.5012237773344548,
+          -0.7482383763171166
+        ],
+        "yaw_rad": 2.530954508456571,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.2600098940677082,
+          -0.3640161136828483
+        ],
+        "yaw_rad": 2.5561125997675735,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "E007",
+      "call_id": "route-control-043",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.41785958025127046,
+        "lateral_m": -0.15970675385248181
+      },
+      "reply": {
+        "call_id": "route-control-043",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.3621859421527567,
+            -0.10967734947479484
+          ],
+          "yaw_delta_rad": 0.005094654224911732,
+          "position_error_m": 0.07484981817954141,
+          "heading_error_rad": 0.005094654224912176,
+          "elapsed_sim_s": 2.940000000014038
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.015081421233423166,
+          "yaw_rate_radps": 0.007786047132101012
+        }
+      },
+      "time_before": 259.18000000050944,
+      "time_after": 262.1200000005235,
+      "odom_before": {
+        "translation_m": [
+          0.2600098940677082,
+          -0.3640161136828483
+        ],
+        "yaw_rad": 2.5561125997675735,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.01875479521655843,
+          -0.07246207930976976
+        ],
+        "yaw_rad": 2.5612072539924853,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-044",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": -0.59
+      },
+      "reply": {
+        "call_id": "route-control-044",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.007192158817203962,
+            0.02345752593534381
+          ],
+          "yaw_delta_rad": -0.5432224355575692,
+          "position_error_m": 0.024535335160930902,
+          "heading_error_rad": 0.04677756444243064,
+          "elapsed_sim_s": 3.180000000015184
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.003842182728784079,
+          "yaw_rate_radps": 0.0005627038082655568
+        }
+      },
+      "time_before": 262.1200000005235,
+      "time_after": 265.30000000053866,
+      "odom_before": {
+        "translation_m": [
+          0.01875479521655843,
+          -0.07246207930976976
+        ],
+        "yaw_rad": 2.5612072539924853,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          -0.00012250433036790518,
+          -0.0881346742855492
+        ],
+        "yaw_rad": 2.017984818434916,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-045",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": -0.59
+      },
+      "reply": {
+        "call_id": "route-control-045",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.007785335228932366,
+            -0.02780825347131814
+          ],
+          "yaw_delta_rad": -0.5501267864748609,
+          "position_error_m": 0.028877506917182664,
+          "heading_error_rad": 0.03987321352513895,
+          "elapsed_sim_s": 1.9600000000093587
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.01600259279076927,
+          "yaw_rate_radps": 0.014144456136444243
+        }
+      },
+      "time_before": 265.30000000053866,
+      "time_after": 267.260000000548,
+      "odom_before": {
+        "translation_m": [
+          -0.00012250433036790518,
+          -0.0881346742855492
+        ],
+        "yaw_rad": 2.017984818434916,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.02158463521961318,
+          -0.06908971436672608
+        ],
+        "yaw_rad": 1.4678580319600552,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-046",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": -0.59
+      },
+      "reply": {
+        "call_id": "route-control-046",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.013298452080356035,
+            0.008660635612131479
+          ],
+          "yaw_delta_rad": -0.5416719431371586,
+          "position_error_m": 0.015869953904773818,
+          "heading_error_rad": 0.04832805686284125,
+          "elapsed_sim_s": 2.260000000010791
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.003721203829449546,
+          "yaw_rate_radps": 0.008587790026090314
+        }
+      },
+      "time_before": 267.260000000548,
+      "time_after": 269.5200000005588,
+      "odom_before": {
+        "translation_m": [
+          0.02158463521961318,
+          -0.06908971436672608
+        ],
+        "yaw_rad": 1.4678580319600552,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.014336348100427736,
+          -0.05497171979322179
+        ],
+        "yaw_rad": 0.9261860888228967,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-047",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": -0.59
+      },
+      "reply": {
+        "call_id": "route-control-047",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.024838607278888016,
+            0.016279723025697666
+          ],
+          "yaw_delta_rad": -0.5280766180548864,
+          "position_error_m": 0.02969824562744842,
+          "heading_error_rad": 0.06192338194511349,
+          "elapsed_sim_s": 3.0000000000143245
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.036787744789450905,
+          "yaw_rate_radps": 0.0455829403855584
+        }
+      },
+      "time_before": 269.5200000005588,
+      "time_after": 272.52000000057313,
+      "odom_before": {
+        "translation_m": [
+          0.014336348100427736,
+          -0.05497171979322179
+        ],
+        "yaw_rad": 0.9261860888228967,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.016248606053253685,
+          -0.025335102866350507
+        ],
+        "yaw_rad": 0.39810947076801034,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-048",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": -0.39810947076801034
+      },
+      "reply": {
+        "call_id": "route-control-048",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            -0.0033453268593816045,
+            -0.0027522258317214613
+          ],
+          "yaw_delta_rad": -0.34838327184488094,
+          "position_error_m": 0.004331969393346965,
+          "heading_error_rad": 0.04972619892312968,
+          "elapsed_sim_s": 2.4000000000114596
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.004629006461176177,
+          "yaw_rate_radps": 0.002318228556180983
+        }
+      },
+      "time_before": 272.52000000057313,
+      "time_after": 274.9200000005846,
+      "odom_before": {
+        "translation_m": [
+          0.016248606053253685,
+          -0.025335102866350507
+        ],
+        "yaw_rad": 0.39810947076801034,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.014231871504214046,
+          -0.029168996524709428
+        ],
+        "yaw_rad": 0.04972619892312935,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-049",
+      "tool": "track_point",
+      "args": {
+        "image_id": "frame-00114",
+        "u": 214,
+        "v": 231
+      },
+      "reply": {
+        "call_id": "route-control-049",
+        "tool": "track_point",
+        "status": "succeeded",
+        "point": {
+          "point_id": "point-001",
+          "image_id": "frame-00114",
+          "timestamp_s": 274.9200000005846,
+          "valid": true,
+          "pixel_uv": [
+            214.0,
+            231.0
+          ],
+          "relative_xy_m": [
+            1.7436,
+            0.4829
+          ],
+          "range_m": 1.8093,
+          "bearing_rad": 0.2702,
+          "confidence": 1.0,
+          "loss_reason": null,
+          "source": "rgbd_optical_flow"
+        }
+      },
+      "time_before": 274.9200000005846,
+      "time_after": 274.9200000005846,
+      "odom_before": {
+        "translation_m": [
+          0.014231871504214046,
+          -0.029168996524709428
+        ],
+        "yaw_rad": 0.04972619892312935,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.014231871504214046,
+          -0.029168996524709428
+        ],
+        "yaw_rad": 0.04972619892312935,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-050",
+      "tool": "turn",
+      "args": {
+        "yaw_rad": 0.27018352106861243
+      },
+      "reply": {
+        "call_id": "route-control-050",
+        "tool": "turn",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.029204040202685553,
+            0.025254104652689076
+          ],
+          "yaw_delta_rad": 0.22264612807451112,
+          "position_error_m": 0.03860888195699334,
+          "heading_error_rad": 0.047537392994101424,
+          "elapsed_sim_s": 1.9800000000094542
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.018300054850050356,
+          "yaw_rate_radps": 0.004907253010744351
+        }
+      },
+      "time_before": 274.9200000005846,
+      "time_after": 276.90000000059405,
+      "odom_before": {
+        "translation_m": [
+          0.014231871504214046,
+          -0.029168996524709428
+        ],
+        "yaw_rad": 0.04972619892312935,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.042144539641849554,
+          -0.0024945007767618464
+        ],
+        "yaw_rad": 0.2723723269976403,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-051",
+      "tool": "track_point",
+      "args": {
+        "image_id": "frame-00115",
+        "u": 305,
+        "v": 217
+      },
+      "reply": {
+        "call_id": "route-control-051",
+        "tool": "track_point",
+        "status": "succeeded",
+        "point": {
+          "point_id": "point-002",
+          "image_id": "frame-00115",
+          "timestamp_s": 276.90000000059405,
+          "valid": true,
+          "pixel_uv": [
+            305.0,
+            217.0
+          ],
+          "relative_xy_m": [
+            1.7724,
+            0.0654
+          ],
+          "range_m": 1.7737,
+          "bearing_rad": 0.0369,
+          "confidence": 1.0,
+          "loss_reason": null,
+          "source": "rgbd_optical_flow"
+        }
+      },
+      "time_before": 276.90000000059405,
+      "time_after": 276.90000000059405,
+      "odom_before": {
+        "translation_m": [
+          0.042144539641849554,
+          -0.0024945007767618464
+        ],
+        "yaw_rad": 0.2723723269976403,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.042144539641849554,
+          -0.0024945007767618464
+        ],
+        "yaw_rad": 0.2723723269976403,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-052",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.4796735624959804,
+        "lateral_m": 0.017699532265423784
+      },
+      "reply": {
+        "call_id": "route-control-052",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.4129006078676912,
+            0.03450060069308026
+          ],
+          "yaw_delta_rad": 0.0003998222210168656,
+          "position_error_m": 0.06885421824479859,
+          "heading_error_rad": 0.0003998222210168656,
+          "elapsed_sim_s": 2.700000000012892
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.012540468507994293,
+          "yaw_rate_radps": 0.009345756584521803
+        }
+      },
+      "time_before": 276.90000000059405,
+      "time_after": 279.60000000060694,
+      "odom_before": {
+        "translation_m": [
+          0.042144539641849554,
+          -0.0024945007767618464
+        ],
+        "yaw_rad": 0.2723723269976403,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.43054248590639144,
+          0.14181155856649091
+        ],
+        "yaw_rad": 0.27277214921865695,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-053",
+      "tool": "track_point",
+      "args": {
+        "image_id": "frame-00116",
+        "u": 310,
+        "v": 247
+      },
+      "reply": {
+        "call_id": "route-control-053",
+        "tool": "track_point",
+        "status": "succeeded",
+        "point": {
+          "point_id": "point-003",
+          "image_id": "frame-00116",
+          "timestamp_s": 279.60000000060694,
+          "valid": true,
+          "pixel_uv": [
+            310.0,
+            247.0
+          ],
+          "relative_xy_m": [
+            1.3592,
+            0.0291
+          ],
+          "range_m": 1.3595,
+          "bearing_rad": 0.0214,
+          "confidence": 1.0,
+          "loss_reason": null,
+          "source": "rgbd_optical_flow"
+        }
+      },
+      "time_before": 279.60000000060694,
+      "time_after": 279.60000000060694,
+      "odom_before": {
+        "translation_m": [
+          0.43054248590639144,
+          0.14181155856649091
+        ],
+        "yaw_rad": 0.27277214921865695,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.43054248590639144,
+          0.14181155856649091
+        ],
+        "yaw_rad": 0.27277214921865695,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-054",
+      "tool": "move_relative",
+      "args": {
+        "forward_m": 0.3994199435412651,
+        "lateral_m": 0.008551442287412312
+      },
+      "reply": {
+        "call_id": "route-control-054",
+        "tool": "move_relative",
+        "status": "succeeded",
+        "error_code": null,
+        "measured": {
+          "translation_start_frame_m": [
+            0.3292593098928239,
+            0.020324614551651646
+          ],
+          "yaw_delta_rad": 0.022267644322123914,
+          "position_error_m": 0.07114156379441085,
+          "heading_error_rad": 0.022267644322123914,
+          "elapsed_sim_s": 2.380000000011364
+        },
+        "stop": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.014656326771888833,
+          "yaw_rate_radps": 0.026600633910766246
+        }
+      },
+      "time_before": 279.60000000060694,
+      "time_after": 281.9800000006183,
+      "odom_before": {
+        "translation_m": [
+          0.43054248590639144,
+          0.14181155856649091
+        ],
+        "yaw_rad": 0.27277214921865695,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.7421528520833476,
+          0.2500878846901414
+        ],
+        "yaw_rad": 0.29503979354078075,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-055",
+      "tool": "track_point",
+      "args": {
+        "image_id": "frame-00117",
+        "u": 323,
+        "v": 276
+      },
+      "reply": {
+        "call_id": "route-control-055",
+        "tool": "track_point",
+        "status": "succeeded",
+        "point": {
+          "point_id": "point-004",
+          "image_id": "frame-00117",
+          "timestamp_s": 281.9800000006183,
+          "valid": true,
+          "pixel_uv": [
+            323.0,
+            276.0
+          ],
+          "relative_xy_m": [
+            1.0319,
+            -0.008
+          ],
+          "range_m": 1.0319,
+          "bearing_rad": -0.0078,
+          "confidence": 1.0,
+          "loss_reason": null,
+          "source": "rgbd_optical_flow"
+        }
+      },
+      "time_before": 281.9800000006183,
+      "time_after": 281.9800000006183,
+      "odom_before": {
+        "translation_m": [
+          0.7421528520833476,
+          0.2500878846901414
+        ],
+        "yaw_rad": 0.29503979354078075,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.7421528520833476,
+          0.2500878846901414
+        ],
+        "yaw_rad": 0.29503979354078075,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-056",
+      "tool": "stop",
+      "args": {},
+      "reply": {
+        "call_id": "route-control-056",
+        "tool": "stop",
+        "status": "succeeded",
+        "error_code": null,
+        "speed_mps": 0.006155810340742001,
+        "yaw_rate_radps": 0.022786919048063535
+      },
+      "time_before": 281.9800000006183,
+      "time_after": 282.58000000062117,
+      "odom_before": {
+        "translation_m": [
+          0.7421528520833476,
+          0.2500878846901414
+        ],
+        "yaw_rad": 0.29503979354078075,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.7382292612038448,
+          0.2519109396159151
+        ],
+        "yaw_rad": 0.3078664737795976,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-057",
+      "tool": "track_point",
+      "args": {
+        "image_id": "frame-00118",
+        "u": 330,
+        "v": 274
+      },
+      "reply": {
+        "call_id": "route-control-057",
+        "tool": "track_point",
+        "status": "succeeded",
+        "point": {
+          "point_id": "point-005",
+          "image_id": "frame-00118",
+          "timestamp_s": 282.58000000062117,
+          "valid": true,
+          "pixel_uv": [
+            330.0,
+            274.0
+          ],
+          "relative_xy_m": [
+            1.0348,
+            -0.0243
+          ],
+          "range_m": 1.0351,
+          "bearing_rad": -0.0235,
+          "confidence": 1.0,
+          "loss_reason": null,
+          "source": "rgbd_optical_flow"
+        }
+      },
+      "time_before": 282.58000000062117,
+      "time_after": 282.58000000062117,
+      "odom_before": {
+        "translation_m": [
+          0.7382292612038448,
+          0.2519109396159151
+        ],
+        "yaw_rad": 0.3078664737795976,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.7382292612038448,
+          0.2519109396159151
+        ],
+        "yaw_rad": 0.3078664737795976,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    },
+    {
+      "phase": "return_visual_docking",
+      "call_id": "route-control-058",
+      "tool": "finish",
+      "args": {},
+      "reply": {
+        "call_id": "route-control-058",
+        "tool": "finish",
+        "status": "succeeded",
+        "stop_result": {
+          "status": "succeeded",
+          "error_code": null,
+          "speed_mps": 0.005467306653391069,
+          "yaw_rate_radps": 0.023515315150734028
+        },
+        "message": "Declaration recorded; evaluator runs separately."
+      },
+      "time_before": 282.58000000062117,
+      "time_after": 283.18000000062403,
+      "odom_before": {
+        "translation_m": [
+          0.7382292612038448,
+          0.2519109396159151
+        ],
+        "yaw_rad": 0.3078664737795976,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      },
+      "odom_after": {
+        "translation_m": [
+          0.7348034520180982,
+          0.2522120722573
+        ],
+        "yaw_rad": 0.32215655997471343,
+        "reference": "episode_start_body_horizontal",
+        "source": "simulated_proprioception"
+      }
+    }
+  ],
+  "completed_waypoints": [
+    "E023",
+    "E022",
+    "E021",
+    "E020",
+    "E019",
+    "E018",
+    "E017",
+    "E016",
+    "E015",
+    "E014",
+    "E013",
+    "E012",
+    "E011",
+    "E010",
+    "E009",
+    "E008",
+    "E007"
+  ],
+  "parameters": {
+    "waypoint_tolerance_m": 0.19,
+    "max_translation_m": 0.53,
+    "max_turn_rad": 0.59,
+    "route_reorient_rad": 0.62,
+    "route_face_tolerance_rad": 0.19,
+    "last_view_face_tolerance_rad": 0.12,
+    "search_turn_rad": 0.55,
+    "visual_surface_standoff_m": 0.96,
+    "visual_distance_tolerance_m": 0.075,
+    "visual_bearing_tolerance_rad": 0.09,
+    "visual_max_translation_m": 0.48,
+    "stopped_visual_distance_tolerance_m": 0.09,
+    "stopped_visual_bearing_tolerance_rad": 0.11,
+    "extra_waypoint_iterations": 7,
+    "max_facing_iterations": 12,
+    "max_search_turns": 14,
+    "max_docking_iterations": 16
+  },
+  "limits": {
+    "max_native_actions": 115,
+    "max_sim_seconds": 470.0,
+    "max_wall_seconds": 1113.9977670070002
+  },
+  "sim_seconds": 153.04000000073074,
+  "wall_seconds": 13.854596922000042
+}

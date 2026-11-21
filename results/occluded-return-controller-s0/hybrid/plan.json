@@ -1,0 +1,313 @@
+{
+  "status": "follow_route",
+  "error": null,
+  "waypoints": [
+    {
+      "id": "E023",
+      "x": 6.564,
+      "y": -1.273,
+      "yaw": 1.873
+    },
+    {
+      "id": "E022",
+      "x": 6.801,
+      "y": -2.08,
+      "yaw": 1.802
+    },
+    {
+      "id": "E021",
+      "x": 6.992,
+      "y": -2.817,
+      "yaw": 1.779
+    },
+    {
+      "id": "E020",
+      "x": 7.205,
+      "y": -3.703,
+      "yaw": 1.77
+    },
+    {
+      "id": "E019",
+      "x": 7.426,
+      "y": -4.661,
+      "yaw": 1.373
+    },
+    {
+      "id": "E018",
+      "x": 6.843,
+      "y": -5.022,
+      "yaw": 0.46
+    },
+    {
+      "id": "E017",
+      "x": 6.177,
+      "y": -5.368,
+      "yaw": 0.397
+    },
+    {
+      "id": "E016",
+      "x": 5.398,
+      "y": -5.692,
+      "yaw": -0.209
+    },
+    {
+      "id": "E015",
+      "x": 4.542,
+      "y": -5.455,
+      "yaw": -0.816
+    },
+    {
+      "id": "E014",
+      "x": 3.869,
+      "y": -4.756,
+      "yaw": -0.848
+    },
+    {
+      "id": "E013",
+      "x": 3.247,
+      "y": -4.093,
+      "yaw": -0.862
+    },
+    {
+      "id": "E012",
+      "x": 2.588,
+      "y": -3.334,
+      "yaw": -0.892
+    },
+    {
+      "id": "E011",
+      "x": 1.954,
+      "y": -2.566,
+      "yaw": -0.92
+    },
+    {
+      "id": "E010",
+      "x": 1.311,
+      "y": -1.784,
+      "yaw": -0.929
+    },
+    {
+      "id": "E009",
+      "x": 0.709,
+      "y": -0.994,
+      "yaw": -0.981
+    },
+    {
+      "id": "E008",
+      "x": 0.17,
+      "y": -0.198,
+      "yaw": -1.043
+    },
+    {
+      "id": "E007",
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0
+    }
+  ],
+  "target_evidence": {
+    "id": "E006",
+    "path": "targets/target-B.md",
+    "excerpt": "去程步 1 / frame-00001 / t=1.00s：目标 B（绿方块）同色区域上的有效 RGB-D 跟踪点 point-001，机身前/左=(1.735,0.742) m；结合实测机身里程计，目标可见表面在去程起点坐标系约 (1.735,0.742) m。表面点与物体中心可能有偏差。"
+  },
+  "target_label": "B",
+  "requests": 3,
+  "known_usage": {
+    "prompt_tokens": 6274,
+    "completion_tokens": 367,
+    "total_tokens": 6641
+  },
+  "unknown_usage_requests": 0,
+  "events": [
+    {
+      "request": 1,
+      "stage": "ask",
+      "calls": [
+        {
+          "call_id": "call_00_Gox7iAXLypW5cvL117PA1152",
+          "name": "memory_query",
+          "arguments": {
+            "question": "我在蓝球 A 的合格停止点，需要返回绿方块 B。请给我完整的去程实测机身路点序列（按折返方向，即从 A 回到起点 B 的顺序，含每点的相对位移与 yaw 或 local_odometry 坐标），以及 B 的目击证据（B 相对起点的位置、距离、朝向依据）。"
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1147,
+        "completion_tokens": 110,
+        "total_tokens": 1257
+      },
+      "finish_reason": "tool_calls"
+    },
+    {
+      "request": 2,
+      "stage": "read",
+      "calls": [
+        {
+          "call_id": "call_00_qzOO2Hir0UgEheuiPJo85052",
+          "name": "select_route_evidence",
+          "arguments": {
+            "route_ids": [
+              "E023",
+              "E022",
+              "E021",
+              "E020",
+              "E019",
+              "E018",
+              "E017",
+              "E016",
+              "E015",
+              "E014",
+              "E013",
+              "E012",
+              "E011",
+              "E010",
+              "E009",
+              "E008",
+              "E007"
+            ],
+            "target_id": "E006"
+          }
+        }
+      ],
+      "card": {
+        "route": [
+          {
+            "id": "E023",
+            "path": "route/leg-03.md",
+            "excerpt": "去程步 121 / frame-00065 / t=130.14s：实测机身里程计 x=6.564, y=-1.273 m，yaw=1.873 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E022",
+            "path": "route/leg-03.md",
+            "excerpt": "去程步 118 / frame-00062 / t=123.12s：实测机身里程计 x=6.801, y=-2.080 m，yaw=1.802 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E021",
+            "path": "route/leg-03.md",
+            "excerpt": "去程步 114 / frame-00059 / t=117.32s：实测机身里程计 x=6.992, y=-2.817 m，yaw=1.779 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E020",
+            "path": "route/leg-03.md",
+            "excerpt": "去程步 111 / frame-00057 / t=111.16s：实测机身里程计 x=7.205, y=-3.703 m，yaw=1.770 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E019",
+            "path": "route/leg-03.md",
+            "excerpt": "去程步 105 / frame-00053 / t=102.74s：实测机身里程计 x=7.426, y=-4.661 m，yaw=1.373 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E018",
+            "path": "route/leg-02.md",
+            "excerpt": "去程步 85 / frame-00045 / t=91.40s：实测机身里程计 x=6.843, y=-5.022 m，yaw=0.460 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E017",
+            "path": "route/leg-02.md",
+            "excerpt": "去程步 81 / frame-00042 / t=84.32s：实测机身里程计 x=6.177, y=-5.368 m，yaw=0.397 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E016",
+            "path": "route/leg-02.md",
+            "excerpt": "去程步 71 / frame-00037 / t=73.48s：实测机身里程计 x=5.398, y=-5.692 m，yaw=-0.209 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E015",
+            "path": "route/leg-02.md",
+            "excerpt": "去程步 60 / frame-00030 / t=63.76s：实测机身里程计 x=4.542, y=-5.455 m，yaw=-0.816 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E014",
+            "path": "route/leg-02.md",
+            "excerpt": "去程步 52 / frame-00026 / t=56.32s：实测机身里程计 x=3.869, y=-4.756 m，yaw=-0.848 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E013",
+            "path": "route/leg-02.md",
+            "excerpt": "去程步 44 / frame-00023 / t=48.94s：实测机身里程计 x=3.247, y=-4.093 m，yaw=-0.862 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E012",
+            "path": "route/leg-01.md",
+            "excerpt": "去程步 34 / frame-00019 / t=41.16s：实测机身里程计 x=2.588, y=-3.334 m，yaw=-0.892 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E011",
+            "path": "route/leg-01.md",
+            "excerpt": "去程步 27 / frame-00016 / t=33.36s：实测机身里程计 x=1.954, y=-2.566 m，yaw=-0.920 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E010",
+            "path": "route/leg-01.md",
+            "excerpt": "去程步 18 / frame-00012 / t=25.42s：实测机身里程计 x=1.311, y=-1.784 m，yaw=-0.929 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E009",
+            "path": "route/leg-01.md",
+            "excerpt": "去程步 14 / frame-00009 / t=17.58s：实测机身里程计 x=0.709, y=-0.994 m，yaw=-0.981 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E008",
+            "path": "route/leg-01.md",
+            "excerpt": "去程步 5 / frame-00004 / t=8.94s：实测机身里程计 x=0.170, y=-0.198 m，yaw=-1.043 rad；同一去程起点坐标系，x 向前、y 向左。"
+          },
+          {
+            "id": "E007",
+            "path": "route/leg-01.md",
+            "excerpt": "去程步 0 / frame-00001 / t=1.00s：实测机身里程计 x=0.000, y=0.000 m，yaw=0.000 rad；同一去程起点坐标系，x 向前、y 向左。"
+          }
+        ],
+        "target": {
+          "id": "E006",
+          "path": "targets/target-B.md",
+          "excerpt": "去程步 1 / frame-00001 / t=1.00s：目标 B（绿方块）同色区域上的有效 RGB-D 跟踪点 point-001，机身前/左=(1.735,0.742) m；结合实测机身里程计，目标可见表面在去程起点坐标系约 (1.735,0.742) m。表面点与物体中心可能有偏差。"
+        }
+      },
+      "usage": {
+        "prompt_tokens": 2424,
+        "completion_tokens": 121,
+        "total_tokens": 2545
+      },
+      "finish_reason": "tool_calls"
+    },
+    {
+      "request": 3,
+      "stage": "plan",
+      "calls": [
+        {
+          "call_id": "call_00_SkxCBAnKcwL3EPB9TvrX6098",
+          "name": "follow_route",
+          "arguments": {
+            "route_ids": [
+              "E023",
+              "E022",
+              "E021",
+              "E020",
+              "E019",
+              "E018",
+              "E017",
+              "E016",
+              "E015",
+              "E014",
+              "E013",
+              "E012",
+              "E011",
+              "E010",
+              "E009",
+              "E008",
+              "E007"
+            ],
+            "target_label": "B",
+            "target_id": "E006"
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 2703,
+        "completion_tokens": 136,
+        "total_tokens": 2839
+      },
+      "finish_reason": "tool_calls"
+    }
+  ]
+}

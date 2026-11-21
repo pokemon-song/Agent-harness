@@ -1,0 +1,220 @@
+{
+  "success": true,
+  "termination": "finish",
+  "evaluation": {
+    "success": true,
+    "goal_kind": "ordered_standoff",
+    "checkpoints": {
+      "A": {
+        "label": "A",
+        "target_xy_m": [
+          6.4,
+          0.0
+        ],
+        "base_xy_m": [
+          6.584658051574491,
+          -1.1469164202434945
+        ],
+        "distance_to_target_center_m": 1.1616866492455868,
+        "heading_error_rad": 0.16082231039739092,
+        "speed_mps": 0.014807260736357908,
+        "abs_yaw_rate_radps": 0.022282746315237138,
+        "sim_time_s": 130.1399999998933,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": true,
+        "failure_reasons": [],
+        "source": "privileged_simulator_evaluator",
+        "stop_index": 52,
+        "achieved_at_checkpoint": true,
+        "passed": true
+      },
+      "B": {
+        "label": "B",
+        "target_xy_m": [
+          1.8,
+          0.6
+        ],
+        "base_xy_m": [
+          0.7255336236403932,
+          0.27173056497260434
+        ],
+        "distance_to_target_center_m": 1.1234940213016487,
+        "heading_error_rad": 0.05721133966100528,
+        "speed_mps": 0.004400662669298261,
+        "abs_yaw_rate_radps": 0.020738410891383292,
+        "sim_time_s": 283.7800000006269,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": true,
+        "failure_reasons": [],
+        "source": "privileged_simulator_evaluator",
+        "eligible": true,
+        "passed": true
+      }
+    },
+    "checkpoint_order": [
+      "A",
+      "B"
+    ],
+    "order_satisfied": true,
+    "premature_b_stops_ignored": 0,
+    "requires_finish": true,
+    "finish_enforced_by": "episode_runner",
+    "standoff_m": 1.0,
+    "distance_tolerance_m": 0.18,
+    "heading_tolerance_rad": 0.25,
+    "collision": false,
+    "fallen": false,
+    "stopped": true,
+    "source": "privileged_simulator_evaluator",
+    "collision_count": 0,
+    "collision_events": [],
+    "cabinet_contact_count": 0,
+    "cabinet_contact_events": []
+  },
+  "final_stop": {
+    "status": "succeeded",
+    "error_code": null,
+    "speed_mps": 0.004400662669298261,
+    "yaw_rate_radps": 0.020738410891383292
+  },
+  "architecture": "DeepSeek planner and memory reader select route; odometry follower and RGB-D docking",
+  "model": "deepseek-flash",
+  "seed": 0,
+  "first_contact_terminates": true,
+  "api_request_budget": 4,
+  "native_tool_budget": 115,
+  "max_return_sim_seconds": 470.0,
+  "max_return_wall_seconds": 1117.0,
+  "api_timeout_seconds": 90.0,
+  "max_output_tokens": 8192,
+  "model_requests": 3,
+  "model_known_usage": {
+    "prompt_tokens": 6274,
+    "completion_tokens": 367,
+    "total_tokens": 6641
+  },
+  "selected_waypoints": [
+    {
+      "id": "E023",
+      "x": 6.564,
+      "y": -1.273,
+      "yaw": 1.873
+    },
+    {
+      "id": "E022",
+      "x": 6.801,
+      "y": -2.08,
+      "yaw": 1.802
+    },
+    {
+      "id": "E021",
+      "x": 6.992,
+      "y": -2.817,
+      "yaw": 1.779
+    },
+    {
+      "id": "E020",
+      "x": 7.205,
+      "y": -3.703,
+      "yaw": 1.77
+    },
+    {
+      "id": "E019",
+      "x": 7.426,
+      "y": -4.661,
+      "yaw": 1.373
+    },
+    {
+      "id": "E018",
+      "x": 6.843,
+      "y": -5.022,
+      "yaw": 0.46
+    },
+    {
+      "id": "E017",
+      "x": 6.177,
+      "y": -5.368,
+      "yaw": 0.397
+    },
+    {
+      "id": "E016",
+      "x": 5.398,
+      "y": -5.692,
+      "yaw": -0.209
+    },
+    {
+      "id": "E015",
+      "x": 4.542,
+      "y": -5.455,
+      "yaw": -0.816
+    },
+    {
+      "id": "E014",
+      "x": 3.869,
+      "y": -4.756,
+      "yaw": -0.848
+    },
+    {
+      "id": "E013",
+      "x": 3.247,
+      "y": -4.093,
+      "yaw": -0.862
+    },
+    {
+      "id": "E012",
+      "x": 2.588,
+      "y": -3.334,
+      "yaw": -0.892
+    },
+    {
+      "id": "E011",
+      "x": 1.954,
+      "y": -2.566,
+      "yaw": -0.92
+    },
+    {
+      "id": "E010",
+      "x": 1.311,
+      "y": -1.784,
+      "yaw": -0.929
+    },
+    {
+      "id": "E009",
+      "x": 0.709,
+      "y": -0.994,
+      "yaw": -0.981
+    },
+    {
+      "id": "E008",
+      "x": 0.17,
+      "y": -0.198,
+      "yaw": -1.043
+    },
+    {
+      "id": "E007",
+      "x": 0.0,
+      "y": 0.0,
+      "yaw": 0.0
+    }
+  ],
+  "target_evidence": {
+    "id": "E006",
+    "path": "targets/target-B.md",
+    "excerpt": "去程步 1 / frame-00001 / t=1.00s：目标 B（绿方块）同色区域上的有效 RGB-D 跟踪点 point-001，机身前/左=(1.735,0.742) m；结合实测机身里程计，目标可见表面在去程起点坐标系约 (1.735,0.742) m。表面点与物体中心可能有偏差。"
+  },
+  "successful_tools": {
+    "turn": 17,
+    "move_relative": 34,
+    "track_point": 5,
+    "stop": 1,
+    "finish": 1
+  },
+  "return_sim_seconds": 153.6400000007336,
+  "return_wall_seconds": 17.017339759000038
+}
