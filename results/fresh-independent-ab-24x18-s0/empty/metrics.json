@@ -1,0 +1,150 @@
+{
+  "episode_id": "bad2efee-eccb-4c06-bf2b-8ebe4bba9a92",
+  "mode": "empty",
+  "termination": "collision",
+  "detail": "first_scene_contact",
+  "success": false,
+  "stages": {
+    "A": {
+      "termination": "collision",
+      "detail": "first_scene_contact",
+      "stage": "A",
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 302.0820000007143,
+      "wall_seconds": 692.3106849960022,
+      "path_m": 8.522163524138685,
+      "planner_requests": 173,
+      "reader_requests": 0,
+      "total_requests": 173,
+      "known_usage": {
+        "prompt_tokens": 431975,
+        "completion_tokens": 8386,
+        "total_tokens": 440361
+      },
+      "unknown_usage_requests": 1,
+      "first_planner_target_candidate": null,
+      "planner_tools": {
+        "memory_query": 57,
+        "scan": 82,
+        "follow_waypoints": 9
+      },
+      "native_attempts": {
+        "turn": 106,
+        "move_relative": 6
+      },
+      "boundary_refusals": 0,
+      "depth_refusals": 3
+    }
+  },
+  "total_requests": 173,
+  "final_sim_s": 302.0820000007143,
+  "final_base_xy_m": [
+    1.484762845426891,
+    0.3691385735655157
+  ],
+  "independent_evaluation": {
+    "success": false,
+    "goal_kind": "ordered_standoff",
+    "checkpoints": {
+      "A": {
+        "label": "A",
+        "target_xy_m": [
+          6.4,
+          0.0
+        ],
+        "base_xy_m": [
+          1.4818831333947244,
+          0.37248145821369055
+        ],
+        "distance_to_target_center_m": 4.932201937299435,
+        "heading_error_rad": 1.593064374282581,
+        "speed_mps": 0.012964877227631472,
+        "abs_yaw_rate_radps": 0.04138212770258383,
+        "sim_time_s": 301.76000000071275,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "HEADING_OUT_OF_RANGE",
+          "GLOBAL_SAFETY_FAILURE"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "stop_index": 111,
+        "achieved_at_checkpoint": false,
+        "passed": false
+      },
+      "B": {
+        "label": "B",
+        "target_xy_m": [
+          1.8,
+          0.6
+        ],
+        "base_xy_m": [
+          1.484762845426891,
+          0.3691385735655157
+        ],
+        "distance_to_target_center_m": 0.3907319565107453,
+        "heading_error_rad": 2.5235816349697657,
+        "speed_mps": 0.029008715252677824,
+        "abs_yaw_rate_radps": 0.5928410127157526,
+        "sim_time_s": 302.0820000007143,
+        "stop_confirmed": false,
+        "stopped": false,
+        "collision": true,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "HEADING_OUT_OF_RANGE",
+          "NOT_STOPPED",
+          "STOP_NOT_CONFIRMED",
+          "COLLISION",
+          "A_NOT_CONFIRMED_BEFORE_B"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "eligible": false,
+        "passed": false
+      }
+    },
+    "checkpoint_order": [
+      "A",
+      "B"
+    ],
+    "order_satisfied": false,
+    "premature_b_stops_ignored": 1,
+    "requires_finish": true,
+    "finish_enforced_by": "episode_runner",
+    "standoff_m": 1.0,
+    "distance_tolerance_m": 0.18,
+    "heading_tolerance_rad": 0.25,
+    "collision": true,
+    "fallen": false,
+    "stopped": false,
+    "source": "privileged_simulator_evaluator",
+    "collision_count": 1,
+    "collision_events": [
+      {
+        "object": "B",
+        "sim_time_s": 302.0820000007143,
+        "geom_names": [
+          "memory_goal_b"
+        ],
+        "base_xy_m": [
+          1.484762845426891,
+          0.3691385735655157
+        ]
+      }
+    ],
+    "cabinet_contact_count": 0,
+    "cabinet_contact_events": []
+  },
+  "final_stop": {
+    "status": "failed",
+    "error_code": "COLLISION",
+    "speed_mps": 0.029008715252677824,
+    "yaw_rate_radps": 0.5928410127157526
+  }
+}

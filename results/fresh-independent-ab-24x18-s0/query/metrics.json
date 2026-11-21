@@ -1,0 +1,134 @@
+{
+  "episode_id": "dd57fc42-263d-492e-9727-8d3399205a34",
+  "mode": "query",
+  "termination": "abort",
+  "detail": "经过多轮往返与多次记忆查询，始终未目击蓝球 A；当前视野中央仅见绿方块 B（距离约 2 米），A 无任何候选或位置证据。继续在同一区域重复扫描只会获得相似空地，无法在缺少 A 观测的情况下可靠接近并完成 1.0±0.18 米/0.25 弧度的停稳要求，故终止本轮。",
+  "success": false,
+  "stages": {
+    "A": {
+      "termination": "abort",
+      "detail": "经过多轮往返与多次记忆查询，始终未目击蓝球 A；当前视野中央仅见绿方块 B（距离约 2 米），A 无任何候选或位置证据。继续在同一区域重复扫描只会获得相似空地，无法在缺少 A 观测的情况下可靠接近并完成 1.0±0.18 米/0.25 弧度的停稳要求，故终止本轮。",
+      "stage": "A",
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 182.34000000014254,
+      "wall_seconds": 619.7834657689964,
+      "path_m": 6.874675843255107,
+      "planner_requests": 149,
+      "reader_requests": 97,
+      "total_requests": 246,
+      "known_usage": {
+        "prompt_tokens": 528062,
+        "completion_tokens": 14864,
+        "total_tokens": 542926
+      },
+      "unknown_usage_requests": 0,
+      "first_planner_target_candidate": null,
+      "planner_tools": {
+        "scan": 36,
+        "memory_query": 97,
+        "follow_waypoints": 6,
+        "abort": 1
+      },
+      "native_attempts": {
+        "turn": 58,
+        "move_relative": 9
+      },
+      "boundary_refusals": 0,
+      "depth_refusals": 0
+    }
+  },
+  "total_requests": 246,
+  "final_sim_s": 182.9400000001454,
+  "final_base_xy_m": [
+    -0.12626879009760913,
+    2.120721144710096
+  ],
+  "independent_evaluation": {
+    "success": false,
+    "goal_kind": "ordered_standoff",
+    "checkpoints": {
+      "A": {
+        "label": "A",
+        "target_xy_m": [
+          6.4,
+          0.0
+        ],
+        "base_xy_m": [
+          0.13585727955739765,
+          0.07259204460428775
+        ],
+        "distance_to_target_center_m": 6.264563322931127,
+        "heading_error_rad": 1.0250963924891106,
+        "speed_mps": 0.023252661051331426,
+        "abs_yaw_rate_radps": 0.005275398645667791,
+        "sim_time_s": 26.89999999999597,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "HEADING_OUT_OF_RANGE"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "stop_index": 10,
+        "achieved_at_checkpoint": false,
+        "passed": false
+      },
+      "B": {
+        "label": "B",
+        "target_xy_m": [
+          1.8,
+          0.6
+        ],
+        "base_xy_m": [
+          -0.12626879009760913,
+          2.120721144710096
+        ],
+        "distance_to_target_center_m": 2.454201347011384,
+        "heading_error_rad": 0.08491234476683152,
+        "speed_mps": 0.0050068143168370115,
+        "abs_yaw_rate_radps": 0.019978375037781385,
+        "sim_time_s": 182.9400000001454,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "A_NOT_CONFIRMED_BEFORE_B"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "eligible": false,
+        "passed": false
+      }
+    },
+    "checkpoint_order": [
+      "A",
+      "B"
+    ],
+    "order_satisfied": false,
+    "premature_b_stops_ignored": 0,
+    "requires_finish": true,
+    "finish_enforced_by": "episode_runner",
+    "standoff_m": 1.0,
+    "distance_tolerance_m": 0.18,
+    "heading_tolerance_rad": 0.25,
+    "collision": false,
+    "fallen": false,
+    "stopped": true,
+    "source": "privileged_simulator_evaluator",
+    "collision_count": 0,
+    "collision_events": [],
+    "cabinet_contact_count": 0,
+    "cabinet_contact_events": []
+  },
+  "final_stop": {
+    "status": "succeeded",
+    "error_code": null,
+    "speed_mps": 0.0050068143168370115,
+    "yaw_rate_radps": 0.019978375037781385
+  }
+}
