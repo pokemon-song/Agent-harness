@@ -27,8 +27,8 @@ TASK = "先找到蓝球 A 并合格停靠，再返回绿方块 B 并合格停靠
 
 
 class StageFollower(ReturnFollower):
-    def __init__(self, harness, log, memory, stage):
-        super().__init__(harness, log)
+    def __init__(self, harness, log, memory, stage, *, max_actions=ACTION_LIMIT):
+        super().__init__(harness, log, max_actions=max_actions)
         self.target_label = stage
         self.memory = memory
         self.on_action = lambda action: log.write("native_action", stage=stage, detail=action)
@@ -46,12 +46,12 @@ class StageFollower(ReturnFollower):
 
 
 def play_stage(stage, mode, harness, log, memory, planner, cfg):
-    follower = StageFollower(harness, log, memory, stage)
+    follower = StageFollower(harness, log, memory, stage, max_actions=cfg.max_native_actions)
     detector = TaskLabelRGBD(task_targets(TASK_ID))
     backend = harness.backend
     t0, wall_start = harness.frame.sim_time_s, time.monotonic()
-    backend.deadline_monotonic = wall_start + WALL_LIMIT
-    backend.sim_deadline_s = t0 + SIM_LIMIT
+    backend.deadline_monotonic = wall_start + cfg.max_wall_seconds
+    backend.sim_deadline_s = t0 + cfg.max_sim_seconds
     path_start = tuple(harness.frame.base_xy_yaw[:2])
     traj_start = len(backend.trajectory)
     history, usage, choices = [], Counter(), Counter()
@@ -139,8 +139,8 @@ def run_episode(cfg, mode):
               "outbound": "fresh_live_planner", "return": "same_episode_live_planner",
               "archive_inputs": [], "initial_memory": "empty", "initial_odometry": harness.observation()["local_odometry"],
               "model": "deepseek-flash", "thinking": False, "api_limit_per_stage": cfg.max_requests,
-              "max_consecutive_planner_errors": cfg.max_consecutive_errors, "max_native_per_stage": ACTION_LIMIT,
-              "max_wall_s_per_stage": WALL_LIMIT, "max_sim_s_per_stage": SIM_LIMIT, "api_timeout_s": API_TIMEOUT,
+              "max_consecutive_planner_errors": cfg.max_consecutive_errors, "max_native_per_stage": cfg.max_native_actions,
+              "max_wall_s_per_stage": cfg.max_wall_seconds, "max_sim_s_per_stage": cfg.max_sim_seconds, "api_timeout_s": API_TIMEOUT,
               "max_output_tokens": 8192, "history": 6, "reset_model_history_at_A": True, "first_contact_terminates": True})
         options = dict(provider="deepseek", model_name="deepseek-flash", api_key_file=cfg.api_key_file,
                        timeout_s=API_TIMEOUT, max_output_tokens=8192, trust_env=False, history_turns=0)
@@ -206,13 +206,16 @@ if __name__ == "__main__":
     parser.add_argument("--mode", choices=("all", *MODES), default="all")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--max-requests", type=int, default=128)
+    parser.add_argument("--max-native-actions", type=int, default=ACTION_LIMIT)
+    parser.add_argument("--max-sim-seconds", type=int, default=int(SIM_LIMIT))
+    parser.add_argument("--max-wall-seconds", type=int, default=int(WALL_LIMIT))
     parser.add_argument("--max-consecutive-errors", type=int, default=6)
     parser.add_argument("--api-key-file", type=Path)
     parser.add_argument("--assets-dir", type=Path, default=Path("assets"))
     parser.add_argument("--runs-dir", type=Path, required=True)
     cfg = parser.parse_args()
-    if min(cfg.max_requests, cfg.max_consecutive_errors) < 1:
-        parser.error("model request limits must be positive")
+    if min(cfg.max_requests, cfg.max_consecutive_errors, cfg.max_native_actions, cfg.max_sim_seconds, cfg.max_wall_seconds) < 1:
+        parser.error("stage budgets and consecutive error limit must be positive")
     if cfg.mode == "all":
         with ProcessPoolExecutor(max_workers=2, mp_context=multiprocessing.get_context("spawn")) as pool:
             jobs = [pool.submit(run_episode, cfg, mode) for mode in MODES]

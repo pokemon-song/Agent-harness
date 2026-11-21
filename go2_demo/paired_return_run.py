@@ -29,8 +29,8 @@ SIM_LIMIT, WALL_LIMIT, API_TIMEOUT = 470., 1117., 90.
 
 
 class ReturnFollower(_Follower):
-    def __init__(self, harness, log):
-        super().__init__(harness, ACTION_LIMIT, lambda action: log.write("native_action", detail=action))
+    def __init__(self, harness, log, *, max_actions=ACTION_LIMIT):
+        super().__init__(harness, max_actions, lambda action: log.write("native_action", detail=action))
         self.log = log
         self.block = None
         self.refusals = 0

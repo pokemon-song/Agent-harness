@@ -36,6 +36,16 @@ class StageHarness(PublicHarness):
 DOCK_HERE = {"waypoints": [{"x": 0., "y": 0.}], "after": "dock"}
 
 
+def test_native_action_budget_applies_across_planner_decisions():
+    harness = StageHarness(confirm_stop=False)
+    follower = StageFollower(harness, SimpleNamespace(write=lambda *a, **kw: None),
+                             SimpleNamespace(observe=lambda *a: None), "A", max_actions=1)
+    assert follower.execute("scan", {"yaw_rad": .1}, turn=1)["status"] == "ok"
+    result = follower.execute("scan", {"yaw_rad": .1}, turn=2)
+    assert (result["status"], result["error_code"]) == ("budget_exhausted", "native_action_limit")
+    assert harness.dispatched == ["turn"]
+
+
 def test_A_visual_dock_cannot_dispatch_finish_without_independent_stop(monkeypatch):
     harness = StageHarness(confirm_stop=False)
     follower = StageFollower(harness, SimpleNamespace(write=lambda *a, **kw: None),
@@ -50,7 +60,8 @@ def test_independent_A_stop_interrupts_macro_and_first_B_decision_has_empty_hist
     harness = StageHarness(confirm_stop=True)
     log = SimpleNamespace(write=lambda *a, **kw: None, save_frame=lambda frame, name: name)
     memory = SimpleNamespace(card=None, observe=lambda *a: None)
-    config = SimpleNamespace(max_requests=4, max_consecutive_errors=1)
+    config = SimpleNamespace(max_requests=4, max_consecutive_errors=1, max_native_actions=2,
+                             max_sim_seconds=470, max_wall_seconds=1117)
     choices = iter([("scan", {"yaw_rad": .1}), ("follow_waypoints", DOCK_HERE), ("abort", {"reason": "end"})])
     turns = []
 
