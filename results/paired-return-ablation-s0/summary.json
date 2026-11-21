@@ -1,0 +1,259 @@
+{
+  "shared_configuration": {
+    "task_id": "memory_ab_occluded_v1",
+    "seed": 0,
+    "model": "deepseek-flash",
+    "outbound": "verified replay",
+    "first_contact_terminates": true,
+    "outbound_decisions": 121,
+    "api_limit_including_reader": 32,
+    "native_budget": 115,
+    "sim_seconds": 470.0,
+    "wall_seconds": 1117.0,
+    "api_timeout": 90.0,
+    "max_output_tokens": 8192,
+    "thinking": false,
+    "return_history": 6,
+    "depth_clearance_shared": true
+  },
+  "shared_A_handoff_verified_across_arms": true,
+  "shared_A_handoff_sim_seconds": 130.1399999998933,
+  "outbound_trajectory_sha256": "57eaf06c53727ed1ebea9f2b8980aea88720c1da6c6a9f20ba861008605c89e4",
+  "first_return_image_sha256": "cced5f566eb33c9018a168daaf946b80b3ef62bb06c05d62f6af6e0770440921",
+  "first_return_public_observation_sha256": "a5837919c8b08e104dbf32208b0c9f35079ac9ea8fdec7d31b07adb6ea29250c",
+  "scoring": "独立仿真评分，以 A 交接、B 距离 0.82–1.18 米、朝向误差不大于 0.25 rad、确认停稳并 finish 计分，首次场景碰撞或跌倒终止。",
+  "scope": "固定 seed 0、一个场景、每组一次真实返程。三组从同一已验证去程重放的 A 合格停位启动，仅返程独立规划。结果不能估计长期成功率。返程里程按全段积分，包含终止时统一停稳带来的微小漂移。原速时间轴为仿真时间，模型推理等待不进入录像。",
+  "cost_accounting": "模型 API 返回的实际请求和 token 用量；记忆查询这个工具的调用数与需要付费的 reader_requests 分别统计。计费金额需以账户账单为准。",
+  "arms": {
+    "empty": {
+      "label": "无外部记忆",
+      "success": false,
+      "termination": "model_error",
+      "reason": "MODEL_PROTOCOL_ERROR",
+      "A_achieved_at_handoff": true,
+      "A_distance_m": 1.1616866492455868,
+      "B_passed": false,
+      "B_final_distance_m": 5.09283361590079,
+      "B_final_heading_error_rad": 0.8851148119998535,
+      "B_failure_reasons": [
+        "DISTANCE_OUT_OF_RANGE",
+        "HEADING_OUT_OF_RANGE"
+      ],
+      "scene_contact_count": 0,
+      "fallen": false,
+      "return_path_m": 0.005059419597604093,
+      "return_sim_seconds": 0.6000000000028649,
+      "return_wall_seconds": 3.7895787800007383,
+      "planner_choices": {
+        "memory_query": 1
+      },
+      "waypoint_sequences": [],
+      "memory_query_status": {
+        "unavailable": 1
+      },
+      "native_attempts": {},
+      "native_successes": {},
+      "depth_refusals": 0,
+      "planner_requests": 3,
+      "reader_requests": 0,
+      "total_requests": 3,
+      "known_usage": {
+        "prompt_tokens": 5615,
+        "completion_tokens": 320,
+        "total_tokens": 5935
+      },
+      "unknown_usage_requests": 0,
+      "videos": {
+        "full": {
+          "file": "empty/full.mp4",
+          "sha256": "9a0166ff251662cc59fe3a0bdfb007422028d74942f4f55171fdb7f9fbba8487",
+          "fps": 12.5,
+          "frame_count": 1623,
+          "playback_seconds": 129.84,
+          "phase_start_sim_s": 1.0000000000000007,
+          "return_start_playback_s": 129.1399999998933,
+          "end_sim_s": 130.73999999989616
+        },
+        "return": {
+          "file": "empty/return.mp4",
+          "sha256": "853d6ff922a9cc31f9d7233c24a18c4b537776b110a11275655f7219d0c73d49",
+          "fps": 12.5,
+          "frame_count": 9,
+          "playback_seconds": 0.72,
+          "phase_start_sim_s": 130.1399999998933,
+          "return_start_playback_s": 0.0,
+          "end_sim_s": 130.73999999989616
+        }
+      }
+    },
+    "ledger": {
+      "label": "简单路点簿",
+      "success": false,
+      "termination": "budget_exhausted",
+      "reason": "shared_api_limit",
+      "A_achieved_at_handoff": true,
+      "A_distance_m": 1.1616866492455868,
+      "B_passed": false,
+      "B_final_distance_m": 4.445338487890135,
+      "B_final_heading_error_rad": 0.3715694742266833,
+      "B_failure_reasons": [
+        "DISTANCE_OUT_OF_RANGE",
+        "HEADING_OUT_OF_RANGE"
+      ],
+      "scene_contact_count": 0,
+      "fallen": false,
+      "return_path_m": 8.725095470109524,
+      "return_sim_seconds": 109.2400000005216,
+      "return_wall_seconds": 55.418764430996816,
+      "planner_choices": {
+        "memory_query": 28,
+        "follow_waypoints": 2,
+        "scan": 1
+      },
+      "waypoint_sequences": [
+        {
+          "after": "inspect",
+          "point_count": 6
+        },
+        {
+          "after": "inspect",
+          "point_count": 6
+        }
+      ],
+      "memory_query_status": {
+        "ok": 28
+      },
+      "native_attempts": {
+        "turn": 20,
+        "move_relative": 18
+      },
+      "native_successes": {
+        "turn": 20,
+        "move_relative": 18
+      },
+      "depth_refusals": 0,
+      "planner_requests": 32,
+      "reader_requests": 0,
+      "total_requests": 32,
+      "known_usage": {
+        "prompt_tokens": 93579,
+        "completion_tokens": 4162,
+        "total_tokens": 97741
+      },
+      "unknown_usage_requests": 0,
+      "videos": {
+        "full": {
+          "file": "ledger/full.mp4",
+          "sha256": "2a2d6261f71f2bd3a7ef1f187dcbfed50839101dcf6d28cd9b85f8bc3a879c47",
+          "fps": 12.5,
+          "frame_count": 2981,
+          "playback_seconds": 238.48,
+          "phase_start_sim_s": 1.0000000000000007,
+          "return_start_playback_s": 129.1399999998933,
+          "end_sim_s": 239.3800000004149
+        },
+        "return": {
+          "file": "ledger/return.mp4",
+          "sha256": "dbef5ad54b6a6ea2565eb9893dca98d54f686b68693b8b2cc4c097c892430b8e",
+          "fps": 12.5,
+          "frame_count": 1367,
+          "playback_seconds": 109.36,
+          "phase_start_sim_s": 130.1399999998933,
+          "return_start_playback_s": 0.0,
+          "end_sim_s": 239.3800000004149
+        }
+      }
+    },
+    "query": {
+      "label": "按需记忆",
+      "success": false,
+      "termination": "budget_exhausted",
+      "reason": "shared_api_limit",
+      "A_achieved_at_handoff": true,
+      "A_distance_m": 1.1616866492455868,
+      "B_passed": false,
+      "B_final_distance_m": 7.547894163634952,
+      "B_final_heading_error_rad": 1.0669860793606847,
+      "B_failure_reasons": [
+        "DISTANCE_OUT_OF_RANGE",
+        "HEADING_OUT_OF_RANGE"
+      ],
+      "scene_contact_count": 0,
+      "fallen": false,
+      "return_path_m": 4.159377354268222,
+      "return_sim_seconds": 54.46000000026004,
+      "return_wall_seconds": 42.2395777640013,
+      "planner_choices": {
+        "memory_query": 15,
+        "follow_waypoints": 1
+      },
+      "waypoint_sequences": [
+        {
+          "after": "inspect",
+          "point_count": 5
+        }
+      ],
+      "memory_query_status": {
+        "ok": 11,
+        "error": 4
+      },
+      "native_attempts": {
+        "turn": 11,
+        "move_relative": 8
+      },
+      "native_successes": {
+        "turn": 11,
+        "move_relative": 8
+      },
+      "depth_refusals": 0,
+      "planner_requests": 17,
+      "reader_requests": 15,
+      "total_requests": 32,
+      "known_usage": {
+        "prompt_tokens": 83930,
+        "completion_tokens": 3424,
+        "total_tokens": 87354
+      },
+      "unknown_usage_requests": 0,
+      "videos": {
+        "full": {
+          "file": "query/full.mp4",
+          "sha256": "173f11698ace251c04301a317e53b6208752544d3feb57201fbf3f5ccc34a8c1",
+          "fps": 12.5,
+          "frame_count": 2296,
+          "playback_seconds": 183.68,
+          "phase_start_sim_s": 1.0000000000000007,
+          "return_start_playback_s": 129.1399999998933,
+          "end_sim_s": 184.60000000015333
+        },
+        "return": {
+          "file": "query/return.mp4",
+          "sha256": "ad4ed4054fbc6292f15fb11b28ce3f7da694f0e0bc1831e5bdce4997f316cc81",
+          "fps": 12.5,
+          "frame_count": 682,
+          "playback_seconds": 54.56,
+          "phase_start_sim_s": 130.1399999998933,
+          "return_start_playback_s": 0.0,
+          "end_sim_s": 184.60000000015333
+        }
+      }
+    }
+  },
+  "totals": {
+    "planner_requests": 52,
+    "reader_requests": 15,
+    "total_requests": 67,
+    "unknown_usage_requests": 0,
+    "known_usage": {
+      "prompt_tokens": 183124,
+      "completion_tokens": 7906,
+      "total_tokens": 191030
+    }
+  },
+  "full_video_archive": {
+    "file": "three-full-videos.zip",
+    "bytes": 2386096,
+    "sha256": "0959f69ace5a3762bcc38f28c9d2964aba181e217819986275f102565297e72f",
+    "verified_crc_and_members": true
+  }
+}
