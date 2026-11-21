@@ -1,0 +1,13 @@
+{
+  "sample_count": 6252,
+  "start_s": 1.0000000000000007,
+  "end_s": 126.0199999998877,
+  "handoff_s": null,
+  "model_sha256": "00559b136dcc2bffa52be42c8e911f52359c8f23a9cc495fb0686793ea96ef31",
+  "poses_sha256": "5ff22308ea698747906af8be9a44b9e7c4c90bb98e23b15fffc69b914e01cbf3",
+  "mujoco_version": "3.2.5",
+  "timebase": "simulation_seconds",
+  "physics_sampling": "initial and every executed control step",
+  "return_label": "EMPTY | LIVE RETURN TO B",
+  "outbound_label": "LIVE SEARCH FOR A | EMPTY"
+}
