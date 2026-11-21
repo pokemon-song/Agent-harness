@@ -24,7 +24,7 @@ from .short_step_clearance import check_clearance
 
 
 MODES = ("empty", "ledger", "query")
-API_LIMIT, ACTION_LIMIT = 32, 115
+ACTION_LIMIT = 115
 SIM_LIMIT, WALL_LIMIT, API_TIMEOUT = 470., 1117., 90.
 
 
@@ -87,7 +87,8 @@ def run_arm(args, mode):
         write(out/"handoff.json", expected)
         write(out/"manifest.json", {"task_id": TASK_ID, "seed": 0, "mode": mode, "model": "deepseek-flash",
               "outbound": "verified replay", "first_contact_terminates": True, "outbound_decisions": audit["source_decisions"],
-              "api_limit_including_reader": API_LIMIT, "native_budget": ACTION_LIMIT, "sim_seconds": SIM_LIMIT,
+              "api_limit_including_reader": args.max_requests, "max_consecutive_planner_errors": args.max_consecutive_errors,
+              "native_budget": ACTION_LIMIT, "sim_seconds": SIM_LIMIT,
               "wall_seconds": WALL_LIMIT, "api_timeout": API_TIMEOUT, "max_output_tokens": 8192, "thinking": False,
               "return_history": 6, "depth_clearance_shared": True})
         print(f"{mode}: verified A; fresh return begins", flush=True)
@@ -107,7 +108,7 @@ def run_arm(args, mode):
         history, usage = [], Counter()
         num_plans = num_reader = unknown = errors = 0
         stop, reason = "budget_exhausted", "shared_api_limit"
-        while num_plans + num_reader < API_LIMIT:
+        while num_plans + num_reader < args.max_requests:
             remaining = backend.deadline_monotonic-time.monotonic()
             if remaining <= 0 or harness.frame.sim_time_s >= backend.sim_deadline_s:
                 reason = "wall_or_sim_limit"
@@ -123,9 +124,11 @@ def run_arm(args, mode):
                 call = planner.choose(obs, image_data_url(frame.rgb), slot.card, history,
                                       timeout_s=min(API_TIMEOUT, remaining))
             except ModelError as exc:
-                log.write("planner_error", index=num_plans, code=exc.code)
+                log.write("planner_error", index=num_plans, code=exc.code,
+                          detail=str(exc) if exc.code == "MODEL_PROTOCOL_ERROR" else None,
+                          finish_reason=planner.response_finish_reason, usage=_usage_counters(planner.raw_usage))
                 errors += 1
-                if errors >= 2:
+                if errors >= args.max_consecutive_errors:
                     stop, reason = "model_error", exc.code
                     break
                 history.append({"tool": "previous_request", "status": "error", "error_code": exc.code})
@@ -139,7 +142,7 @@ def run_arm(args, mode):
             log.write("model_choice", index=num_plans, tool=name, arguments=arguments, usage=counters)
             if name == "memory_query":
                 memory = slot.handle(arguments["question"], timeout_s=min(API_TIMEOUT, backend.deadline_monotonic-time.monotonic()),
-                                     remaining_requests=API_LIMIT-num_plans-num_reader)
+                                     remaining_requests=args.max_requests-num_plans-num_reader)
                 num_reader += memory["requests"]
                 unknown += memory["unknown_usage_requests"]
                 usage.update(memory["known_usage"])
@@ -202,8 +205,12 @@ if __name__ == "__main__":
     parser.add_argument("--api-key-file", type=Path)
     parser.add_argument("--assets-dir", type=Path, default=Path("assets"))
     parser.add_argument("--runs-dir", type=Path, required=True)
+    parser.add_argument("--max-requests", type=int, default=32, help="Per-arm cap including the memory reader")
+    parser.add_argument("--max-consecutive-errors", type=int, default=2, help="Consecutive planner errors before stopping")
     parser.add_argument("--mode", choices=("all", *MODES), default="all")
     cfg = parser.parse_args()
+    if min(cfg.max_requests, cfg.max_consecutive_errors) < 1:
+        parser.error("request and consecutive-error limits must be positive")
     if cfg.mode == "all":
         with ProcessPoolExecutor(max_workers=2, mp_context=multiprocessing.get_context("spawn")) as pool:
             jobs = [pool.submit(run_arm, cfg, mode) for mode in MODES]
