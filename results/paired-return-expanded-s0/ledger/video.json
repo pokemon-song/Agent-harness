@@ -1,0 +1,26 @@
+{
+  "file": "full.mp4",
+  "sha256": "42a20b4438eb838a5dd3fd270d9a7107b713601703d1ba8bcc575d32a6a02c37",
+  "frame_count": 4007,
+  "fps": 12.5,
+  "duration_s": 320.56,
+  "decoded_all_frames": true,
+  "initial_and_final_states_included": true,
+  "source": {
+    "sample_count": 16021,
+    "start_s": 1.0000000000000007,
+    "end_s": 321.40000000080653,
+    "handoff_s": 130.1399999998933,
+    "model_sha256": "00559b136dcc2bffa52be42c8e911f52359c8f23a9cc495fb0686793ea96ef31",
+    "poses_sha256": "e6ffe595fc1c97b20a4530b9a39720cfcbef0ae437e756264eb9b85f18b750c5",
+    "mujoco_version": "3.2.5",
+    "timebase": "simulation_seconds",
+    "physics_sampling": "initial and every executed control step",
+    "return_label": "LEDGER | MODEL + SHARED CONTROLLER"
+  },
+  "render_settings": {
+    "offscreen_multisamples": 0,
+    "shadows": false,
+    "reflections": false
+  }
+}

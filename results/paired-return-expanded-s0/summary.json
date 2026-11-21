@@ -1,0 +1,339 @@
+{
+  "scope": "每组在 seed 0 独立执行一次返程。完整录像从同一段真实去程的物理重放开始，随后记录本组新选的动作直到终止。原速使用仿真时间。",
+  "limits": "每组最多 128 次请求（含记忆读取），连续 6 次规划调用失败后结束。旧轮这两项分别为 32 次与 2 次。两轮均从头独立请求。",
+  "comparison": "全体新旧六轮 A 点交接指纹、去程姿态及时刻完全一致。单次样本同时改变请求与重试上限，不能单独归因或估计稳定成功率。",
+  "scoring": "A 通过后，B 须在距中心 0.82–1.18 米且朝向误差不超过 0.25 rad 的位置确认停稳并完成。首次场景碰撞即终止。",
+  "shared_configuration": {
+    "task_id": "memory_ab_occluded_v1",
+    "seed": 0,
+    "model": "deepseek-flash",
+    "outbound": "verified replay",
+    "first_contact_terminates": true,
+    "outbound_decisions": 121,
+    "api_limit_including_reader": 128,
+    "max_consecutive_planner_errors": 6,
+    "native_budget": 115,
+    "sim_seconds": 470.0,
+    "wall_seconds": 1117.0,
+    "api_timeout": 90.0,
+    "max_output_tokens": 8192,
+    "thinking": false,
+    "return_history": 6,
+    "depth_clearance_shared": true
+  },
+  "shared_A_fingerprint": {
+    "sim_time_s": 130.1399999998933,
+    "first_return_image_sha256": "cced5f566eb33c9018a168daaf946b80b3ef62bb06c05d62f6af6e0770440921",
+    "first_public_observation_sha256": "a5837919c8b08e104dbf32208b0c9f35079ac9ea8fdec7d31b07adb6ea29250c",
+    "outbound_trajectory_sha256": "57eaf06c53727ed1ebea9f2b8980aea88720c1da6c6a9f20ba861008605c89e4",
+    "documents": {
+      "targets/target-A.md": "0cc386e7333a1df3c696b2ebc138b293cee3e19aa5a5c807b4235a164991b6c6",
+      "targets/target-B.md": "6a54f1ebbe864e0624c5f44ae55df5fe81c8d75d64b515158c374bd3a6c90769",
+      "route/leg-01.md": "575aa684ed5757b9b1725e32e11e1ae2bf3d7aea129a37918731261cee6af625",
+      "route/leg-02.md": "ee0a1d50dbc7feb3a2e6e61888412cca9dc1a4888554d0fa148c38444f86b3df",
+      "route/leg-03.md": "b9f468dd42e09fec1757d43511a660cb1f4f1b138e3fc5a1770a9038945d2804",
+      "handoff/last-observation.md": "cb2f45c37e18960adcaf37b7fe421adb2f7584620450790b3b6d47a4e07aa0a7"
+    }
+  },
+  "verified_outbound_control_samples": 6458,
+  "verified_outbound_timestamps_and_qpos_sha256": "ebded2da24de8f280674848ccaea8595c6c956297d25132b7494c7db81e7aac6",
+  "cost_accounting": "根据 API 返回统计 token，请求次数含失败与重试；实际金额以服务商账单为准。",
+  "arms": {
+    "empty": {
+      "label": "无外部记忆",
+      "success": false,
+      "termination": "budget_exhausted",
+      "termination_detail": "shared_api_limit",
+      "A_acquired_at_handoff": true,
+      "A_distance_m": 1.1616866492455868,
+      "B_passed": false,
+      "B_stop_confirmed": true,
+      "B_final_distance_m": 5.0632441642096175,
+      "B_min_distance_during_return_m": 4.99266859801126,
+      "B_final_heading_error_rad": 0.483880958519251,
+      "B_failure_reasons": [
+        "DISTANCE_OUT_OF_RANGE",
+        "HEADING_OUT_OF_RANGE"
+      ],
+      "collisions": 0,
+      "fallen": false,
+      "return_path_m": 2.4929771870122837,
+      "return_sim_seconds": 122.72000000058597,
+      "return_wall_seconds": 147.414756664999,
+      "planner_choices": {
+        "memory_query": 63,
+        "scan": 46
+      },
+      "planner_errors": {
+        "Choose exactly one paired return tool.": 19
+      },
+      "memory_query_status": {
+        "unavailable": 63
+      },
+      "native_attempts": {
+        "turn": 46
+      },
+      "native_successes": {
+        "turn": 46
+      },
+      "depth_refusals": 0,
+      "planner_requests": 128,
+      "reader_requests": 0,
+      "total_requests": 128,
+      "unknown_usage_requests": 0,
+      "known_usage": {
+        "prompt_tokens": 283334,
+        "completion_tokens": 8414,
+        "total_tokens": 291748
+      },
+      "videos": {
+        "full": {
+          "file": "empty/full.mp4",
+          "sha256": "b36bce83fd33e315764126ac5bb8863e51aeeba1a3c4af1ac9b1dfbf63daf693",
+          "fps": 12.5,
+          "frame_count": 3150,
+          "playback_seconds": 252.0,
+          "handoff_video_seconds": 129.1399999998933
+        },
+        "return": {
+          "file": "empty/return.mp4",
+          "sha256": "4b39de3fc73b50cd2d922b83b840bc674cc80ccc3cb0b10136ce1e614f1b1ce6",
+          "fps": 12.5,
+          "frame_count": 1535,
+          "playback_seconds": 122.8,
+          "handoff_video_seconds": 0.0
+        }
+      },
+      "return_net_displacement_m": 0.1056169521807151,
+      "largest_displacement_from_A_m": 0.1599611819308556,
+      "finish_at_shared_request": null,
+      "longest_consecutive_planner_errors": 2,
+      "native_attempts_before_and_after_previous_request_limit": {
+        "first_32_requests": {
+          "turn": 6
+        },
+        "after_32_requests": {
+          "turn": 40
+        }
+      }
+    },
+    "ledger": {
+      "label": "简单路点簿",
+      "success": true,
+      "termination": "finish",
+      "termination_detail": null,
+      "A_acquired_at_handoff": true,
+      "A_distance_m": 1.1616866492455868,
+      "B_passed": true,
+      "B_stop_confirmed": true,
+      "B_final_distance_m": 1.1092518096027193,
+      "B_min_distance_during_return_m": 1.1027947467751211,
+      "B_final_heading_error_rad": 0.11135601958115199,
+      "B_failure_reasons": [],
+      "collisions": 0,
+      "fallen": false,
+      "return_path_m": 17.240731346937963,
+      "return_sim_seconds": 191.26000000091324,
+      "return_wall_seconds": 55.41307980599959,
+      "planner_choices": {
+        "memory_query": 27,
+        "follow_waypoints": 3
+      },
+      "planner_errors": {},
+      "memory_query_status": {
+        "ok": 27
+      },
+      "native_attempts": {
+        "turn": 28,
+        "move_relative": 36,
+        "track_point": 5,
+        "stop": 1,
+        "finish": 1
+      },
+      "native_successes": {
+        "turn": 28,
+        "move_relative": 34,
+        "track_point": 5,
+        "stop": 1,
+        "finish": 1
+      },
+      "depth_refusals": 0,
+      "planner_requests": 30,
+      "reader_requests": 0,
+      "total_requests": 30,
+      "unknown_usage_requests": 0,
+      "known_usage": {
+        "prompt_tokens": 90652,
+        "completion_tokens": 3990,
+        "total_tokens": 94642
+      },
+      "videos": {
+        "full": {
+          "file": "ledger/full.mp4",
+          "sha256": "42a20b4438eb838a5dd3fd270d9a7107b713601703d1ba8bcc575d32a6a02c37",
+          "fps": 12.5,
+          "frame_count": 4007,
+          "playback_seconds": 320.56,
+          "handoff_video_seconds": 129.1399999998933
+        },
+        "return": {
+          "file": "ledger/return.mp4",
+          "sha256": "bb9afa5630fc925c3c71f4c3de1eac5e3e20a4631bfd19e9708dc1e9fb258949",
+          "fps": 12.5,
+          "frame_count": 2392,
+          "playback_seconds": 191.36,
+          "handoff_video_seconds": 0.0
+        }
+      },
+      "return_net_displacement_m": 6.024794744919955,
+      "largest_displacement_from_A_m": 6.714454122156961,
+      "finish_at_shared_request": 30,
+      "longest_consecutive_planner_errors": 0,
+      "native_attempts_before_and_after_previous_request_limit": {
+        "first_32_requests": {
+          "turn": 28,
+          "move_relative": 36,
+          "track_point": 5,
+          "stop": 1,
+          "finish": 1
+        },
+        "after_32_requests": {}
+      }
+    },
+    "query": {
+      "label": "按需记忆",
+      "success": true,
+      "termination": "finish",
+      "termination_detail": null,
+      "A_acquired_at_handoff": true,
+      "A_distance_m": 1.1616866492455868,
+      "B_passed": true,
+      "B_stop_confirmed": true,
+      "B_final_distance_m": 1.1078424512214233,
+      "B_min_distance_during_return_m": 1.1009956199354372,
+      "B_final_heading_error_rad": 0.003924343252126927,
+      "B_failure_reasons": [],
+      "collisions": 0,
+      "fallen": false,
+      "return_path_m": 16.983417190162868,
+      "return_sim_seconds": 190.00000000090722,
+      "return_wall_seconds": 54.66389107499708,
+      "planner_choices": {
+        "memory_query": 15,
+        "scan": 3,
+        "follow_waypoints": 3
+      },
+      "planner_errors": {},
+      "memory_query_status": {
+        "ok": 11,
+        "error": 2,
+        "unavailable": 2
+      },
+      "native_attempts": {
+        "turn": 29,
+        "move_relative": 36,
+        "track_point": 5,
+        "stop": 1,
+        "finish": 1
+      },
+      "native_successes": {
+        "turn": 29,
+        "move_relative": 35,
+        "track_point": 5,
+        "stop": 1,
+        "finish": 1
+      },
+      "depth_refusals": 0,
+      "planner_requests": 21,
+      "reader_requests": 15,
+      "total_requests": 36,
+      "unknown_usage_requests": 0,
+      "known_usage": {
+        "prompt_tokens": 96753,
+        "completion_tokens": 4088,
+        "total_tokens": 100841
+      },
+      "videos": {
+        "full": {
+          "file": "query/full.mp4",
+          "sha256": "69c72cc91782b463232e2c998f04ed14628d7b6110ab5263ba3fb328d9daa09d",
+          "fps": 12.5,
+          "frame_count": 3991,
+          "playback_seconds": 319.28,
+          "handoff_video_seconds": 129.1399999998933
+        },
+        "return": {
+          "file": "query/return.mp4",
+          "sha256": "74d4f63ccefd6c3bcf7e45380013383b0041409bd2e57fd33e7472287633cf2c",
+          "fps": 12.5,
+          "frame_count": 2377,
+          "playback_seconds": 190.16,
+          "handoff_video_seconds": 0.0
+        }
+      },
+      "return_net_displacement_m": 6.030426743865657,
+      "largest_displacement_from_A_m": 6.69123904682339,
+      "finish_at_shared_request": 36,
+      "longest_consecutive_planner_errors": 0,
+      "native_attempts_before_and_after_previous_request_limit": {
+        "first_32_requests": {
+          "turn": 14,
+          "move_relative": 10
+        },
+        "after_32_requests": {
+          "turn": 15,
+          "move_relative": 26,
+          "track_point": 5,
+          "stop": 1,
+          "finish": 1
+        }
+      }
+    }
+  },
+  "previous_32_request_trial": {
+    "empty": {
+      "success": false,
+      "return_path_m": 0.005059419597604093,
+      "B_final_distance_m": 5.09283361590079,
+      "planner_requests": 3,
+      "reader_requests": 0,
+      "total_requests": 3,
+      "termination": "model_error"
+    },
+    "ledger": {
+      "success": false,
+      "return_path_m": 8.725095470109524,
+      "B_final_distance_m": 4.445338487890135,
+      "planner_requests": 32,
+      "reader_requests": 0,
+      "total_requests": 32,
+      "termination": "budget_exhausted"
+    },
+    "query": {
+      "success": false,
+      "return_path_m": 4.159377354268222,
+      "B_final_distance_m": 7.547894163634952,
+      "planner_requests": 17,
+      "reader_requests": 15,
+      "total_requests": 32,
+      "termination": "budget_exhausted"
+    }
+  },
+  "totals": {
+    "total_requests": 194,
+    "planner_requests": 179,
+    "reader_requests": 15,
+    "unknown_usage_requests": 0,
+    "known_usage": {
+      "prompt_tokens": 470739,
+      "completion_tokens": 16492,
+      "total_tokens": 487231
+    }
+  },
+  "full_video_archive": {
+    "file": "three-full-videos.zip",
+    "bytes": 3795804,
+    "sha256": "b76f87dc87e8a03d497a7079a2062548377f022c51ac7164e8f16bb2b0049a65",
+    "verified_zip_crc_and_member_sha256": true
+  }
+}

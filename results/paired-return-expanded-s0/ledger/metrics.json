@@ -1,0 +1,108 @@
+{
+  "mode": "ledger",
+  "success": true,
+  "termination": "finish",
+  "detail": null,
+  "independent_evaluation": {
+    "success": true,
+    "goal_kind": "ordered_standoff",
+    "checkpoints": {
+      "A": {
+        "label": "A",
+        "target_xy_m": [
+          6.4,
+          0.0
+        ],
+        "base_xy_m": [
+          6.584658051574491,
+          -1.1469164202434945
+        ],
+        "distance_to_target_center_m": 1.1616866492455868,
+        "heading_error_rad": 0.16082231039739092,
+        "speed_mps": 0.014807260736357908,
+        "abs_yaw_rate_radps": 0.022282746315237138,
+        "sim_time_s": 130.1399999998933,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": true,
+        "failure_reasons": [],
+        "source": "privileged_simulator_evaluator",
+        "stop_index": 52,
+        "achieved_at_checkpoint": true,
+        "passed": true
+      },
+      "B": {
+        "label": "B",
+        "target_xy_m": [
+          1.8,
+          0.6
+        ],
+        "base_xy_m": [
+          0.7342850792334124,
+          0.29228050961569985
+        ],
+        "distance_to_target_center_m": 1.1092518096027193,
+        "heading_error_rad": 0.11135601958115199,
+        "speed_mps": 0.0024692726332121253,
+        "abs_yaw_rate_radps": 0.022733508048587512,
+        "sim_time_s": 321.40000000080653,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": true,
+        "failure_reasons": [],
+        "source": "privileged_simulator_evaluator",
+        "eligible": true,
+        "passed": true
+      }
+    },
+    "checkpoint_order": [
+      "A",
+      "B"
+    ],
+    "order_satisfied": true,
+    "premature_b_stops_ignored": 0,
+    "requires_finish": true,
+    "finish_enforced_by": "episode_runner",
+    "standoff_m": 1.0,
+    "distance_tolerance_m": 0.18,
+    "heading_tolerance_rad": 0.25,
+    "collision": false,
+    "fallen": false,
+    "stopped": true,
+    "source": "privileged_simulator_evaluator",
+    "collision_count": 0,
+    "collision_events": [],
+    "cabinet_contact_count": 0,
+    "cabinet_contact_events": []
+  },
+  "final_stop": {
+    "status": "succeeded",
+    "error_code": null,
+    "speed_mps": 0.0024692726332121253,
+    "yaw_rate_radps": 0.022733508048587512
+  },
+  "return_path_m": 17.240731346937963,
+  "return_sim_seconds": 191.26000000091324,
+  "return_wall_seconds": 55.41307980599959,
+  "planner_requests": 30,
+  "reader_requests": 0,
+  "total_requests": 30,
+  "known_usage": {
+    "prompt_tokens": 90652,
+    "completion_tokens": 3990,
+    "total_tokens": 94642
+  },
+  "unknown_usage_requests": 0,
+  "depth_refusals": 0,
+  "native_attempts": {
+    "turn": 28,
+    "move_relative": 36,
+    "track_point": 5,
+    "stop": 1,
+    "finish": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "task_id": "memory_ab_occluded_v1",
+  "seed": 0,
+  "mode": "empty",
+  "model": "deepseek-flash",
+  "outbound": "verified replay",
+  "first_contact_terminates": true,
+  "outbound_decisions": 121,
+  "api_limit_including_reader": 128,
+  "max_consecutive_planner_errors": 6,
+  "native_budget": 115,
+  "sim_seconds": 470.0,
+  "wall_seconds": 1117.0,
+  "api_timeout": 90.0,
+  "max_output_tokens": 8192,
+  "thinking": false,
+  "return_history": 6,
+  "depth_clearance_shared": true
+}
