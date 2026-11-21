@@ -2,6 +2,7 @@
 import argparse
 from collections import Counter
 from concurrent.futures import ProcessPoolExecutor
+from dataclasses import replace
 import math
 import multiprocessing
 from pathlib import Path
@@ -24,6 +25,16 @@ from .scenarios import get_scenario
 
 
 TASK = "先找到蓝球 A 并合格停靠，再返回绿方块 B 并合格停靠。共用起点里程计坐标。首次碰撞或跌倒终止。"
+
+
+def episode_scene(floor_size_m=None):
+    scene = get_scenario(TASK_ID)
+    if floor_size_m is None:
+        return scene
+    length, width = floor_size_m
+    if not all(math.isfinite(value) and value > 0 for value in (length, width)):
+        raise ValueError("Floor length and width must be finite positive distances.")
+    return replace(scene, floor_half_size_m=(length / 2, width / 2))
 
 
 class StageFollower(ReturnFollower):
@@ -125,9 +136,10 @@ def play_stage(stage, mode, harness, log, memory, planner, cfg):
 
 
 def run_episode(cfg, mode):
+    scene = episode_scene(cfg.floor_size_m)
     out = cfg.runs_dir / mode
     out.mkdir(exist_ok=False, parents=True)
-    backend = MujocoGo2Backend(cfg.assets_dir, seed=cfg.seed, scenario=get_scenario(TASK_ID), stop_on_first_collision=True)
+    backend = MujocoGo2Backend(cfg.assets_dir, seed=cfg.seed, scenario=scene, stop_on_first_collision=True)
     recorder = planner = reader = None
     log = RunLog(out)
     try:
@@ -137,6 +149,7 @@ def run_episode(cfg, mode):
         episode_id = str(uuid4())
         write(out/"manifest.json", {"episode_id": episode_id, "mode": mode, "seed": cfg.seed, "task": TASK_ID,
               "outbound": "fresh_live_planner", "return": "same_episode_live_planner",
+              "floor_size_m": [2 * half for half in scene.floor_half_size_m],
               "archive_inputs": [], "initial_memory": "empty", "initial_odometry": harness.observation()["local_odometry"],
               "model": "deepseek-flash", "thinking": False, "api_limit_per_stage": cfg.max_requests,
               "max_consecutive_planner_errors": cfg.max_consecutive_errors, "max_native_per_stage": cfg.max_native_actions,
@@ -205,6 +218,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=("all", *MODES), default="all")
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--floor-size-m", nargs=2, type=float, metavar=("LENGTH", "WIDTH"),
+                        help="Full platform dimensions along world X and Y in meters (default: task dimensions).")
     parser.add_argument("--max-requests", type=int, default=128)
     parser.add_argument("--max-native-actions", type=int, default=ACTION_LIMIT)
     parser.add_argument("--max-sim-seconds", type=int, default=int(SIM_LIMIT))

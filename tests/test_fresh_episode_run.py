@@ -1,8 +1,10 @@
 from types import SimpleNamespace
+from dataclasses import replace
 
 import numpy as np
 
-from go2_demo.fresh_episode_run import StageFollower, play_stage
+from go2_demo.experimental_boundary_gate import experimental_boundary_gate
+from go2_demo.fresh_episode_run import StageFollower, episode_scene, play_stage
 from go2_demo.types import ToolCall
 from test_return_route_control import PublicHarness
 
@@ -34,6 +36,16 @@ class StageHarness(PublicHarness):
 
 
 DOCK_HERE = {"waypoints": [{"x": 0., "y": 0.}], "after": "dock"}
+
+
+def test_wider_episode_moves_the_platform_and_its_boundary_gate_together():
+    original = episode_scene()
+    wider = episode_scene((24, 18))
+    assert original.floor_half_size_m == (8., 6.)
+    assert wider == replace(original, floor_half_size_m=(12., 9.))
+    for scene, x, blocked in ((original, 7.5, True), (wider, 7.5, False), (wider, 11.5, True)):
+        result = experimental_boundary_gate(scene, (x, 0., 0.), forward_m=.3, lateral_m=0.)
+        assert (result is not None) == blocked
 
 
 def test_native_action_budget_applies_across_planner_decisions():

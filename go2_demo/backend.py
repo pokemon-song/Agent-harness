@@ -221,7 +221,7 @@ class MujocoGo2Backend:
         if floor_size is None:
             ET.SubElement(world, "geom", name="floor", type="plane", size="10 10 .1", material="floor_material", friction="1 .005 .0001")
         else:
-            # New scene only: a finite flat 16x12m platform with top at z=0.
+            # The finite platform's top is at z=0.
             ET.SubElement(world, "geom", name="floor", type="box", pos="0 0 -.1",
                           size=f"{floor_size[0]} {floor_size[1]} .1",
                           material="floor_material", friction="1 .005 .0001")
