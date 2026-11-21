@@ -1,0 +1,197 @@
+{
+  "arm": "ledger",
+  "raw_run_directory": "runs/fresh-independent-ab-s0/ledger",
+  "raw_sha256": {
+    "events.jsonl": "800a29b42a48d9b728bfadd7111c56bdd591b1278f08283a81dafe2c7f547754",
+    "trajectory.jsonl": "cc50319b1731f51383748fd90fd157c93d1957192990dff3b4dac38c3c85b21a",
+    "video/capture.json": "37a034a7de7d4d1a783abcaf983486dcd2d4d305b0717d1aefb6044770df108a",
+    "manifest.json": "ec1432d23a8ba811780d2fb53dd26bcd6796e733ba610991c6458c1514f951af",
+    "metrics.json": "85f2cb6016d3e175a5a7ced1499ff53a712f9e4bdad8db37b46b6bae98e65a78"
+  },
+  "episode_id": "37f0a8b0-7204-4d28-b415-6101d31756dd",
+  "initial_world_xy_m": [
+    -0.0015189879768713853,
+    0.006109811166518344
+  ],
+  "initial_observation_png_sha256": "c66b51e01e7ed1b5899940754d9c862c5ac5e1aa61c5f62aeafb20ffb8a6b546",
+  "initial_visible_labels": [
+    "B"
+  ],
+  "outbound_choice_trace_sha256": "9216285f4ddc020c0e1ef5e93c72f0562720547bb25ae09ca8e759932e6a1ecf",
+  "A_handoff_events": 0,
+  "poses_sha256": "5ee4d785b2208222e681066346e2144cc9253f65417a3f7f3a63f907b34a05f1",
+  "model_mjb_sha256": "00559b136dcc2bffa52be42c8e911f52359c8f23a9cc495fb0686793ea96ef31",
+  "sample_count": 5755,
+  "own_outbound_documents_sha256": "b65ad1daa95ead9aa60b7b16a332508a8a54de1588ef8d20c9b00e589dd69a96",
+  "own_outbound_document_paths": [
+    "targets/target-B.md",
+    "route/leg-01.md",
+    "handoff/last-observation.md"
+  ],
+  "terminal_score": {
+    "A": {
+      "label": "A",
+      "target_xy_m": [
+        6.4,
+        0.0
+      ],
+      "base_xy_m": [
+        0.31415260242234194,
+        0.17037493674076526
+      ],
+      "distance_to_target_center_m": 6.088231776605764,
+      "heading_error_rad": 1.0821756513010017,
+      "speed_mps": 0.037261247936055446,
+      "abs_yaw_rate_radps": 0.002739680670456252,
+      "sim_time_s": 54.32000000002042,
+      "stop_confirmed": true,
+      "stopped": true,
+      "collision": false,
+      "fallen": false,
+      "criteria_pass": false,
+      "failure_reasons": [
+        "DISTANCE_OUT_OF_RANGE",
+        "HEADING_OUT_OF_RANGE"
+      ],
+      "source": "privileged_simulator_evaluator",
+      "stop_index": 20,
+      "achieved_at_checkpoint": false,
+      "passed": false
+    },
+    "B": null
+  },
+  "stage_details": {
+    "A": {
+      "termination": "budget_exhausted",
+      "detail": "shared_api_limit",
+      "planner_requests": 128,
+      "reader_requests": 0,
+      "all_requests": 128,
+      "known_usage": {
+        "prompt_tokens": 332180,
+        "completion_tokens": 7321,
+        "total_tokens": 339501
+      },
+      "unknown_usage_requests": 0,
+      "planner_error_codes": {
+        "MODEL_PROTOCOL_ERROR": 15
+      },
+      "protocol_error_details": {
+        "Choose exactly one outbound tool.": 15
+      },
+      "planner_tool_counts": {
+        "scan": 36,
+        "memory_query": 75,
+        "follow_waypoints": 2
+      },
+      "successive_question_longest_run": 11,
+      "native_attempts": 43,
+      "native_tool_counts": {
+        "turn": 42,
+        "move_relative": 1
+      },
+      "native_reply_status_counts": {
+        "succeeded": 43
+      },
+      "native_error_codes": {},
+      "measured_path_by_native_tool_m": {
+        "turn": 2.2362802808701856,
+        "move_relative": 0.2942934499146097
+      },
+      "max_displacement_from_stage_start_m": 0.45314000897628665,
+      "boundary_gate_refusals": 0,
+      "depth_gate_refusals": 0,
+      "actual_contacts": [],
+      "first_target_candidate": null,
+      "closest_target_center_m": 6.074979284992118,
+      "closest_target_sim_s": 55.40000000002174,
+      "closest_target_world_xy_m": [
+        0.32839366381206186,
+        0.20241000826495362
+      ],
+      "endpoint_target_distance_m": 6.183110498237842,
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 115.47999999991227,
+      "active_sim_s": 114.47999999991227,
+      "recorded_wall_s": 359.51289226300287,
+      "start_world_xy_m": [
+        -0.0015189879768713853,
+        0.006109811166518344
+      ],
+      "end_world_xy_m": [
+        0.22377048951628545,
+        0.2916238454741079
+      ],
+      "net_displacement_m": 0.3636943943144231,
+      "measured_path_m": 2.5305737307847957,
+      "first_input_history_turns": 0,
+      "first_input_has_memory_card": false,
+      "first_input_visible_labels": [
+        "B"
+      ],
+      "first_model_choice": {
+        "index": 1,
+        "tool": "scan",
+        "arguments": {
+          "yaw_rad": -0.5
+        }
+      },
+      "first_native_action": {
+        "tool": "turn",
+        "args": {
+          "yaw_rad": -0.5
+        },
+        "time_before": 1.0000000000000007,
+        "time_after": 3.299999999999858
+      },
+      "planner_inputs_with_card": 125,
+      "memory_query_statuses": {
+        "ok": 75
+      },
+      "observations_with_B_candidate": 32
+    }
+  },
+  "episode": {
+    "episode_id": "37f0a8b0-7204-4d28-b415-6101d31756dd",
+    "passed": false,
+    "termination": "budget_exhausted",
+    "termination_detail": "shared_api_limit",
+    "A_confirmed_at_checkpoint": false,
+    "A_final_score_passed": false,
+    "B_stage_started": false,
+    "B_final_score_passed": null,
+    "B_first_candidate": null,
+    "B_final_distance_m": null,
+    "finish_succeeded": false,
+    "A_first_candidate": null,
+    "A_min_distance_m": 6.074979284992118,
+    "collision": false,
+    "contacts": [],
+    "fallen": false,
+    "stages": {
+      "A": {
+        "planner_requests": 128,
+        "reader_requests": 0,
+        "all_requests": 128,
+        "native_attempts": 43,
+        "measured_path_m": 2.5305737307847957,
+        "net_displacement_m": 0.3636943943144231,
+        "boundary_gate_refusals": 0,
+        "depth_gate_refusals": 0,
+        "actual_contacts": []
+      },
+      "B": null
+    },
+    "all_requests": 128,
+    "all_native_attempts": 43,
+    "episode_path_including_final_settle_m": 2.536528524059663,
+    "final_settle_path_m": 0.00595479327486704,
+    "episode_net_displacement_m": 0.3599641252609957,
+    "final_world_xy_m": [
+      0.22457072991111238,
+      0.2862126689531637
+    ],
+    "actual_sim_elapsed_s": 115.07999999991087,
+    "return_handoff_sim_s": null
+  }
+}

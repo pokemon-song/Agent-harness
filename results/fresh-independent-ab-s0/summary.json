@@ -1,0 +1,194 @@
+{
+  "experiment": "fresh-independent-ab-s0",
+  "driver_git_commit": "1e3907a359f93daa13d9c0fbdc2f06b221ecb94a",
+  "task": "memory_ab_occluded_v1",
+  "seed": 0,
+  "replicates_per_arm": 1,
+  "model": "deepseek-flash",
+  "comparison": "三次分别初始化仿真器，从相同起点自主搜索 A；到 A 后同一仿真实例返 B。",
+  "evidence": {
+    "distinct_episode_ids": true,
+    "all_started_with_empty_memory": true,
+    "archive_inputs_per_arm": [],
+    "identical_first_observation_png": true,
+    "first_input_history_turns_per_arm": 0,
+    "verified_driver_sha256": {
+      "go2_demo/fresh_episode_run.py": "54cf274fb5b181060c2e03bdc699cc3fcd05b984660c12da023fa5e96bd0049b",
+      "go2_demo/fresh_episode_planning.py": "fe5c4b94cf8073e2b817b6f2fb6000042ac1af4457b963fb395de9b17d31672e",
+      "go2_demo/fresh_episode_memory.py": "b3c399d1dc0f954de540f80204137005ae3d48fb968dac3275a49df20f5b5233",
+      "go2_demo/ordered_evaluation.py": "4821540761d24c0bd998fe34621cb6d976df24cdd033f7b13c0cb41c67d88111",
+      "go2_demo/paired_return_run.py": "790cb8c297d394460d55e67cf8deea8edb7ac637215f61d357a1831ef92ec841",
+      "go2_demo/return_route_control.py": "0a86ef6eac4a56c1db386b79294fe405ba003ae3b6d624687e3878c0512c55be",
+      "go2_demo/short_step_clearance.py": "37e6d3d374bcc5e4f7e4fd929d52457c0ca118c5ecda4adc0c19139592716681",
+      "go2_demo/occluded_handoff.py": "c2e681a043bf41809763c4f150c5a0ecd79ccd7185a6bcd270b5639de34aac02"
+    },
+    "outbound_comparisons": [
+      {
+        "arms": [
+          "empty",
+          "ledger"
+        ],
+        "first_differing_successful_outbound_choice_ordinal": 1,
+        "identical_outbound_choices_and_arguments": false
+      },
+      {
+        "arms": [
+          "empty",
+          "query"
+        ],
+        "first_differing_successful_outbound_choice_ordinal": 1,
+        "identical_outbound_choices_and_arguments": false
+      },
+      {
+        "arms": [
+          "ledger",
+          "query"
+        ],
+        "first_differing_successful_outbound_choice_ordinal": 1,
+        "identical_outbound_choices_and_arguments": false
+      }
+    ]
+  },
+  "measurement": {
+    "path": "逐条使用模拟器基座世界坐标的水平位移累加。各段至本段终止，整轮另含终末验证制动。",
+    "net_displacement": "起终点基座水平直线距离。",
+    "A_first_candidate": "规划器当前 RGB-D 首次看到蓝色 A 候选的决策。几何停靠由独立评分器判定。",
+    "A_min_distance": "从起点到 A 阶段结束，逐控制采样计算基座距 A 中心的最小水平距离。",
+    "stages": "B 为 null 表示没有进入返程。原始评分器仍例行测量结束姿态相对 B 的几何关系。",
+    "blocking": "boundary_gate_refusals 为场地边界门控；depth_gate_refusals 为当前深度拒绝移动。真实接触取自物理引擎碰撞事件。",
+    "initialization": "初始图像、零里程计和空历史由首个事件验证。各自的出发决策与网络请求按独立事件流复核。",
+    "score": "A_confirmed_at_checkpoint 记录历史达标停靠；A_final_score_passed 另受后续全局碰撞/跌倒影响。",
+    "limits": "每种配置仅跑一次 seed 0。不同去程的返程起始姿态可能不同，无法据此估计平均成功率。"
+  },
+  "arms": {
+    "empty": {
+      "episode_id": "bbb90d1f-c58b-4015-b8a6-72a773037909",
+      "passed": false,
+      "termination": "budget_exhausted",
+      "termination_detail": "native_action_limit",
+      "A_confirmed_at_checkpoint": false,
+      "A_final_score_passed": false,
+      "B_stage_started": false,
+      "B_final_score_passed": null,
+      "B_first_candidate": null,
+      "B_final_distance_m": null,
+      "finish_succeeded": false,
+      "A_first_candidate": null,
+      "A_min_distance_m": 5.150587915220323,
+      "collision": false,
+      "contacts": [],
+      "fallen": false,
+      "stages": {
+        "A": {
+          "planner_requests": 115,
+          "reader_requests": 0,
+          "all_requests": 115,
+          "native_attempts": 115,
+          "measured_path_m": 9.163177271017982,
+          "net_displacement_m": 1.6064659216746806,
+          "boundary_gate_refusals": 0,
+          "depth_gate_refusals": 1,
+          "actual_contacts": []
+        },
+        "B": null
+      },
+      "all_requests": 115,
+      "all_native_attempts": 115,
+      "episode_path_including_final_settle_m": 9.170548744613741,
+      "final_settle_path_m": 0.00737147359575786,
+      "episode_net_displacement_m": 1.6098036036382084,
+      "final_world_xy_m": [
+        0.6188986625735691,
+        1.4915557311420768
+      ],
+      "actual_sim_elapsed_s": 308.4200000007493,
+      "return_handoff_sim_s": null
+    },
+    "ledger": {
+      "episode_id": "37f0a8b0-7204-4d28-b415-6101d31756dd",
+      "passed": false,
+      "termination": "budget_exhausted",
+      "termination_detail": "shared_api_limit",
+      "A_confirmed_at_checkpoint": false,
+      "A_final_score_passed": false,
+      "B_stage_started": false,
+      "B_final_score_passed": null,
+      "B_first_candidate": null,
+      "B_final_distance_m": null,
+      "finish_succeeded": false,
+      "A_first_candidate": null,
+      "A_min_distance_m": 6.074979284992118,
+      "collision": false,
+      "contacts": [],
+      "fallen": false,
+      "stages": {
+        "A": {
+          "planner_requests": 128,
+          "reader_requests": 0,
+          "all_requests": 128,
+          "native_attempts": 43,
+          "measured_path_m": 2.5305737307847957,
+          "net_displacement_m": 0.3636943943144231,
+          "boundary_gate_refusals": 0,
+          "depth_gate_refusals": 0,
+          "actual_contacts": []
+        },
+        "B": null
+      },
+      "all_requests": 128,
+      "all_native_attempts": 43,
+      "episode_path_including_final_settle_m": 2.536528524059663,
+      "final_settle_path_m": 0.00595479327486704,
+      "episode_net_displacement_m": 0.3599641252609957,
+      "final_world_xy_m": [
+        0.22457072991111238,
+        0.2862126689531637
+      ],
+      "actual_sim_elapsed_s": 115.07999999991087,
+      "return_handoff_sim_s": null
+    },
+    "query": {
+      "episode_id": "9c0fec25-bf6e-4943-a589-0d057599fc7f",
+      "passed": false,
+      "termination": "budget_exhausted",
+      "termination_detail": "shared_api_limit",
+      "A_confirmed_at_checkpoint": false,
+      "A_final_score_passed": false,
+      "B_stage_started": false,
+      "B_final_score_passed": null,
+      "B_first_candidate": null,
+      "B_final_distance_m": null,
+      "finish_succeeded": false,
+      "A_first_candidate": null,
+      "A_min_distance_m": 6.345984627318113,
+      "collision": false,
+      "contacts": [],
+      "fallen": false,
+      "stages": {
+        "A": {
+          "planner_requests": 89,
+          "reader_requests": 39,
+          "all_requests": 128,
+          "native_attempts": 31,
+          "measured_path_m": 1.8117042594538355,
+          "net_displacement_m": 0.4504885935917639,
+          "boundary_gate_refusals": 0,
+          "depth_gate_refusals": 0,
+          "actual_contacts": []
+        },
+        "B": null
+      },
+      "all_requests": 128,
+      "all_native_attempts": 31,
+      "episode_path_including_final_settle_m": 1.8197500208040687,
+      "final_settle_path_m": 0.008045761350233202,
+      "episode_net_displacement_m": 0.45595380588592377,
+      "final_world_xy_m": [
+        -0.0022912063437569965,
+        0.4620629631247568
+      ],
+      "actual_sim_elapsed_s": 80.1799999999922,
+      "return_handoff_sim_s": null
+    }
+  }
+}
