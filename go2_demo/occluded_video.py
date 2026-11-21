@@ -79,7 +79,7 @@ def _ffmpeg():
     return imageio_ffmpeg.get_ffmpeg_exe()
 
 
-def render(directory, output=None, *, return_only=False):
+def render(directory, output=None, *, return_only=False, fast=False):
     """Offline simulation-time MP4 from recorded qpos; no physics integration or API calls."""
     directory = Path(directory)
     default_output = "return.mp4" if return_only else "full.mp4"
@@ -93,6 +93,8 @@ def render(directory, output=None, *, return_only=False):
     if _sha(model_file) != meta["model_sha256"] or _sha(poses_file) != meta["poses_sha256"]:
         raise ValueError("Recording digest mismatch")
     model = mujoco.MjModel.from_binary_path(str(model_file))
+    if fast:
+        model.vis.quality.offsamples = 0
     with np.load(poses_file, allow_pickle=False) as archive:
         times, poses = archive["time"], archive["qpos"]
     if (times.shape != (meta["sample_count"],) or poses.shape != (len(times), model.nq)
@@ -130,6 +132,9 @@ def render(directory, output=None, *, return_only=False):
            "-video_size", f"{width}x{height}", "-framerate", str(fps), "-i", "pipe:0", "-an", "-c:v",
            "libx264", "-preset", "veryfast", "-crf", "19", "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(part)]
     with mujoco.Renderer(model, height=height, width=width) as renderer:
+        if fast:
+            renderer.scene.flags[mujoco.mjtRndFlag.mjRND_SHADOW] = False
+            renderer.scene.flags[mujoco.mjtRndFlag.mjRND_REFLECTION] = False
         process = subprocess.Popen(cmd, stdin=subprocess.PIPE)
         try:
             for idx in sources:
@@ -167,6 +172,8 @@ def render(directory, output=None, *, return_only=False):
     if return_only:
         result["clip"] = {"phase": "return_to_b", "start_s": float(times[first]), "end_s": float(times[-1]),
                           "simulation_duration_s": float(duration), "source_pose_count": len(times) - first}
+    if fast:
+        result["render_settings"] = {"offscreen_multisamples": 0, "shadows": False, "reflections": False}
     manifest_name = "return-video.json" if return_only else "video.json"
     (directory / manifest_name).write_text(json.dumps(result, indent=2) + "\n")
     return result
@@ -176,5 +183,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory", type=Path)
     parser.add_argument("--return-only", action="store_true", help="Render from the recorded A handoff to the final pose")
+    parser.add_argument("--fast", action="store_true", help="Disable multisampling, shadows and reflections")
     args = parser.parse_args()
-    print(json.dumps(render(args.directory, return_only=args.return_only), indent=2))
+    print(json.dumps(render(args.directory, return_only=args.return_only, fast=args.fast), indent=2))

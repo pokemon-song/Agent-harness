@@ -52,6 +52,7 @@ def test_only_return_poses_are_encoded_and_full_manifest_is_preserved(
     class TestRenderer:
         def __init__(self, model, height, width):
             self.image = np.zeros((height, width, 3), dtype=np.uint8)
+            self.scene = SimpleNamespace(flags={})
 
         def __enter__(self):
             return self
@@ -74,9 +75,11 @@ def test_only_return_poses_are_encoded_and_full_manifest_is_preserved(
         assert caption.startswith(return_caption if t >= handoff else "OUTBOUND TO A  |  SHARED RECORDED ACTIONS")
     rendered.clear()
     captions.clear()
-    clip = render(capture, return_only=True)
+    clip = render(capture, return_only=True, fast=bool(return_label))
     assert rendered == expected
     assert all(c.startswith(return_caption) and "return +" in c for c in captions)
+    if return_label:
+        assert clip["render_settings"] == {"offscreen_multisamples": 0, "shadows": False, "reflections": False}
     assert clip["frame_count"] == len(expected)
     assert clip["clip"]["simulation_duration_s"] == pytest.approx(expected[-1] - expected[0])
     assert clip["decoded_all_frames"]
