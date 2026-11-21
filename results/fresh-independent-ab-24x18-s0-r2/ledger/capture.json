@@ -1,0 +1,13 @@
+{
+  "sample_count": 7451,
+  "start_s": 1.0000000000000007,
+  "end_s": 149.99999999998812,
+  "handoff_s": null,
+  "model_sha256": "d1092317bbafaa39c9dae4cd370da65aec8b3dfb404fff944ae75cefc9b4a409",
+  "poses_sha256": "db91da8a71102c72f07f893cde866eebb663f98739e9630658875332a0d0c1de",
+  "mujoco_version": "3.2.5",
+  "timebase": "simulation_seconds",
+  "physics_sampling": "initial and every executed control step",
+  "return_label": "LEDGER | LIVE RETURN TO B",
+  "outbound_label": "LIVE SEARCH FOR A | LEDGER"
+}
