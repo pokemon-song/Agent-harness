@@ -45,6 +45,8 @@ def _bounded(value, limit):
 
 
 class _Follower:
+    target_label = 'B'
+
     def __init__(self, harness, max_actions, on_action):
         self.harness = harness
         self.max_actions = max_actions
@@ -125,37 +127,38 @@ class _Follower:
             self.act('move_relative', forward_m=forward * scale, lateral_m=left * scale)
         raise _End('control_error', f"waypoint_did_not_converge: {waypoint['id']}")
 
-    def measure_green_target(self):
+    def measure_docking_target(self):
         frame = self.harness.frame
         obs = self.harness.observation()
         view, masks = self.sensor.inspect(obs, frame.rgb, frame.depth_m, frame.intrinsics)
-        if 'task:B' not in masks:
+        target = 'task:' + self.target_label
+        if target not in masks:
             return None
         depth = frame.depth_m
-        pixels = np.argwhere(masks['task:B'] & np.isfinite(depth) & (depth >= .08) & (depth <= 12.))
+        pixels = np.argwhere(masks[target] & np.isfinite(depth) & (depth >= .08) & (depth <= 12.))
         middle = np.median(pixels, axis=0)
         v, u = pixels[np.argmin(np.linalg.norm(pixels - middle, axis=1))]
         point = self.act('track_point', image_id=obs['image_id'], u=int(u), v=int(v))['point']
         association = self.sensor.associate(point, view, masks, depth, frame.intrinsics)
-        if not association or association['task_label'] != 'B':
-            raise _End('control_error', 'current_green_region_and_tracked_point_disagree')
+        if not association or association['task_label'] != self.target_label:
+            raise _End('control_error', f'current_{self.target_label}_region_and_tracked_point_disagree')
         forward, left = point['relative_xy_m']
         return forward, left, math.hypot(forward, left), math.atan2(left, forward)
 
     def dock(self, last_yaw):
-        self.phase = 'return_visual_docking'
+        self.phase = 'return_visual_docking' if self.target_label == 'B' else 'outbound_visual_docking'
         p = self.params
         if last_yaw is not None:
             self.face(last_yaw, p.last_view_face_tolerance_rad)
-        sample = self.measure_green_target()
+        sample = self.measure_docking_target()
         for _ in range(p.max_search_turns):
             if sample is not None:
                 break
             self.act('turn', yaw_rad=p.search_turn_rad)
-            sample = self.measure_green_target()
+            sample = self.measure_docking_target()
         for _ in range(p.max_docking_iterations):
             if sample is None:
-                raise _End('control_error', 'green_target_not_visible')
+                raise _End('control_error', f'target_{self.target_label}_not_visible')
             forward, left, distance, heading = sample
             if distance <= 1e-6:
                 raise _End('control_error', 'invalid_target_range')
@@ -167,14 +170,14 @@ class _Follower:
                 self.act('move_relative', forward_m=delta * forward / distance, lateral_m=delta * left / distance)
             else:
                 self.act('stop')
-                sample = self.measure_green_target()
+                sample = self.measure_docking_target()
                 if (sample is not None and
                         abs(sample[2] - p.visual_surface_standoff_m) <= p.stopped_visual_distance_tolerance_m and
                         abs(sample[3]) < p.stopped_visual_bearing_tolerance_rad):
                     self.act('finish')
                     return
                 continue
-            sample = self.measure_green_target()
+            sample = self.measure_docking_target()
         raise _End('control_error', 'visual_docking_did_not_converge')
 
 

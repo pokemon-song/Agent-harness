@@ -9,7 +9,7 @@ from PIL import ImageDraw
 from go2_demo.occluded_video import OccludedRecording, _ffmpeg, render
 
 
-def make_capture(tmp_path, handoff, return_label=None):
+def make_capture(tmp_path, handoff, return_label=None, outbound_label=None):
     model = mujoco.MjModel.from_xml_string("""
         <mujoco><worldbody>
           <geom name="scenario_target" type="sphere" pos="6.4 0 0" size=".1"/>
@@ -20,7 +20,7 @@ def make_capture(tmp_path, handoff, return_label=None):
     data = mujoco.MjData(model)
     data.time = 1.
     backend = SimpleNamespace(model=model, data=data, _recording=None)
-    capture = OccludedRecording(backend, tmp_path / "video", return_label=return_label)
+    capture = OccludedRecording(backend, tmp_path / "video", return_label=return_label, outbound_label=outbound_label)
     for t in [1.04, 1.1, 1.16, 1.20, 1.28]:
         data.time = t
         data.qpos[0] = t
@@ -31,7 +31,7 @@ def make_capture(tmp_path, handoff, return_label=None):
     return capture.directory
 
 
-@pytest.mark.parametrize("handoff,expected", [(1.1, [1.1, 1.16, 1.2, 1.28]), (1.28, [1.28])])
+@pytest.mark.parametrize("handoff,expected", [(1.1, [1.1, 1.16, 1.2, 1.28]), (1.28, [1.28]), (None, None)])
 @pytest.mark.parametrize("return_label", [None, "MODEL ROUTE | ODOMETRY CONTROLLER"])
 def test_only_return_poses_are_encoded_and_full_manifest_is_preserved(
         tmp_path, monkeypatch, handoff, expected, return_label):
@@ -39,8 +39,10 @@ def test_only_return_poses_are_encoded_and_full_manifest_is_preserved(
         _ffmpeg()
     except (ImportError, RuntimeError):
         pytest.skip("ffmpeg encoder unavailable")
-    capture = make_capture(tmp_path, handoff, return_label)
+    outbound_label = "LIVE SEARCH FOR A | EMPTY" if return_label else None
+    capture = make_capture(tmp_path, handoff, return_label, outbound_label)
     assert json.loads((capture / "capture.json").read_text()).get("return_label") == return_label
+    assert json.loads((capture / "capture.json").read_text()).get("outbound_label") == outbound_label
     rendered = []
     captions = []
     draw_text = ImageDraw.ImageDraw.text
@@ -69,10 +71,17 @@ def test_only_return_poses_are_encoded_and_full_manifest_is_preserved(
     monkeypatch.setattr(mujoco, "Renderer", TestRenderer)
     monkeypatch.setattr(ImageDraw.ImageDraw, "text", record_caption)
     return_caption = "RETURN TO B  |  " + (return_label or "LIVE AGENT")
+    outbound_caption = outbound_label or "OUTBOUND TO A  |  SHARED RECORDED ACTIONS"
     full = render(capture)
     assert rendered[0] == 1. and rendered[-1] == 1.28
     for t, caption in zip(rendered, captions, strict=True):
-        assert caption.startswith(return_caption if t >= handoff else "OUTBOUND TO A  |  SHARED RECORDED ACTIONS")
+        assert caption.startswith(return_caption if handoff is not None and t >= handoff else outbound_caption)
+    if handoff is None:
+        assert full["decoded_all_frames"] and (capture / "full.mp4").is_file()
+        with pytest.raises(ValueError, match="No A handoff"):
+            render(capture, return_only=True)
+        assert not (capture / "return.mp4").exists()
+        return
     rendered.clear()
     captions.clear()
     clip = render(capture, return_only=True, fast=bool(return_label))

@@ -35,7 +35,7 @@ W = [{'id': 'E20', 'x': 0., 'y': 0.}, {'id': 'E05', 'x': .5, 'y': 0.}, {'id': 'E
 
 def test_follows_provided_order_and_checks_current_target_again_after_stop(monkeypatch):
     samples = iter([(.96, 0., .96, 0.), (.96, 0., .96, 0.)])
-    monkeypatch.setattr(_Follower, 'measure_green_target', lambda self: next(samples))
+    monkeypatch.setattr(_Follower, 'measure_docking_target', lambda self: next(samples))
     harness = PublicHarness(timeout=True)
     log = []
     d = follow_route(harness, W, on_action=log.append, max_actions=4)
@@ -53,7 +53,7 @@ def test_first_collision_ends_route_without_later_waypoint_or_docking():
 
 
 def test_budget_halts_visual_search_and_never_finishes_without_target(monkeypatch):
-    monkeypatch.setattr(_Follower, 'measure_green_target', lambda self: None)
+    monkeypatch.setattr(_Follower, 'measure_docking_target', lambda self: None)
     d = follow_route(PublicHarness(), W[:1], max_actions=2)
     assert d['termination'] == 'budget_exhausted'
     assert [x['tool'] for x in d['actions']] == ['turn', 'turn']

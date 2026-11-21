@@ -23,7 +23,7 @@ def _sha(path):
 class OccludedRecording:
     """Sample once per executed control interval, including a shortened collision interval."""
 
-    def __init__(self, backend, directory, *, return_label=None):
+    def __init__(self, backend, directory, *, return_label=None, outbound_label=None):
         if backend._recording is not None:
             raise RuntimeError("The backend already has a recording")
         self.directory = Path(directory)
@@ -33,6 +33,7 @@ class OccludedRecording:
         self.poses = []
         self.handoff_s = None
         self.return_label = return_label
+        self.outbound_label = outbound_label
         self.closed = False
         mujoco.mj_saveModel(backend.model, str(self.directory / "model.mjb"), None)
         self.sample()
@@ -64,6 +65,8 @@ class OccludedRecording:
         }
         if self.return_label is not None:
             metadata["return_label"] = self.return_label
+        if self.outbound_label is not None:
+            metadata["outbound_label"] = self.outbound_label
         tmp = self.directory / "capture.tmp.json"
         tmp.write_text(json.dumps(metadata, indent=2) + "\n")
         tmp.replace(self.directory / "capture.json")
@@ -127,6 +130,7 @@ def render(directory, output=None, *, return_only=False, fast=False):
     data = mujoco.MjData(model)
     binary = _ffmpeg()
     return_phase = f"RETURN TO B  |  {meta.get('return_label') or 'LIVE AGENT'}"
+    outbound_phase = meta.get("outbound_label") or "OUTBOUND TO A  |  SHARED RECORDED ACTIONS"
     part = output.with_suffix(".partial.mp4")
     cmd = [binary, "-hide_banner", "-loglevel", "error", "-y", "-f", "rawvideo", "-pixel_format", "rgb24",
            "-video_size", f"{width}x{height}", "-framerate", str(fps), "-i", "pipe:0", "-an", "-c:v",
@@ -145,7 +149,7 @@ def render(directory, output=None, *, return_only=False, fast=False):
                 img = Image.fromarray(renderer.render())
                 drawing = ImageDraw.Draw(img)
                 returning = meta["handoff_s"] is not None and times[idx] >= meta["handoff_s"]
-                phase = return_phase if returning else "OUTBOUND TO A  |  SHARED RECORDED ACTIONS"
+                phase = return_phase if returning else outbound_phase
                 drawing.rectangle((0, 0, width, 21), fill=(24, 30, 36))
                 timestamp = f"simulation {times[idx]:.2f} s"
                 if return_only:
