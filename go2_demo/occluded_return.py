@@ -14,6 +14,7 @@ from .memory_perception import TaskLabelRGBD, task_targets
 from .models import APIModel, ModelError
 from .occluded_handoff import restore_at_a
 from .occluded_recall import Recall, RecallResponder
+from .return_retry import decide_after_length
 from .occluded_video import OccludedRecording, render
 from .runner import RunLog, image_data_url, json_text
 from .scenarios import get_scenario
@@ -104,6 +105,9 @@ def run_return(args, backend, harness, planner, recall, log):
     tools = [*TOOLS, recall.tool]
     stop_reason, error = "budget_exhausted", None
     prior_error = None
+    short_mode = False
+    short_requests = 0
+    first_length_turn = None
     while planner_requests + recall.requests < args.max_requests:
         remaining = deadline - time.monotonic()
         if remaining <= 0 or harness.frame.sim_time_s >= backend.sim_deadline_s:
@@ -120,13 +124,20 @@ def run_return(args, backend, harness, planner, recall, log):
         persisted = {key: val for key, val in obs.items() if key != "return_memory"}
         turn = planner_requests
         log.write("model_input", turn=turn, observation=obs, history_turns=len(history),
+                  planner_mode="short" if short_mode else "ordinary",
                   image_path=log.save_frame(frame, f"{turn:03d}"))
         planner_requests += 1
         started = time.monotonic()
         planner.raw_usage = None
+        planner.response_finish_reason = None
         try:
-            decision = planner.decide(obs, image_data_url(frame.rgb), tools, history,
-                                      timeout_s=min(args.api_timeout, remaining))
+            if short_mode:
+                short_requests += 1
+                decision = decide_after_length(planner, obs, image_data_url(frame.rgb), tools, history,
+                                               timeout_s=min(args.api_timeout, remaining))
+            else:
+                decision = planner.decide(obs, image_data_url(frame.rgb), tools, history,
+                                          timeout_s=min(args.api_timeout, remaining))
             failure = None
         except ModelError as exc:
             decision, failure = None, exc.code
@@ -140,6 +151,10 @@ def run_return(args, backend, harness, planner, recall, log):
             log.write("model_error", turn=turn, error_code=failure, latency_s=latency, usage=usage,
                       finish_reason=getattr(planner, "response_finish_reason", None))
             if not prior_error and failure in {"MODEL_PROTOCOL_ERROR", "MODEL_TIMEOUT", "MODEL_TRANSPORT_ERROR"}:
+                if (getattr(args, "short_retry", False) and not short_mode and
+                        planner.response_finish_reason == "length" and failure == "MODEL_PROTOCOL_ERROR"):
+                    short_mode = True
+                    first_length_turn = turn
                 prior_error = failure + ": return exactly one valid tool call"
                 protocol_failures += 1
                 continue
@@ -206,6 +221,7 @@ def run_return(args, backend, harness, planner, recall, log):
         "termination": stop_reason, "error": error, "evaluation": evaluation, "final_stop": final_stop,
         "return_wall_seconds": wall, "return_sim_seconds": elapsed, "successful_tools": dict(actions),
         "planner": {"requests": planner_requests, "decisions": decisions, "retries_triggered": protocol_failures,
+                    "first_length_switched_turn": first_length_turn, "short_requests": short_requests,
                     "known_usage": dict(tokens), "unknown_usage_requests": planner_requests - known_responses},
         "memory_reader": memory_stats, "total_requests": planner_requests + recall.requests,
         "known_usage": combined, "usage_complete": known_responses == planner_requests and memory_stats["usage_complete"],
@@ -229,6 +245,7 @@ def run(args):
         (out / "handoff.private.json").write_text(json_text(audit))
         cfg = {"task": TASK_ID, "return_instruction": TASK, "seed": 0, "model": "deepseek-flash",
                "return_mode": args.mode, "first_contact_terminates": True,
+               "short_retry_after_length": args.short_retry,
                "max_requests_including_reader": args.max_requests, "max_wall_seconds": args.max_wall_seconds,
                "max_sim_seconds": args.max_sim_seconds, "timeout_s": args.api_timeout, "max_output_tokens": 8192,
                "shared_prefix_source": args.archive.name, "history_turns": HISTORY, "handoff": actual,
@@ -274,6 +291,8 @@ def main(argv=None):
     parser.add_argument("--max-wall-seconds", type=float, default=1117.)
     parser.add_argument("--max-sim-seconds", type=float, default=470.)
     parser.add_argument("--api-timeout", type=float, default=90.)
+    parser.add_argument("--short-retry", action="store_true",
+                        help="After a truncated planner response, use fresh single-action requests for this return")
     args = parser.parse_args(argv)
     if args.mode == "render":
         recordings = [args.runs_dir / mode / "video" for mode in ("direct", "query", "local-query")]

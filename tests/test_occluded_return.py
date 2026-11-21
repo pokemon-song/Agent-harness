@@ -6,6 +6,7 @@ from types import SimpleNamespace
 import pytest
 
 from go2_demo.harness import Harness
+from go2_demo.models import ModelProtocolError
 from go2_demo.occluded_recall import Recall
 from go2_demo.occluded_return import run_return
 from go2_demo.runner import RunLog
@@ -111,3 +112,37 @@ def test_first_contact_during_finish_wins_over_a_successful_evaluator(tmp_path):
     metrics, inputs, _, _ = exercise(tmp_path, "direct", [read_action("direct"), FINISH], 8, ContactOnStop())
     assert len(inputs) == 2 and metrics["evaluation"]["success"]
     assert not metrics["success"] and metrics["termination"] == "collision"
+
+
+def test_length_switch_keeps_memory_and_counts_real_actions(tmp_path, monkeypatch):
+    backend = PublicBackend()
+    harness = Harness(backend, "fixture task")
+    recall = Recall(DOCS, "direct")
+    normal = Planner([read_action("direct")])
+    retry = Planner([MOVE, FINISH])
+
+    def decide(obs, image, tools, history, **kwargs):
+        if normal.inputs:
+            normal.raw_usage = COUNTERS
+            normal.response_finish_reason = "length"
+            raise ModelProtocolError("No tool call")
+        return Planner.decide(normal, obs, image, tools, history, **kwargs)
+
+    def short(planner, obs, image, tools, history, **kwargs):
+        assert planner is normal and EXCERPT in json.dumps(obs["return_memory"])
+        normal.raw_usage = COUNTERS
+        return retry.decide(obs, image, tools, history, **kwargs)
+
+    monkeypatch.setattr(normal, "decide", decide)
+    monkeypatch.setattr("go2_demo.occluded_return.decide_after_length", short)
+    args = SimpleNamespace(max_wall_seconds=100, max_sim_seconds=120, max_requests=4,
+                           api_timeout=30, short_retry=True)
+    log = RunLog(tmp_path)
+    try:
+        result = run_return(args, backend, harness, normal, recall, log)
+    finally:
+        log.close()
+    assert result["success"] and backend.moves == [MOVE[1]]
+    assert result["total_requests"] == 4 and result["planner"]["short_requests"] == 2
+    assert result["planner"]["first_length_switched_turn"] == 1
+    assert result["known_usage"]["total_tokens"] == 48

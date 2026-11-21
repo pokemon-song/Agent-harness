@@ -23,7 +23,7 @@ def _sha(path):
 class OccludedRecording:
     """Sample once per executed control interval, including a shortened collision interval."""
 
-    def __init__(self, backend, directory):
+    def __init__(self, backend, directory, *, return_label=None):
         if backend._recording is not None:
             raise RuntimeError("The backend already has a recording")
         self.directory = Path(directory)
@@ -32,6 +32,7 @@ class OccludedRecording:
         self.times = []
         self.poses = []
         self.handoff_s = None
+        self.return_label = return_label
         self.closed = False
         mujoco.mj_saveModel(backend.model, str(self.directory / "model.mjb"), None)
         self.sample()
@@ -61,6 +62,8 @@ class OccludedRecording:
             "poses_sha256": _sha(path), "mujoco_version": mujoco.__version__,
             "timebase": "simulation_seconds", "physics_sampling": "initial and every executed control step",
         }
+        if self.return_label is not None:
+            metadata["return_label"] = self.return_label
         tmp = self.directory / "capture.tmp.json"
         tmp.write_text(json.dumps(metadata, indent=2) + "\n")
         tmp.replace(self.directory / "capture.json")
@@ -76,10 +79,11 @@ def _ffmpeg():
     return imageio_ffmpeg.get_ffmpeg_exe()
 
 
-def render(directory, output=None):
+def render(directory, output=None, *, return_only=False):
     """Offline simulation-time MP4 from recorded qpos; no physics integration or API calls."""
     directory = Path(directory)
-    output = Path(output) if output is not None else directory / "full.mp4"
+    default_output = "return.mp4" if return_only else "full.mp4"
+    output = Path(output) if output is not None else directory / default_output
     if output.exists():
         raise FileExistsError(output)
     meta = json.loads((directory / "capture.json").read_text())
@@ -95,11 +99,20 @@ def render(directory, output=None):
             or len(times) < 1 or not np.isfinite(times).all() or not np.isfinite(poses).all()
             or np.any(np.diff(times) <= 0) or times[0] != meta["start_s"] or times[-1] != meta["end_s"]):
         raise ValueError("Invalid recording timeline")
+    first = 0
+    if return_only:
+        handoff = meta["handoff_s"]
+        if handoff is None:
+            raise ValueError("No A handoff in recording")
+        first = int(np.searchsorted(times, handoff))
+        if first == len(times) or times[first] != handoff:
+            raise ValueError("A handoff does not match a recorded pose")
     fps, width, height = 12.5, 640, 360
-    count = max(2, math.ceil((times[-1] - times[0]) * fps - 1e-8) + 1)
-    ticks = times[0] + np.arange(count) / fps
+    duration = times[-1] - times[first]
+    count = max(1 if return_only else 2, math.ceil(duration * fps - 1e-8) + 1)
+    ticks = times[first] + np.arange(count) / fps
     sources = np.searchsorted(times, ticks + 1e-9, side="right") - 1
-    sources[0], sources[-1] = 0, len(times) - 1
+    sources[0], sources[-1] = first, len(times) - 1
     camera = mujoco.MjvCamera()
     camera.type = mujoco.mjtCamera.mjCAMERA_FREE
     # Start, terminal, and scene props all stay in this continuous fixed-camera view.
@@ -111,6 +124,7 @@ def render(directory, output=None):
     camera.distance = max(8., 1.2 * np.ptp(box[:, 0]) + 1.8, 2.6 * np.ptp(box[:, 1]) + 1.8)
     data = mujoco.MjData(model)
     binary = _ffmpeg()
+    return_phase = f"RETURN TO B  |  {meta.get('return_label') or 'LIVE AGENT'}"
     part = output.with_suffix(".partial.mp4")
     cmd = [binary, "-hide_banner", "-loglevel", "error", "-y", "-f", "rawvideo", "-pixel_format", "rgb24",
            "-video_size", f"{width}x{height}", "-framerate", str(fps), "-i", "pipe:0", "-an", "-c:v",
@@ -126,9 +140,12 @@ def render(directory, output=None):
                 img = Image.fromarray(renderer.render())
                 drawing = ImageDraw.Draw(img)
                 returning = meta["handoff_s"] is not None and times[idx] >= meta["handoff_s"]
-                phase = "RETURN TO B  |  LIVE AGENT" if returning else "OUTBOUND TO A  |  SHARED RECORDED ACTIONS"
+                phase = return_phase if returning else "OUTBOUND TO A  |  SHARED RECORDED ACTIONS"
                 drawing.rectangle((0, 0, width, 21), fill=(24, 30, 36))
-                drawing.text((9, 3), f"{phase}   |   simulation {times[idx]:.2f} s", fill="white")
+                timestamp = f"simulation {times[idx]:.2f} s"
+                if return_only:
+                    timestamp += f"   |   return +{times[idx] - times[first]:.2f} s"
+                drawing.text((9, 3), f"{phase}   |   {timestamp}", fill="white")
                 process.stdin.write(img.tobytes())
         finally:
             try:
@@ -147,11 +164,17 @@ def render(directory, output=None):
     result = {"file": output.name, "sha256": _sha(output), "frame_count": count,
               "fps": fps, "duration_s": count / fps, "decoded_all_frames": True,
               "initial_and_final_states_included": True, "source": meta}
-    (directory / "video.json").write_text(json.dumps(result, indent=2) + "\n")
+    if return_only:
+        result["clip"] = {"phase": "return_to_b", "start_s": float(times[first]), "end_s": float(times[-1]),
+                          "simulation_duration_s": float(duration), "source_pose_count": len(times) - first}
+    manifest_name = "return-video.json" if return_only else "video.json"
+    (directory / manifest_name).write_text(json.dumps(result, indent=2) + "\n")
     return result
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory", type=Path)
-    print(json.dumps(render(parser.parse_args().directory), indent=2))
+    parser.add_argument("--return-only", action="store_true", help="Render from the recorded A handoff to the final pose")
+    args = parser.parse_args()
+    print(json.dumps(render(args.directory, return_only=args.return_only), indent=2))
