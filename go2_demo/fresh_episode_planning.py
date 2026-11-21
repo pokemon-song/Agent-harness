@@ -4,11 +4,15 @@ from copy import deepcopy
 import numpy as np
 
 from .models import ModelProtocolError
-from .paired_return_planning import HISTORY_FIELDS, PAIRED_TOOLS, PairedReturnPlanner, _validate
+from .paired_return_planning import HISTORY_FIELDS, PAIRED_TOOLS, RETURN_PROMPT_TEMPLATE, PairedReturnPlanner, _validate
 from .return_route_tools import PUBLIC_FIELDS
 from .types import ToolCall
 
 
+CONTACT_RULE = (
+    "途中碰到绿方块 B 会记录碰撞，调整路线后继续当前阶段。"
+    "B 仍须在规定距离和朝向停稳，由独立评分确认。碰撞其他场景物体或跌倒会终止任务。"
+)
 OUTBOUND_PROMPT = (
     "你正在控制一台四足机器人，本轮刚从起点出发。先自主寻找蓝球 A，"
     "在距 A 中心 0.82–1.18 米、面向误差不超过 0.25 弧度时停稳；之后才寻找绿方块 B。"
@@ -22,7 +26,7 @@ OUTBOUND_PROMPT = (
     "用短段和 inspect 查看走完后实际显露的区域。比较当前视角和实测运动；"
     "若沿同一分支反复只看到相似空地，换观察方向或返回上一个可选择其他路线的位置。"
     "若已识别局部通道并需要移动视点，实际提交行走路点。重复测量地板不会自动找到目标。"
-    "scan 用于在当前站位改变观察朝向；注意机身宽度、可见空间和障碍边缘，碰撞或跌倒会终止任务。"
+    f"scan 用于在当前站位改变观察朝向；注意机身宽度、可见空间和障碍边缘。{CONTACT_RULE}"
     "途中可留意 B。需要回顾时可查询本轮已有去程记忆，当前记忆卡可能为空。"
     "看到可信的 A 候选且能接近时，可给出当前或合适的观察站位，并选 after=dock；"
     "控制器会用实时 RGB-D 跟踪蓝球、接近并核验停稳。只有物理评分确认合格才会进入 B 阶段。"
@@ -80,6 +84,8 @@ def public_depth_sectors(frame):
 
 class FreshEpisodePlanner(PairedReturnPlanner):
     """Use the matched return policy for B and a live search policy for A."""
+
+    return_prompt = RETURN_PROMPT_TEMPLATE.format(contact_rule=CONTACT_RULE)
 
     def build_messages(self, observation, image_data_url, history):
         messages = super().build_messages(observation, image_data_url, history)

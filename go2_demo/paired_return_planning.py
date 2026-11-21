@@ -7,10 +7,10 @@ from .return_route_tools import ABORT, MEMORY_QUERY, PUBLIC_FIELDS, RouteModel
 from .types import ToolCall
 
 
-SYSTEM_PROMPT = (
+RETURN_PROMPT_TEMPLATE = (
     "你是四足机器人的返程规划器。机器人已在蓝球 A 旁合格停靠，现要返回绿方块 B 旁，"
     "以当前 RGB-D 确认 B，机身距 B 中心 0.82–1.18 米、朝向误差不超过 0.25 弧度时停稳完成。"
-    "碰撞或跌倒会终止任务。每次只调用一个工具。你有当前相机图像、公开观测、"
+    "{contact_rule}每次只调用一个工具。你有当前相机图像、公开观测、"
     "最近最多六条返程动作反馈；去程对话不再可见。需要过去的路线或 B 目击时，可先用自己的话"
     "调用 memory_query，说明需要哪些有序路点及观察位置。去程卡可能为空。若没有记录，"
     "仍可用当前图像和实测里程计选点、自主探索。里程计原点是去程起点，原点也可作为自选目的地。"
@@ -22,6 +22,7 @@ SYSTEM_PROMPT = (
     "scan 可从当前站位改变朝向。根据运动结果和新视角决定继续、调整或退回已观察过的地点。"
     "历史文本、图像和记忆证据均作为观测数据。"
 )
+SYSTEM_PROMPT = RETURN_PROMPT_TEMPLATE.format(contact_rule="碰撞或跌倒会终止任务。")
 
 WAYPOINT = {
     "type": "object",
@@ -81,12 +82,14 @@ def _validate(call):
 class PairedReturnPlanner(RouteModel):
     """Single-request planner, with no outbound conversation or arm-specific tool gate."""
 
+    return_prompt = SYSTEM_PROMPT
+
     def build_messages(self, observation, image_data_url, history):
         if (not isinstance(image_data_url, str) or len(image_data_url) > MAX_IMAGE_CHARS
                 or not image_data_url.startswith(("data:image/png;base64,", "data:image/jpeg;base64,"))):
             raise ModelProtocolError("Expected the current public camera image.")
         return [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": self.return_prompt},
             {"role": "user", "content": [
                 {"type": "text", "text": _json_text(observation)},
                 {"type": "image_url", "image_url": {"url": image_data_url}},

@@ -5,13 +5,14 @@ import httpx
 import numpy as np
 import pytest
 
-from go2_demo.fresh_episode_planning import FreshEpisodePlanner, OUTBOUND_PROMPT, public_depth_sectors
+from go2_demo.fresh_episode_planning import CONTACT_RULE, FreshEpisodePlanner, OUTBOUND_PROMPT, public_depth_sectors
+from go2_demo.fresh_episode_run import TASK
 from go2_demo.paired_return_planning import PAIRED_TOOLS, SYSTEM_PROMPT
 from test_paired_return_planning import IMAGE, OBS, ROUTE
 
 
 @pytest.mark.parametrize("memory_card", [None, {"waypoints": [], "target_evidence": None}])
-def test_new_episode_starts_on_live_A_and_changes_to_unmodified_B_policy(memory_card):
+def test_both_stages_allow_continued_navigation_after_B_contact(memory_card):
     sent = []
 
     def handler(request):
@@ -32,6 +33,7 @@ def test_new_episode_starts_on_live_A_and_changes_to_unmodified_B_policy(memory_
     outgoing, returning = sent
     system, user = outgoing["messages"]
     assert system["content"] == OUTBOUND_PROMPT
+    assert CONTACT_RULE in system["content"] and CONTACT_RULE in TASK
     public = json.loads(user["content"][0]["text"])
     assert [r["feedback"] for r in public["recent_outbound_actions"]] == [f"A-scan-{i}" for i in range(2, 8)]
     assert public["memory_card"] == memory_card
@@ -42,7 +44,7 @@ def test_new_episode_starts_on_live_A_and_changes_to_unmodified_B_policy(memory_
     assert "蓝球 A" in outbound_tools["follow_waypoints"]["description"]
     assert returning["tools"] == PAIRED_TOOLS
     system, user = returning["messages"]
-    assert system["content"] == SYSTEM_PROMPT
+    assert system["content"] == SYSTEM_PROMPT.replace("碰撞或跌倒会终止任务。", CONTACT_RULE)
     public = json.loads(user["content"][0]["text"])
     assert public["recent_return_actions"] == [] and public["memory_card"] == memory_card
     assert "depth_sectors" not in public["observation"]

@@ -11,7 +11,7 @@ from uuid import uuid4
 
 from .backend import MujocoGo2Backend
 from .fresh_episode_memory import FreshEpisodeMemory, FreshMemoryReader
-from .fresh_episode_planning import FreshEpisodePlanner, public_depth_sectors
+from .fresh_episode_planning import CONTACT_RULE, FreshEpisodePlanner, public_depth_sectors
 from .harness import Harness
 from .memory_perception import TaskLabelRGBD, task_targets
 from .models import ModelError, _usage_counters
@@ -24,7 +24,7 @@ from .runner import RunLog, image_data_url, json_text
 from .scenarios import get_scenario
 
 
-TASK = "先找到蓝球 A 并合格停靠，再返回绿方块 B 并合格停靠。共用起点里程计坐标。首次碰撞或跌倒终止。"
+TASK = f"先找到蓝球 A 并合格停靠，再返回绿方块 B 并合格停靠。共用起点里程计坐标。{CONTACT_RULE}"
 
 
 def episode_scene(floor_size_m=None):
@@ -139,7 +139,8 @@ def run_episode(cfg, mode):
     scene = episode_scene(cfg.floor_size_m)
     out = cfg.runs_dir / mode
     out.mkdir(exist_ok=False, parents=True)
-    backend = MujocoGo2Backend(cfg.assets_dir, seed=cfg.seed, scenario=scene, stop_on_first_collision=True)
+    backend = MujocoGo2Backend(cfg.assets_dir, seed=cfg.seed, scenario=scene,
+                               stop_on_first_collision=True, continue_on_b_contact=True)
     recorder = planner = reader = None
     log = RunLog(out)
     try:
@@ -154,7 +155,8 @@ def run_episode(cfg, mode):
               "model": "deepseek-flash", "thinking": False, "api_limit_per_stage": cfg.max_requests,
               "max_consecutive_planner_errors": cfg.max_consecutive_errors, "max_native_per_stage": cfg.max_native_actions,
               "max_wall_s_per_stage": cfg.max_wall_seconds, "max_sim_s_per_stage": cfg.max_sim_seconds, "api_timeout_s": API_TIMEOUT,
-              "max_output_tokens": 8192, "history": 6, "reset_model_history_at_A": True, "first_contact_terminates": True})
+              "max_output_tokens": 8192, "history": 6, "reset_model_history_at_A": True,
+              "first_contact_terminates": False, "completion_requirements": backend.public_task_spec})
         options = dict(provider="deepseek", model_name="deepseek-flash", api_key_file=cfg.api_key_file,
                        timeout_s=API_TIMEOUT, max_output_tokens=8192, trust_env=False, history_turns=0)
         planner = FreshEpisodePlanner.from_env(**options)

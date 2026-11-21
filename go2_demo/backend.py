@@ -75,6 +75,9 @@ class MujocoGo2Backend:
         result = {"goal_kind": goal_kind, "reference_body": "base",
                   "stop_required": True, "collision_free_required": True,
                   "max_stopped_speed_mps": 0.12, "max_stopped_yaw_rate_radps": 0.25}
+        if self.stop_on_first_collision and self._permitted_contact_ids:
+            result.update(collision_free_required=False, b_contact_ends_episode=False,
+                          other_scene_contacts_end_episode=True)
         if scenario is not None and scenario.nonterminal_contact_geoms and not self.stop_on_first_collision:
             result["cabinet_contact_ends_episode"] = False
         if scenario is not None and scenario.collision_penalty_points and not self.stop_on_first_collision:
@@ -109,11 +112,13 @@ class MujocoGo2Backend:
                 count += 1
 
     def __init__(self, asset_dir: Path, seed: int = 0, viewer: bool = False, scenario=None,
-                 *, stop_on_first_collision: bool = False):
+                 *, stop_on_first_collision: bool = False, continue_on_b_contact: bool = False):
         self.asset_dir = Path(asset_dir).resolve()
         self.scenario = scenario
         if scenario is not None and not scenario.supported:
             raise ValueError(f"UNSUPPORTED_CAPABILITY: {scenario.unsupported_reason}")
+        if continue_on_b_contact and not (stop_on_first_collision and scenario and scenario.goal_kind == "ordered_standoff"):
+            raise ValueError("The B contact exception requires an ordered A/B task with first-contact termination.")
         self.task_instruction = (scenario.instruction if scenario is not None else
                                  "找到红色标记，移动到距离标记约 1 米的位置，朝向标记并停止，然后调用 finish。距离按机身参考点到标记的水平距离理解。")
         self.deadline_monotonic: float | None = None
@@ -149,6 +154,7 @@ class MujocoGo2Backend:
         self._floor_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_GEOM, "floor")
         self._environment_geom_ids = {mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_GEOM, name)
                                       for name in self._environment_geom_names}
+        self._permitted_contact_ids = {self.model.geom("memory_goal_b").id} if continue_on_b_contact else set()
         self._cabinet_geom_names = {self.model.geom(name).id: name
                                     for name in (scenario.nonterminal_contact_geoms if scenario else ())}
         self._contact_object_names = {}
@@ -318,12 +324,13 @@ class MujocoGo2Backend:
 
     @property
     def collision_terminated(self) -> bool:
-        return getattr(self, "stop_on_first_collision", False) and self._collision_steps > 0
+        return self.stop_on_first_collision and not self._collided_geom_ids.issubset(self._permitted_contact_ids)
 
     @property
     def _terminal_collision(self) -> bool:
-        return self.collision_terminated or (
-            not self._score_only_collisions and not self._collided_geom_ids.issubset(self._cabinet_geom_names))
+        if self.stop_on_first_collision:
+            return self.collision_terminated
+        return not self._score_only_collisions and not self._collided_geom_ids.issubset(self._cabinet_geom_names)
 
     def _step_control(self, command: np.ndarray, *, record: bool = True) -> None:
         if self.collision_terminated:
@@ -439,7 +446,7 @@ class MujocoGo2Backend:
         result = {"status": status, "error_code": error, "measured": {"translation_start_frame_m": (initial_rotation.T @ (final_position[:2]-start_pos[:2])).tolist(), "yaw_delta_rad": wrap_angle(final_yaw-start_yaw), "position_error_m": position_error, "heading_error_rad": heading_error, "elapsed_sim_s": float(self.data.time-initial_sim_time)}, "stop": stop_result}
         if self._cabinet_contact_steps > cabinet_steps_before:
             result["cabinet_contact"] = True
-        if self._score_only_collisions and self._collision_steps > collision_steps_before:
+        if self._collision_steps > collision_steps_before and (self._score_only_collisions or self._permitted_contact_ids):
             result["collision"] = True
         return result
 
@@ -478,7 +485,7 @@ class MujocoGo2Backend:
         result = {"status": "succeeded" if stopped else "failed", "error_code": None if stopped else "STOP_NOT_CONFIRMED", "speed_mps": speed, "yaw_rate_radps": angular_speed}
         if cabinet_steps_before is not None and self._cabinet_contact_steps > cabinet_steps_before:
             result["cabinet_contact"] = True
-        if getattr(self, "_score_only_collisions", False) and self._collision_steps > collision_steps_before:
+        if self._collision_steps > collision_steps_before and (self._score_only_collisions or self._permitted_contact_ids):
             result["collision"] = True
         return result
 
@@ -490,7 +497,8 @@ class MujocoGo2Backend:
                 "abs_yaw_rate_radps": abs(float(self.data.qvel[5])),
                 "sim_time_s": float(self.data.time), "stop_confirmed": stop_confirmed,
                 "collision": bool(self._collision_steps), "fallen": bool(self._fallen_ever)}
-        if getattr(self, "_score_only_collisions", False):
+        if getattr(self, "_score_only_collisions", False) or (
+                sample["collision"] and self.stop_on_first_collision and not self.collision_terminated):
             sample["collision_penalty_only"] = True
         return sample
 
