@@ -1,0 +1,48 @@
+{
+  "episode_id": "44cbdd67-6f04-488b-8dae-c72ddd6fa84b",
+  "mode": "empty",
+  "seed": 0,
+  "task": "memory_ab_occluded_v1",
+  "outbound": "fresh_live_planner",
+  "return": "same_episode_live_planner",
+  "floor_size_m": [
+    24.0,
+    18.0
+  ],
+  "archive_inputs": [],
+  "initial_memory": "empty",
+  "initial_odometry": {
+    "translation_m": [
+      0.0,
+      0.0
+    ],
+    "yaw_rad": 0.0,
+    "reference": "episode_start_body_horizontal",
+    "source": "simulated_proprioception"
+  },
+  "model": "deepseek-flash",
+  "thinking": false,
+  "api_limit_per_stage": 256,
+  "max_consecutive_planner_errors": 6,
+  "max_native_per_stage": 230,
+  "max_wall_s_per_stage": 2234,
+  "max_sim_s_per_stage": 940,
+  "api_timeout_s": 90.0,
+  "max_output_tokens": 8192,
+  "history": 6,
+  "reset_model_history_at_A": true,
+  "first_contact_terminates": false,
+  "completion_requirements": {
+    "goal_kind": "ordered_standoff",
+    "reference_body": "base",
+    "stop_required": true,
+    "collision_free_required": false,
+    "max_stopped_speed_mps": 0.12,
+    "max_stopped_yaw_rate_radps": 0.25,
+    "b_contact_ends_episode": false,
+    "other_scene_contacts_end_episode": true,
+    "standoff_m": 1.0,
+    "distance_tolerance_m": 0.18,
+    "heading_tolerance_rad": 0.25
+  }
+}

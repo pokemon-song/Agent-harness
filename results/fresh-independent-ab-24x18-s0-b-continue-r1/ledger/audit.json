@@ -1,0 +1,666 @@
+{
+  "arm": "ledger",
+  "raw_run_directory": "runs/fresh-independent-ab-24x18-s0-b-continue-r1/ledger",
+  "raw_sha256": {
+    "events.jsonl": "1751f9c43b7dcf7d617156e807276c0ae6f6ed0eab1d0623920e5d9fa02717f0",
+    "trajectory.jsonl": "0b530d5058b659b54e4cf5a0428b063aa0ea3703b86f97c8100f1c05cdf6bb57",
+    "video/capture.json": "e77caeec791d38b64b6829072f2e8c4f2cee76139e7f46fc4924983403c09b17",
+    "manifest.json": "121df2efca4adba2bf37b826bf36df9aeacc99200d53cf5c63678f26a345d523",
+    "metrics.json": "30ad40748c74e6b73b52b0482e4813462845c101ad62943bc711c4dff8fdacc3"
+  },
+  "episode_id": "21284436-0e3f-4528-9c98-192f019bfce7",
+  "initial_world_xy_m": [
+    -0.0015189879768713888,
+    0.006109811166518342
+  ],
+  "initial_observation_png_sha256": "e016dfae926a0116892d1d47a4320416ce1d73673390c182f91a6f436aff455e",
+  "initial_visible_labels": [
+    "B"
+  ],
+  "outbound_choice_trace_sha256": "2d710d07c96e4bdb68952e181c799778b414430edd2d7a715a6fba88fd27c4e0",
+  "A_handoff_events": 0,
+  "poses_sha256": "6d45b5897b769f16fe072df494e52131ca76a013cae319a4c6bda4e9806e46e3",
+  "model_mjb_sha256": "d1092317bbafaa39c9dae4cd370da65aec8b3dfb404fff944ae75cefc9b4a409",
+  "sample_count": 8586,
+  "own_outbound_documents_sha256": "543a9bd69e47e7f781a7633dfa7fc805bf69a315abed2c4e1888e21b8633f712",
+  "own_outbound_document_paths": [
+    "targets/target-B.md",
+    "route/leg-01.md",
+    "route/leg-02.md",
+    "handoff/last-observation.md"
+  ],
+  "terminal_score": {
+    "A": {
+      "label": "A",
+      "target_xy_m": [
+        6.4,
+        0.0
+      ],
+      "base_xy_m": [
+        1.0828141116127628,
+        0.5633326700693764
+      ],
+      "distance_to_target_center_m": 5.34694393731895,
+      "heading_error_rad": 1.1863055992462304,
+      "speed_mps": 0.006919621847152356,
+      "abs_yaw_rate_radps": 0.004316407511372543,
+      "sim_time_s": 104.7799999999372,
+      "stop_confirmed": true,
+      "stopped": true,
+      "collision": false,
+      "fallen": false,
+      "criteria_pass": false,
+      "failure_reasons": [
+        "DISTANCE_OUT_OF_RANGE",
+        "HEADING_OUT_OF_RANGE"
+      ],
+      "source": "privileged_simulator_evaluator",
+      "stop_index": 39,
+      "achieved_at_checkpoint": false,
+      "passed": false
+    },
+    "B": null
+  },
+  "stage_details": {
+    "A": {
+      "termination": "abort",
+      "detail": "当前站位的正前方 0.5 米处已有绿方块 B（几乎占满视野下半部，且深度窄带最近约 0.4 米），继续前进会触发 B 碰撞记录并遮挡视野。本轮记忆卡显示全程从未目击蓝球 A 的可信候选，且已用尽多次转向/查询仍无 A 的方位线索；在此视野被 B 与橙色墙完全封锁、无法寻找 A 的条件下证据不足，无法完成先停靠 A 再处理 B 的有序目标。",
+      "planner_requests": 230,
+      "reader_requests": 0,
+      "all_requests": 230,
+      "known_usage": {
+        "prompt_tokens": 628819,
+        "completion_tokens": 12721,
+        "total_tokens": 641540
+      },
+      "unknown_usage_requests": 0,
+      "planner_error_codes": {
+        "MODEL_PROTOCOL_ERROR": 26
+      },
+      "protocol_error_details": {
+        "Choose exactly one outbound tool.": 26
+      },
+      "planner_tool_counts": {
+        "scan": 56,
+        "memory_query": 145,
+        "follow_waypoints": 2,
+        "abort": 1
+      },
+      "successive_question_longest_run": 34,
+      "native_attempts": 64,
+      "native_tool_counts": {
+        "turn": 61,
+        "move_relative": 3
+      },
+      "native_reply_status_counts": {
+        "succeeded": 64
+      },
+      "native_error_codes": {},
+      "measured_path_by_native_tool_m": {
+        "turn": 3.4697318864456235,
+        "move_relative": 1.048062832181952
+      },
+      "max_displacement_from_stage_start_m": 1.3727443569944549,
+      "boundary_gate_refusals": 0,
+      "depth_gate_refusals": 0,
+      "actual_contacts": [],
+      "first_target_candidate": null,
+      "closest_target_center_m": 5.339926847741587,
+      "closest_target_sim_s": 115.89999999991129,
+      "closest_target_world_xy_m": [
+        1.106725494657076,
+        0.7043179326966099
+      ],
+      "endpoint_target_distance_m": 5.354670483271382,
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 172.10000000009364,
+      "active_sim_s": 171.10000000009364,
+      "recorded_wall_s": 236.27563781799836,
+      "start_world_xy_m": [
+        -0.0015189879768713888,
+        0.006109811166518342
+      ],
+      "end_world_xy_m": [
+        1.0938560099656107,
+        0.7192579102378367
+      ],
+      "net_displacement_m": 1.3070679390630495,
+      "measured_path_m": 4.517794718627576,
+      "first_input_history_turns": 0,
+      "first_input_has_memory_card": false,
+      "first_input_visible_labels": [
+        "B"
+      ],
+      "first_model_choice": {
+        "index": 1,
+        "tool": "scan",
+        "arguments": {
+          "yaw_rad": 0.5
+        }
+      },
+      "last_model_choice": {
+        "index": 230,
+        "tool": "abort",
+        "arguments": {
+          "reason": "当前站位的正前方 0.5 米处已有绿方块 B（几乎占满视野下半部，且深度窄带最近约 0.4 米），继续前进会触发 B 碰撞记录并遮挡视野。本轮记忆卡显示全程从未目击蓝球 A 的可信候选，且已用尽多次转向/查询仍无 A 的方位线索；在此视野被 B 与橙色墙完全封锁、无法寻找 A 的条件下证据不足，无法完成先停靠 A 再处理 B 的有序目标。"
+        }
+      },
+      "last_planner_frame": "frames/A-230-frame-00065.png",
+      "last_depth_valid_fractions": {
+        "left": 0.93,
+        "center": 1.0,
+        "right": 0.766
+      },
+      "last_depth_refusal": null,
+      "first_native_action": {
+        "tool": "turn",
+        "args": {
+          "yaw_rad": 0.5
+        },
+        "time_before": 1.0000000000000007,
+        "time_after": 3.219999999999867
+      },
+      "planner_inputs_with_card": 226,
+      "memory_query_statuses": {
+        "ok": 145
+      },
+      "observations_with_B_candidate": 114,
+      "first_target_candidate_context": null
+    }
+  },
+  "episode": {
+    "episode_id": "21284436-0e3f-4528-9c98-192f019bfce7",
+    "passed": false,
+    "termination": "abort",
+    "termination_detail": "当前站位的正前方 0.5 米处已有绿方块 B（几乎占满视野下半部，且深度窄带最近约 0.4 米），继续前进会触发 B 碰撞记录并遮挡视野。本轮记忆卡显示全程从未目击蓝球 A 的可信候选，且已用尽多次转向/查询仍无 A 的方位线索；在此视野被 B 与橙色墙完全封锁、无法寻找 A 的条件下证据不足，无法完成先停靠 A 再处理 B 的有序目标。",
+    "A_confirmed_at_checkpoint": false,
+    "A_final_score_passed": false,
+    "B_stage_started": false,
+    "B_final_score_passed": null,
+    "B_first_candidate": null,
+    "B_final_distance_m": null,
+    "finish_succeeded": false,
+    "A_first_candidate": null,
+    "A_min_distance_m": 5.339926847741587,
+    "collision": false,
+    "contacts": [],
+    "fallen": false,
+    "stages": {
+      "A": {
+        "planner_requests": 230,
+        "reader_requests": 0,
+        "all_requests": 230,
+        "native_attempts": 64,
+        "measured_path_m": 4.517794718627576,
+        "net_displacement_m": 1.3070679390630495,
+        "boundary_gate_refusals": 0,
+        "depth_gate_refusals": 0,
+        "actual_contacts": []
+      },
+      "B": null
+    },
+    "all_requests": 230,
+    "all_native_attempts": 64,
+    "episode_path_including_final_settle_m": 4.523089335847808,
+    "final_settle_path_m": 0.005294617220230948,
+    "episode_net_displacement_m": 1.3116830431953947,
+    "final_world_xy_m": [
+      1.0991305121129549,
+      0.7196103954398233
+    ],
+    "actual_sim_elapsed_s": 171.7000000000965,
+    "return_handoff_sim_s": null
+  },
+  "B_contact_followup": {
+    "B_contact_count": 0,
+    "non_B_contact_objects": [],
+    "physical_closest_B_base_distance_m": 0.7010790047067239,
+    "physical_closest_B_sim_time_s": 115.89999999991129,
+    "final_B_center_distance_m_for_geometry_only": 0.7110025919420546,
+    "physics_steps_with_any_contact": 0,
+    "B_contacts": [],
+    "B_rule_exercised": false,
+    "B_standoff_achieved_at_final_scored_checkpoint": false,
+    "B_score_eligible": false,
+    "B_stage_started": false,
+    "premature_stops_at_B_ignored_by_evaluator": 2,
+    "final_termination": "abort",
+    "final_detail": "当前站位的正前方 0.5 米处已有绿方块 B（几乎占满视野下半部，且深度窄带最近约 0.4 米），继续前进会触发 B 碰撞记录并遮挡视野。本轮记忆卡显示全程从未目击蓝球 A 的可信候选，且已用尽多次转向/查询仍无 A 的方位线索；在此视野被 B 与橙色墙完全封锁、无法寻找 A 的条件下证据不足，无法完成先停靠 A 再处理 B 的有序目标。"
+  },
+  "room_geometry": {
+    "compiled_model": {
+      "previous_sha256": "d1092317bbafaa39c9dae4cd370da65aec8b3dfb404fff944ae75cefc9b4a409",
+      "current_sha256": "d1092317bbafaa39c9dae4cd370da65aec8b3dfb404fff944ae75cefc9b4a409",
+      "previous_floor": {
+        "name": "floor",
+        "type": "mjGEOM_BOX",
+        "center": [
+          0.0,
+          0.0,
+          -0.1
+        ],
+        "size": [
+          12.0,
+          9.0,
+          0.1
+        ],
+        "quaternion": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rgba": [
+          0.5,
+          0.5,
+          0.5,
+          1.0
+        ],
+        "friction": [
+          1.0,
+          0.005,
+          0.0001
+        ],
+        "group": 0,
+        "contact_type": 1,
+        "contact_affinity": 1,
+        "body": "world"
+      },
+      "current_floor": {
+        "name": "floor",
+        "type": "mjGEOM_BOX",
+        "center": [
+          0.0,
+          0.0,
+          -0.1
+        ],
+        "size": [
+          12.0,
+          9.0,
+          0.1
+        ],
+        "quaternion": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rgba": [
+          0.5,
+          0.5,
+          0.5,
+          1.0
+        ],
+        "friction": [
+          1.0,
+          0.005,
+          0.0001
+        ],
+        "group": 0,
+        "contact_type": 1,
+        "contact_affinity": 1,
+        "body": "world"
+      },
+      "shared_world_objects": {
+        "scenario_target": {
+          "name": "scenario_target",
+          "type": "mjGEOM_SPHERE",
+          "center": [
+            6.4,
+            0.0,
+            0.12
+          ],
+          "size": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.03999999910593033,
+            0.11999999731779099,
+            0.8500000238418579,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_goal_b": {
+          "name": "memory_goal_b",
+          "type": "mjGEOM_BOX",
+          "center": [
+            1.8,
+            0.6,
+            0.2
+          ],
+          "size": [
+            0.08,
+            0.18,
+            0.2
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.03999999910593033,
+            0.75,
+            0.10000000149011612,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawers_body": {
+          "name": "memory_drawers_body",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.7999999999999994,
+            0.0,
+            1.0
+          ],
+          "size": [
+            0.22,
+            2.0,
+            1.0
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.550000011920929,
+            0.33000001311302185,
+            0.14000000059604645,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawer_handle_0": {
+          "name": "memory_drawer_handle_0",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.57,
+            0.0,
+            0.4285714285714285
+          ],
+          "size": [
+            0.02,
+            0.8484848484848485,
+            0.07142857142857142
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.05999999865889549,
+            0.07000000029802322,
+            0.07999999821186066,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawer_handle_1": {
+          "name": "memory_drawer_handle_1",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.57,
+            0.0,
+            1.0357142857142858
+          ],
+          "size": [
+            0.02,
+            0.8484848484848485,
+            0.07142857142857142
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.05999999865889549,
+            0.07000000029802322,
+            0.07999999821186066,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawer_handle_2": {
+          "name": "memory_drawer_handle_2",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.57,
+            0.0,
+            1.6428571428571428
+          ],
+          "size": [
+            0.02,
+            0.8484848484848485,
+            0.07142857142857142
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.05999999865889549,
+            0.07000000029802322,
+            0.07999999821186066,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        }
+      },
+      "compiled_scene_extent_m": 1.23314,
+      "near_far_clip_m": [
+        0.01233139972437173,
+        24.662799999999997
+      ],
+      "extent_and_camera_clip_equal_previous": true,
+      "static_nonground_geometries_match_previous": true,
+      "static_geometry_source": "Actual MuJoCo MJB per arm, against the corresponding previous capture digest."
+    },
+    "trajectory_clearance": {
+      "full_episode_including_final_stop": {
+        "base_center": {
+          "current_24x18": {
+            "min_signed_clearance_m": 8.1637984248954,
+            "nearest_edge": "+y",
+            "sim_time_s": 137.619999999929,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 5.163798424895401,
+            "nearest_edge": "+y",
+            "sim_time_s": 137.619999999929,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        },
+        "torso_surface": {
+          "current_24x18": {
+            "min_signed_clearance_m": 7.84986688914035,
+            "nearest_edge": "+y",
+            "sim_time_s": 134.059999999912,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 4.84986688914035,
+            "nearest_edge": "+y",
+            "sim_time_s": 134.059999999912,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        },
+        "all_collision_surfaces": {
+          "current_24x18": {
+            "min_signed_clearance_m": 7.8453577872111,
+            "nearest_edge": "+y",
+            "sim_time_s": 157.50000000002393,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 4.8453577872111,
+            "nearest_edge": "+y",
+            "sim_time_s": 157.50000000002393,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        }
+      },
+      "A": {
+        "base_center": {
+          "current_24x18": {
+            "min_signed_clearance_m": 8.1637984248954,
+            "nearest_edge": "+y",
+            "sim_time_s": 137.619999999929,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 5.163798424895401,
+            "nearest_edge": "+y",
+            "sim_time_s": 137.619999999929,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        },
+        "torso_surface": {
+          "current_24x18": {
+            "min_signed_clearance_m": 7.84986688914035,
+            "nearest_edge": "+y",
+            "sim_time_s": 134.059999999912,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 4.84986688914035,
+            "nearest_edge": "+y",
+            "sim_time_s": 134.059999999912,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        },
+        "all_collision_surfaces": {
+          "current_24x18": {
+            "min_signed_clearance_m": 7.8453577872111,
+            "nearest_edge": "+y",
+            "sim_time_s": 157.50000000002393,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 4.8453577872111,
+            "nearest_edge": "+y",
+            "sim_time_s": 157.50000000002393,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        }
+      }
+    },
+    "geometry_reconstruction": {
+      "torso_colliders": [
+        "base_box",
+        "base_cyl1",
+        "base_sphere1"
+      ],
+      "whole_robot_collider_count": 27
+    }
+  }
+}
