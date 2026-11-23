@@ -71,9 +71,10 @@ def test_A_visual_dock_cannot_dispatch_finish_without_independent_stop(monkeypat
 def test_independent_A_stop_interrupts_macro_and_first_B_decision_has_empty_history(monkeypatch):
     harness = StageHarness(confirm_stop=True)
     log = SimpleNamespace(write=lambda *a, **kw: None, save_frame=lambda frame, name: name)
-    memory = SimpleNamespace(card=None, observe=lambda *a: None)
+    memory = SimpleNamespace(card=None, observe=lambda *a: None, query_access=lambda: {"allowed": False, "intents": []},
+                             after_physical_action=lambda: None)
     config = SimpleNamespace(max_requests=4, max_consecutive_errors=1, max_native_actions=2,
-                             max_sim_seconds=470, max_wall_seconds=1117)
+                             max_sim_seconds=470, max_wall_seconds=1117, navigation="viewpoints")
     choices = iter([("scan", {"yaw_rad": .1}), ("follow_waypoints", DOCK_HERE), ("abort", {"reason": "end"})])
     turns = []
 
@@ -101,3 +102,26 @@ def test_independent_A_stop_interrupts_macro_and_first_B_decision_has_empty_hist
     returning = play_stage("B", "empty", harness, log, memory, planner, config)
     assert returning["termination"] == "abort"
     assert turns == [("A", [], True), ("A", ["scan"], True), ("B", [], False)]
+
+
+def test_inspect_near_identical_waypoint_does_not_pretend_to_change_view():
+    harness = StageHarness(confirm_stop=False)
+    follower = StageFollower(harness, SimpleNamespace(write=lambda *a, **kw: None),
+                             SimpleNamespace(observe=lambda *a: None), "A")
+    result = follower.navigate("follow_waypoints", {"waypoints": [{"x": .008, "y": 0.}], "after": "inspect"},
+                               1, False)
+    assert result["error_code"] == "inspect_waypoint_already_reached" and result["native_actions"] == 0
+    assert not harness.dispatched
+
+
+def test_inspect_stops_a_multi_step_route_at_a_new_target_view(monkeypatch):
+    harness = StageHarness(confirm_stop=False)
+    follower = StageFollower(harness, SimpleNamespace(write=lambda *a, **kw: None),
+                             SimpleNamespace(observe=lambda *a: None), "A")
+    monkeypatch.setattr(follower.sensor, "inspect", lambda *a: ({"target_candidates": [{"task_label": "A"}]}, {}))
+    monkeypatch.setattr("go2_demo.paired_return_run.check_clearance", lambda *a, **kw: None)
+    result = follower.navigate("follow_waypoints", {"waypoints": [{"x": 1.4, "y": 0.}], "after": "inspect"},
+                               1, False)
+    assert result["error_code"] == "target_visible_in_current_view" and result["status"] == "replan"
+    assert result["native_actions"] == 1 and harness.dispatched == ["move_relative"]
+    assert harness.backend._ordered_evaluator.a_witness is None

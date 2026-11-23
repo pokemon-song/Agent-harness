@@ -127,6 +127,11 @@ def render(directory, output=None, *, return_only=False, fast=False):
     camera.lookat[2] = .18
     camera.azimuth, camera.elevation = 90, -59
     camera.distance = max(8., 1.2 * np.ptp(box[:, 0]) + 1.8, 2.6 * np.ptp(box[:, 1]) + 1.8)
+    # MuJoCo scales zfar by model extent, which may still describe only the robot.
+    # Cover the full recorded region, with padding for body/prop dimensions.
+    region_radius = float(np.linalg.norm((box.max(axis=0) - box.min(axis=0)) / 2))
+    required_far = camera.distance + region_radius + 2.0
+    model.vis.map.zfar = max(model.vis.map.zfar, required_far / model.stat.extent)
     data = mujoco.MjData(model)
     binary = _ffmpeg()
     return_phase = f"RETURN TO B  |  {meta.get('return_label') or 'LIVE AGENT'}"

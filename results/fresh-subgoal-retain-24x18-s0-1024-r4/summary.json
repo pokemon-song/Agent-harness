@@ -1,0 +1,801 @@
+{
+  "experiment": "fresh-subgoal-retain-24x18-s0-1024-r4",
+  "settings": {
+    "task": "memory_ab_occluded_v1",
+    "seed": 0,
+    "floor_size_m": [
+      24.0,
+      18.0
+    ],
+    "model": "deepseek-flash",
+    "api_limit_per_stage": 1024,
+    "max_native_per_stage": 230,
+    "max_sim_s_per_stage": 940,
+    "max_wall_s_per_stage": 2234,
+    "completion_requirements": {
+      "goal_kind": "ordered_standoff",
+      "reference_body": "base",
+      "stop_required": true,
+      "collision_free_required": false,
+      "max_stopped_speed_mps": 0.12,
+      "max_stopped_yaw_rate_radps": 0.25,
+      "cabinet_contact_ends_episode": false,
+      "collision_penalty_points": 5,
+      "b_contact_ends_episode": false,
+      "other_scene_contacts_end_episode": false,
+      "standoff_m": 1.0,
+      "distance_tolerance_m": 0.18,
+      "heading_tolerance_rad": 0.25
+    },
+    "navigation": "persistent_subgoals_v1",
+    "memory_queries": "itemized_evidence_gated",
+    "fresh_driver_sha256": {
+      "fresh_episode_memory.py": "804ee28c20a260c4665deecbe053290039a166cd8e554d155df2bc8d230626a1",
+      "fresh_episode_planning.py": "a0aaf13649f7fd3857254fa553d984e10ffbf48128132c6d2ae01894106391e8",
+      "fresh_episode_run.py": "316935802caf816e023d48277ac2d675a7a13a20a86bb7bf7624f1902eecc4cb",
+      "fresh_exploration.py": "1b295e91408993dcfed3ab5a70b3773af424948e36d6ed86e3a5f88b083a3519",
+      "fresh_subgoal_planning.py": "4f6a91a606ce469b8383c43ed8905d29c1bde422dec23a148f6625b370b59033",
+      "fresh_subgoals.py": "a62d77af44ac6053c24a26b41c8546a5f19b822cbb44ef598a4e09649ce27bce",
+      "paired_return_run.py": "1321566c9f49fb07458dd235bfe4ee5c0c5b9cae35ade56dadebe84254fe34be",
+      "return_route_control.py": "c7d843169fe4bd5316ca9a69719d9d368d9a9d15bedf85cea3183d077b85930d",
+      "occluded_handoff.py": "9b5036bcd3a2b1ac2940f2b9b0284396c2dbb9fd7286ef0b7ca1c4aaf3077899",
+      "short_step_clearance.py": "37e6d3d374bcc5e4f7e4fd929d52457c0ca118c5ecda4adc0c19139592716681"
+    },
+    "verifier": "public_observation_checks",
+    "native_actions_per_slice": 6,
+    "history_unit": "complete_public_tool_turns",
+    "navigation_reset_at_A": false,
+    "handoff_context": "retain",
+    "context_retention": "full_public_dialogue",
+    "reset_model_history_at_A": false,
+    "retain_memory_card_and_cache_at_A": true,
+    "new_active_target_at_A": true,
+    "collision_policy": "record_and_penalize",
+    "collision_penalty_points": 5,
+    "points_per_checkpoint": 50,
+    "first_contact_terminates": false
+  },
+  "modes": [
+    "empty",
+    "query"
+  ],
+  "replicates_per_arm": 1,
+  "arms": {
+    "empty": {
+      "episode_id": "b1038ae8-d557-4161-8be2-06996df5c00e",
+      "A_confirmed_at_checkpoint": false,
+      "B_entered": false,
+      "B_passed_if_entered": null,
+      "passed": false,
+      "termination": "abort",
+      "termination_detail": "已环绕场景约360°并绕行柜体前后，仅一次目击蓝球A（yaw≈1.03时约3.4米前方），此后多次移动与扫描均无法重新锁定A；当前紧邻柜体面、视野受限且反复受阻，无法稳定跟踪并完成0.82-1.18米面向停靠。",
+      "collision": true,
+      "collision_events": [
+        {
+          "object": "cabinet",
+          "sim_time_s": 227.27000000035707,
+          "geom_names": [
+            "memory_drawers_body"
+          ],
+          "base_xy_m": [
+            3.431207152665763,
+            -2.039213078689948
+          ]
+        },
+        {
+          "object": "cabinet",
+          "sim_time_s": 235.1480000003947,
+          "geom_names": [
+            "memory_drawers_body"
+          ],
+          "base_xy_m": [
+            3.2897299768715467,
+            -1.937750356581127
+          ]
+        }
+      ],
+      "fallen": false,
+      "initial_image_sha256": "e016dfae926a0116892d1d47a4320416ce1d73673390c182f91a6f436aff455e",
+      "total_requests": 49,
+      "stages": {
+        "A": {
+          "planner_requests": 49,
+          "reader_requests": 0,
+          "total_requests": 49,
+          "native_actions": {
+            "turn": 62,
+            "move_relative": 39
+          },
+          "planner_tools": {
+            "set_subgoal": 3,
+            "scan": 29,
+            "follow_waypoints": 15,
+            "continue_subgoal": 1,
+            "abort": 1
+          },
+          "first_seen_decision": 31,
+          "first_seen_sim_time_s": 182.20000000014187,
+          "stage_start_sim_s": 1.0000000000000007,
+          "stage_end_sim_s": 295.52000000068296,
+          "path_m": 21.34522661133149,
+          "boundary_refusals": 0,
+          "depth_refusals": 2,
+          "known_usage": {
+            "prompt_tokens": 3033007,
+            "completion_tokens": 4462,
+            "total_tokens": 3037469
+          },
+          "unknown_usage_requests": 0,
+          "memory_lookups": 0,
+          "fully_cached_lookups": 0,
+          "memory_result_status": {},
+          "stalled_inputs": 0,
+          "inputs_with_proposed_viewpoints": 0,
+          "selected_viewpoints": 0,
+          "viewpoints_with_at_least_019m_measured_displacement": 0,
+          "viewpoint_outcomes": {},
+          "subgoals": {
+            "created": 3,
+            "completed": 1,
+            "criteria": {
+              "observe_target": 1,
+              "dock_target": 2
+            },
+            "completion_sources": {
+              "current_rgbd_target_candidate": 1
+            },
+            "verification_events": 45,
+            "recovery_required_inputs": 20,
+            "recovery_reasons": {
+              "no_measured_progress": 16,
+              "current_depth_blocks_requested_translation": 2,
+              "inspect_waypoint_already_reached": 2
+            },
+            "recovery_routes": 14,
+            "route_continuations": 1,
+            "execution_slices": 6,
+            "final_state": {
+              "stage": "A",
+              "phase": "subgoal_execution",
+              "status": "recovery_required",
+              "active": {
+                "id": "A-3",
+                "description": "保持A为目标，前往开阔区重新目击蓝球A并以控制器停靠",
+                "criterion": "dock_target",
+                "status": "recovering",
+                "attempts": 6,
+                "target_label": "A",
+                "verification": {
+                  "state": "pending",
+                  "current_target_visible": false,
+                  "source": "awaiting_controller_stop_confirmation"
+                },
+                "pending_route": null
+              },
+              "recent_goals": [
+                {
+                  "id": "A-1",
+                  "description": "先转向观察环境，寻找第一阶段目标蓝球 A",
+                  "criterion": "observe_target",
+                  "status": "completed",
+                  "verification": {
+                    "state": "completed",
+                    "current_target_visible": true,
+                    "source": "current_rgbd_target_candidate"
+                  }
+                },
+                {
+                  "id": "A-2",
+                  "description": "已看到蓝球A（前方约3.4米，略偏右），停靠到其中心0.82-1.18米并面向其停稳",
+                  "criterion": "dock_target",
+                  "status": "replaced",
+                  "verification": {
+                    "state": "pending",
+                    "current_target_visible": false,
+                    "source": "awaiting_controller_stop_confirmation"
+                  },
+                  "replacement_reason": "当前贴着柜体面无法看到A，先移动到开阔位置重新锁定A再停靠，目标仍为A"
+                }
+              ],
+              "last_target_sighting": {
+                "target_label": "A",
+                "image_id": "frame-00063",
+                "sim_time_s": 182.20000000014187,
+                "observer_pose": {
+                  "x": 6.055563205958406,
+                  "y": -4.345573064046181,
+                  "yaw": 1.0291407429274428
+                },
+                "candidate": {
+                  "pixel_uv": [
+                    153,
+                    184
+                  ],
+                  "camera_xyz_m": [
+                    -1.8253532400118981,
+                    0.04933387135167292,
+                    3.4179508686065674
+                  ],
+                  "source": "task_label_color_rgbd_v1",
+                  "status": "candidate_not_confirmed",
+                  "coordinate_frame": "current_camera_optical"
+                },
+                "coordinates_at_sighting_only": true
+              },
+              "last_action": {
+                "tool": "scan",
+                "intention": "左转约0.55弧度，继续扫描寻找蓝球A（应朝向+0.5左右）",
+                "role": "primary",
+                "status": "ok",
+                "error_code": null,
+                "measured_displacement_m": 0.01,
+                "measured_yaw_change_rad": 0.493,
+                "made_progress": false,
+                "repeated_view": false
+              },
+              "action_count": 45,
+              "recovery_required": true,
+              "recovery_reason": "no_measured_progress",
+              "no_progress_actions": 4
+            }
+          },
+          "planner_errors": {},
+          "min_base_distance_to_goal_m": 3.4604994476909248,
+          "net_displacement_m": 2.9265365789950293,
+          "path_to_first_seen_m": 12.372268656302094
+        }
+      },
+      "native_call_ids": {
+        "scope": "episode",
+        "actions_checked": 101,
+        "unique_call_ids": 101,
+        "call_id_reuse_errors": 0
+      },
+      "videos": [
+        {
+          "file": "full.mp4",
+          "fps": 12.5,
+          "frames": 3690,
+          "duration_s": 295.2,
+          "sha256": "f0bd15c5c58533e49047ea81144845adac87d4b8811b0399a246ff82db60bbcd"
+        }
+      ],
+      "goal_points": 0,
+      "collision_count": 2,
+      "collision_penalty": 10,
+      "score": 0
+    },
+    "query": {
+      "episode_id": "2a206f4e-8720-4e72-97c9-ce57f5cee829",
+      "A_confirmed_at_checkpoint": true,
+      "B_entered": true,
+      "B_passed_if_entered": true,
+      "passed": true,
+      "termination": "finish",
+      "termination_detail": null,
+      "collision": true,
+      "collision_events": [
+        {
+          "object": "B",
+          "sim_time_s": 110.38599999992414,
+          "geom_names": [
+            "memory_goal_b"
+          ],
+          "base_xy_m": [
+            1.5380456944305065,
+            0.9801764317404302
+          ]
+        }
+      ],
+      "fallen": false,
+      "initial_image_sha256": "e016dfae926a0116892d1d47a4320416ce1d73673390c182f91a6f436aff455e",
+      "total_requests": 93,
+      "stages": {
+        "A": {
+          "planner_requests": 60,
+          "reader_requests": 0,
+          "total_requests": 60,
+          "native_actions": {
+            "turn": 69,
+            "move_relative": 73,
+            "track_point": 7
+          },
+          "planner_tools": {
+            "set_subgoal": 16,
+            "follow_waypoints": 24,
+            "continue_subgoal": 6,
+            "scan": 9
+          },
+          "first_seen_decision": 44,
+          "first_seen_sim_time_s": 283.4200000006252,
+          "stage_start_sim_s": 1.0000000000000007,
+          "stage_end_sim_s": 406.8000000012143,
+          "path_m": 36.065970449971246,
+          "boundary_refusals": 0,
+          "depth_refusals": 1,
+          "known_usage": {
+            "prompt_tokens": 5288881,
+            "completion_tokens": 7291,
+            "total_tokens": 5296172
+          },
+          "unknown_usage_requests": 0,
+          "memory_lookups": 0,
+          "fully_cached_lookups": 0,
+          "memory_result_status": {},
+          "stalled_inputs": 0,
+          "inputs_with_proposed_viewpoints": 0,
+          "selected_viewpoints": 0,
+          "viewpoints_with_at_least_019m_measured_displacement": 0,
+          "viewpoint_outcomes": {},
+          "subgoals": {
+            "created": 16,
+            "completed": 8,
+            "criteria": {
+              "reach_pose": 15,
+              "dock_target": 1
+            },
+            "completion_sources": {
+              "public_odometry": 7,
+              "independent_A_handoff": 1
+            },
+            "verification_events": 39,
+            "recovery_required_inputs": 5,
+            "recovery_reasons": {
+              "turn: MOTION_TIMEOUT": 2,
+              "current_depth_blocks_requested_translation": 1,
+              "no_measured_progress": 2
+            },
+            "recovery_routes": 6,
+            "route_continuations": 6,
+            "execution_slices": 17,
+            "final_state": {
+              "stage": "A",
+              "phase": "subgoal_execution",
+              "status": "completed",
+              "active": {
+                "id": "A-16",
+                "description": "面向蓝球 A 并实际停靠至约1米、朝向误差小于0.25弧度",
+                "criterion": "dock_target",
+                "status": "completed",
+                "attempts": 3,
+                "target_label": "A",
+                "verification": {
+                  "state": "completed",
+                  "source": "independent_A_handoff",
+                  "independent_task_success": null
+                },
+                "pending_route": null
+              },
+              "recent_goals": [
+                {
+                  "id": "A-12",
+                  "description": "向柜体左侧（世界y正方向更远处）移动至(3.0,-1.0)并从外围回看柜体与地面，寻找蓝球 A",
+                  "criterion": "reach_pose",
+                  "status": "replaced",
+                  "verification": {
+                    "state": "pending",
+                    "current_target_visible": false,
+                    "source": "public_odometry",
+                    "distance_m": 4.455,
+                    "heading_error_rad": 0.209
+                  },
+                  "replacement_reason": "A-12 的终点(3.0,-1.0)已多次经过且无目标，改设为柜体正面y正侧尽头观察点"
+                },
+                {
+                  "id": "A-13",
+                  "description": "绕到柜体正面y正侧更远处(2.6,5.5)，查看柜体正面整片区域是否有蓝球 A",
+                  "criterion": "reach_pose",
+                  "status": "replaced",
+                  "verification": {
+                    "state": "pending",
+                    "current_target_visible": true,
+                    "source": "public_odometry",
+                    "distance_m": 0.002,
+                    "heading_error_rad": 0.619
+                  },
+                  "replacement_reason": "已目击蓝球 A，改设接近路点以完成停靠"
+                },
+                {
+                  "id": "A-14",
+                  "description": "朝蓝球 A 方向前进至其前方约2米处(4.0,2.0)，为停靠做准备",
+                  "criterion": "reach_pose",
+                  "status": "replaced",
+                  "verification": {
+                    "state": "pending",
+                    "current_target_visible": false,
+                    "source": "public_odometry",
+                    "distance_m": 1.151,
+                    "heading_error_rad": 0.126
+                  },
+                  "replacement_reason": "当前机位贴近柜体遮挡视线，改设远离柜壁的观察点"
+                },
+                {
+                  "id": "A-15",
+                  "description": "退离柜体并右移至(4.0,1.0)，重新取得指向蓝球 A 的视线",
+                  "criterion": "reach_pose",
+                  "status": "replaced",
+                  "verification": {
+                    "state": "pending",
+                    "current_target_visible": true,
+                    "source": "public_odometry",
+                    "distance_m": 1.597,
+                    "heading_error_rad": 1.36
+                  },
+                  "replacement_reason": "蓝球 A 已在视野中，切换为停靠目标"
+                }
+              ],
+              "last_target_sighting": {
+                "target_label": "A",
+                "image_id": "frame-00143",
+                "sim_time_s": 406.8000000012143,
+                "observer_pose": {
+                  "x": 5.7366181967620555,
+                  "y": 0.80955718770284,
+                  "yaw": -0.8580823037879144
+                },
+                "candidate": {
+                  "pixel_uv": [
+                    323,
+                    326
+                  ],
+                  "camera_xyz_m": [
+                    0.008818768720701298,
+                    0.3691284621664972,
+                    0.7855485677719116
+                  ],
+                  "source": "task_label_color_rgbd_v1",
+                  "status": "candidate_not_confirmed",
+                  "coordinate_frame": "current_camera_optical"
+                },
+                "coordinates_at_sighting_only": true
+              },
+              "last_action": {
+                "tool": "follow_waypoints",
+                "intention": "蓝球 A 已正前方约1.5米，继续前进至0.82–1.18米并对准停稳，完成合格停靠",
+                "role": "primary",
+                "status": "handoff",
+                "error_code": "A_stop_confirmed",
+                "measured_displacement_m": 0.799,
+                "measured_yaw_change_rad": 0.026,
+                "made_progress": true,
+                "repeated_view": false
+              },
+              "action_count": 39,
+              "recovery_required": false,
+              "recovery_reason": null,
+              "no_progress_actions": 0
+            }
+          },
+          "planner_errors": {
+            "MODEL_PROTOCOL_ERROR": 5
+          },
+          "min_base_distance_to_goal_m": 1.1353574989795434,
+          "net_displacement_m": 5.793459344431691,
+          "path_to_first_seen_m": 25.246442127611658
+        },
+        "B": {
+          "planner_requests": 33,
+          "reader_requests": 0,
+          "total_requests": 33,
+          "native_actions": {
+            "turn": 50,
+            "move_relative": 32,
+            "track_point": 7,
+            "stop": 1,
+            "finish": 1
+          },
+          "planner_tools": {
+            "set_subgoal": 13,
+            "follow_waypoints": 13,
+            "continue_subgoal": 4,
+            "scan": 3
+          },
+          "first_seen_decision": 9,
+          "first_seen_sim_time_s": 490.3800000016134,
+          "stage_start_sim_s": 406.8000000012143,
+          "stage_end_sim_s": 641.3999999986567,
+          "path_m": 16.92275794922464,
+          "boundary_refusals": 0,
+          "depth_refusals": 0,
+          "known_usage": {
+            "prompt_tokens": 8945022,
+            "completion_tokens": 4143,
+            "total_tokens": 8949165
+          },
+          "unknown_usage_requests": 0,
+          "memory_lookups": 0,
+          "fully_cached_lookups": 0,
+          "memory_result_status": {},
+          "stalled_inputs": 0,
+          "inputs_with_proposed_viewpoints": 0,
+          "selected_viewpoints": 0,
+          "viewpoints_with_at_least_019m_measured_displacement": 0,
+          "viewpoint_outcomes": {},
+          "subgoals": {
+            "created": 13,
+            "completed": 2,
+            "criteria": {
+              "reach_pose": 7,
+              "dock_target": 6
+            },
+            "completion_sources": {
+              "public_odometry": 1,
+              "controller_finish": 1
+            },
+            "verification_events": 20,
+            "recovery_required_inputs": 2,
+            "recovery_reasons": {
+              "no_measured_progress": 2
+            },
+            "recovery_routes": 3,
+            "route_continuations": 4,
+            "execution_slices": 11,
+            "final_state": {
+              "stage": "B",
+              "phase": "subgoal_execution",
+              "status": "completed",
+              "active": {
+                "id": "B-13",
+                "description": "绿方块 B 正前方约1.2米，微调停在0.82–1.18米、朝向误差≤0.25弧度并停稳",
+                "criterion": "dock_target",
+                "status": "completed",
+                "attempts": 1,
+                "target_label": "B",
+                "verification": {
+                  "state": "completed",
+                  "source": "controller_finish",
+                  "independent_task_success": null
+                },
+                "pending_route": null
+              },
+              "recent_goals": [
+                {
+                  "id": "B-9",
+                  "description": "右移到绿方块 B 正前方约1.5米处(0.55,0.45)，取得正对 B 的视线",
+                  "criterion": "reach_pose",
+                  "status": "completed",
+                  "verification": {
+                    "state": "completed",
+                    "current_target_visible": true,
+                    "source": "public_odometry",
+                    "distance_m": 0.089,
+                    "heading_error_rad": 0.045
+                  }
+                },
+                {
+                  "id": "B-10",
+                  "description": "正对绿方块 B 前进并停靠在约1米、朝向误差≤0.25弧度处停稳",
+                  "criterion": "dock_target",
+                  "status": "replaced",
+                  "verification": {
+                    "state": "pending",
+                    "current_target_visible": false,
+                    "source": "awaiting_controller_stop_confirmation"
+                  },
+                  "replacement_reason": "B-10 停靠时朝向翻转导致画面丢失 B，先重定位再停靠"
+                },
+                {
+                  "id": "B-11",
+                  "description": "后退到(1.0,1.0)并转向柜体与绿方块 B 方向yaw约-2.4，重新对齐视线",
+                  "criterion": "reach_pose",
+                  "status": "replaced",
+                  "verification": {
+                    "state": "pending",
+                    "current_target_visible": true,
+                    "source": "public_odometry",
+                    "distance_m": 1.138,
+                    "heading_error_rad": 2.98
+                  },
+                  "replacement_reason": "B 在画面右前方清晰可见且距离合适，切换为停靠目标收尾"
+                },
+                {
+                  "id": "B-12",
+                  "description": "右前方绿方块 B 可见（约1.2米），转向它对正并停靠至0.82–1.18米、朝向误差≤0.25弧度",
+                  "criterion": "dock_target",
+                  "status": "replaced",
+                  "verification": {
+                    "state": "pending",
+                    "current_target_visible": true,
+                    "source": "awaiting_controller_stop_confirmation"
+                  },
+                  "replacement_reason": "B 已居中且约1.2米，重新设定停靠目标以完成最后停稳"
+                }
+              ],
+              "last_target_sighting": {
+                "target_label": "B",
+                "image_id": "frame-00227",
+                "sim_time_s": 641.3999999986567,
+                "observer_pose": {
+                  "x": 0.7075400217311142,
+                  "y": 0.4081472470648771,
+                  "yaw": 0.1803571099735313
+                },
+                "candidate": {
+                  "pixel_uv": [
+                    260,
+                    351
+                  ],
+                  "camera_xyz_m": [
+                    -0.14447279997168275,
+                    0.4164215999183796,
+                    0.7570111155509949
+                  ],
+                  "source": "task_label_color_rgbd_v1",
+                  "status": "candidate_not_confirmed",
+                  "coordinate_frame": "current_camera_optical"
+                },
+                "coordinates_at_sighting_only": true
+              },
+              "last_action": {
+                "tool": "follow_waypoints",
+                "intention": "对正绿方块 B 微调前进，最后使距离约1米、朝向对齐后停稳",
+                "role": "primary",
+                "status": "finish",
+                "error_code": null,
+                "measured_displacement_m": 0.009,
+                "measured_yaw_change_rad": 0.022,
+                "made_progress": false,
+                "repeated_view": false
+              },
+              "action_count": 20,
+              "recovery_required": false,
+              "recovery_reason": null,
+              "no_progress_actions": 1,
+              "previous_stage_state": {
+                "stage": "A",
+                "phase": "subgoal_execution",
+                "status": "completed",
+                "active": {
+                  "id": "A-16",
+                  "description": "面向蓝球 A 并实际停靠至约1米、朝向误差小于0.25弧度",
+                  "criterion": "dock_target",
+                  "status": "completed",
+                  "attempts": 3,
+                  "target_label": "A",
+                  "verification": {
+                    "state": "completed",
+                    "source": "independent_A_handoff",
+                    "independent_task_success": null
+                  },
+                  "pending_route": null
+                },
+                "recent_goals": [
+                  {
+                    "id": "A-12",
+                    "description": "向柜体左侧（世界y正方向更远处）移动至(3.0,-1.0)并从外围回看柜体与地面，寻找蓝球 A",
+                    "criterion": "reach_pose",
+                    "status": "replaced",
+                    "verification": {
+                      "state": "pending",
+                      "current_target_visible": false,
+                      "source": "public_odometry",
+                      "distance_m": 4.455,
+                      "heading_error_rad": 0.209
+                    },
+                    "replacement_reason": "A-12 的终点(3.0,-1.0)已多次经过且无目标，改设为柜体正面y正侧尽头观察点"
+                  },
+                  {
+                    "id": "A-13",
+                    "description": "绕到柜体正面y正侧更远处(2.6,5.5)，查看柜体正面整片区域是否有蓝球 A",
+                    "criterion": "reach_pose",
+                    "status": "replaced",
+                    "verification": {
+                      "state": "pending",
+                      "current_target_visible": true,
+                      "source": "public_odometry",
+                      "distance_m": 0.002,
+                      "heading_error_rad": 0.619
+                    },
+                    "replacement_reason": "已目击蓝球 A，改设接近路点以完成停靠"
+                  },
+                  {
+                    "id": "A-14",
+                    "description": "朝蓝球 A 方向前进至其前方约2米处(4.0,2.0)，为停靠做准备",
+                    "criterion": "reach_pose",
+                    "status": "replaced",
+                    "verification": {
+                      "state": "pending",
+                      "current_target_visible": false,
+                      "source": "public_odometry",
+                      "distance_m": 1.151,
+                      "heading_error_rad": 0.126
+                    },
+                    "replacement_reason": "当前机位贴近柜体遮挡视线，改设远离柜壁的观察点"
+                  },
+                  {
+                    "id": "A-15",
+                    "description": "退离柜体并右移至(4.0,1.0)，重新取得指向蓝球 A 的视线",
+                    "criterion": "reach_pose",
+                    "status": "replaced",
+                    "verification": {
+                      "state": "pending",
+                      "current_target_visible": true,
+                      "source": "public_odometry",
+                      "distance_m": 1.597,
+                      "heading_error_rad": 1.36
+                    },
+                    "replacement_reason": "蓝球 A 已在视野中，切换为停靠目标"
+                  }
+                ],
+                "last_target_sighting": {
+                  "target_label": "A",
+                  "image_id": "frame-00143",
+                  "sim_time_s": 406.8000000012143,
+                  "observer_pose": {
+                    "x": 5.7366181967620555,
+                    "y": 0.80955718770284,
+                    "yaw": -0.8580823037879144
+                  },
+                  "candidate": {
+                    "pixel_uv": [
+                      323,
+                      326
+                    ],
+                    "camera_xyz_m": [
+                      0.008818768720701298,
+                      0.3691284621664972,
+                      0.7855485677719116
+                    ],
+                    "source": "task_label_color_rgbd_v1",
+                    "status": "candidate_not_confirmed",
+                    "coordinate_frame": "current_camera_optical"
+                  },
+                  "coordinates_at_sighting_only": true
+                },
+                "last_action": {
+                  "tool": "follow_waypoints",
+                  "intention": "蓝球 A 已正前方约1.5米，继续前进至0.82–1.18米并对准停稳，完成合格停靠",
+                  "role": "primary",
+                  "status": "handoff",
+                  "error_code": "A_stop_confirmed",
+                  "measured_displacement_m": 0.799,
+                  "measured_yaw_change_rad": 0.026,
+                  "made_progress": true,
+                  "repeated_view": false
+                },
+                "action_count": 39,
+                "recovery_required": false,
+                "recovery_reason": null,
+                "no_progress_actions": 0
+              }
+            }
+          },
+          "planner_errors": {},
+          "min_base_distance_to_goal_m": 1.0981890690070812,
+          "net_displacement_m": 5.04507256944987,
+          "path_to_first_seen_m": 7.680327721932104
+        }
+      },
+      "native_call_ids": {
+        "scope": "episode",
+        "actions_checked": 240,
+        "unique_call_ids": 240,
+        "call_id_reuse_errors": 0
+      },
+      "videos": [
+        {
+          "file": "full.mp4",
+          "fps": 12.5,
+          "frames": 8014,
+          "duration_s": 641.12,
+          "sha256": "0bec767e126b70e7c0b354682f19aa41f9376fceee73f93e0f4d0965c56dba46"
+        },
+        {
+          "file": "return.mp4",
+          "fps": 12.5,
+          "frames": 2941,
+          "duration_s": 235.28,
+          "sha256": "644f9cb20847f3ebca8ca55adb6ac95c5c4bdb3b22462b73fe474f0d2ef38674"
+        }
+      ],
+      "goal_points": 100,
+      "collision_count": 1,
+      "collision_penalty": 5,
+      "score": 95
+    }
+  },
+  "A_confirmed": 1,
+  "B_entered": 1,
+  "B_passed_among_entered": 1,
+  "full_successes": 1
+}

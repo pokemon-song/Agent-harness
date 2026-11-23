@@ -48,11 +48,13 @@ class _Pose:
 
 
 class _OutboundNotes:
-    def __init__(self, task_id):
+    def __init__(self, task_id, *, sample_distinct_views=False):
         self.sensor = TaskLabelRGBD(task_targets(task_id))
         self.route = []
         self.by_target = {}
         self.last_pose = None
+        self.sample_distinct_views = sample_distinct_views
+        self._last_sighting_view = {}
 
     def observe(self, harness, step):
         observation = harness.observation()
@@ -79,6 +81,16 @@ class _OutboundNotes:
                     break
             # Preserve an observation at each end rather than repeatedly publishing static frames.
             key = label, bool(track)
+            if self.sample_distinct_views:
+                xyz = tuple(candidate["camera_xyz_m"])
+                previous_view = self._last_sighting_view.get(key)
+                if previous_view is not None:
+                    station, old_xyz = previous_view
+                    if (math.hypot(pose.x - station.x, pose.y - station.y) < .20
+                            and abs(math.remainder(pose.yaw - station.yaw, 2 * math.pi)) < .30
+                            and math.dist(xyz, old_xyz) < .25):
+                        continue
+                self._last_sighting_view[key] = (pose, xyz)
             records = self.by_target.setdefault(key, [])
             pixel = candidate["pixel_uv"]
             if track:
@@ -89,6 +101,8 @@ class _OutboundNotes:
                         f"有效 RGB-D 跟踪点 {track['point_id']}，机身前/左=({forward:.3f},{left:.3f}) m；"
                         f"结合实测机身里程计，目标可见表面在去程起点坐标系约 ({x:.3f},{y:.3f}) m。"
                         "表面点与物体中心可能有偏差。")
+                if self.sample_distinct_views:
+                    text += f"当时机身去程起点坐标 ({pose.x:.3f},{pose.y:.3f}) m，yaw={pose.yaw:.3f} rad。"
             else:
                 xyz = ", ".join(f"{v:.3f}" for v in candidate["camera_xyz_m"])
                 text = (f"{pose.stamp()}：目标 {label}（{candidate['description']}）颜色匹配候选，"

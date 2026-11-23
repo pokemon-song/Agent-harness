@@ -1,0 +1,204 @@
+{
+  "episode_id": "b1038ae8-d557-4161-8be2-06996df5c00e",
+  "A_confirmed_at_checkpoint": false,
+  "B_entered": false,
+  "B_passed_if_entered": null,
+  "passed": false,
+  "termination": "abort",
+  "termination_detail": "已环绕场景约360°并绕行柜体前后，仅一次目击蓝球A（yaw≈1.03时约3.4米前方），此后多次移动与扫描均无法重新锁定A；当前紧邻柜体面、视野受限且反复受阻，无法稳定跟踪并完成0.82-1.18米面向停靠。",
+  "collision": true,
+  "collision_events": [
+    {
+      "object": "cabinet",
+      "sim_time_s": 227.27000000035707,
+      "geom_names": [
+        "memory_drawers_body"
+      ],
+      "base_xy_m": [
+        3.431207152665763,
+        -2.039213078689948
+      ]
+    },
+    {
+      "object": "cabinet",
+      "sim_time_s": 235.1480000003947,
+      "geom_names": [
+        "memory_drawers_body"
+      ],
+      "base_xy_m": [
+        3.2897299768715467,
+        -1.937750356581127
+      ]
+    }
+  ],
+  "fallen": false,
+  "initial_image_sha256": "e016dfae926a0116892d1d47a4320416ce1d73673390c182f91a6f436aff455e",
+  "total_requests": 49,
+  "stages": {
+    "A": {
+      "planner_requests": 49,
+      "reader_requests": 0,
+      "total_requests": 49,
+      "native_actions": {
+        "turn": 62,
+        "move_relative": 39
+      },
+      "planner_tools": {
+        "set_subgoal": 3,
+        "scan": 29,
+        "follow_waypoints": 15,
+        "continue_subgoal": 1,
+        "abort": 1
+      },
+      "first_seen_decision": 31,
+      "first_seen_sim_time_s": 182.20000000014187,
+      "stage_start_sim_s": 1.0000000000000007,
+      "stage_end_sim_s": 295.52000000068296,
+      "path_m": 21.34522661133149,
+      "boundary_refusals": 0,
+      "depth_refusals": 2,
+      "known_usage": {
+        "prompt_tokens": 3033007,
+        "completion_tokens": 4462,
+        "total_tokens": 3037469
+      },
+      "unknown_usage_requests": 0,
+      "memory_lookups": 0,
+      "fully_cached_lookups": 0,
+      "memory_result_status": {},
+      "stalled_inputs": 0,
+      "inputs_with_proposed_viewpoints": 0,
+      "selected_viewpoints": 0,
+      "viewpoints_with_at_least_019m_measured_displacement": 0,
+      "viewpoint_outcomes": {},
+      "subgoals": {
+        "created": 3,
+        "completed": 1,
+        "criteria": {
+          "observe_target": 1,
+          "dock_target": 2
+        },
+        "completion_sources": {
+          "current_rgbd_target_candidate": 1
+        },
+        "verification_events": 45,
+        "recovery_required_inputs": 20,
+        "recovery_reasons": {
+          "no_measured_progress": 16,
+          "current_depth_blocks_requested_translation": 2,
+          "inspect_waypoint_already_reached": 2
+        },
+        "recovery_routes": 14,
+        "route_continuations": 1,
+        "execution_slices": 6,
+        "final_state": {
+          "stage": "A",
+          "phase": "subgoal_execution",
+          "status": "recovery_required",
+          "active": {
+            "id": "A-3",
+            "description": "保持A为目标，前往开阔区重新目击蓝球A并以控制器停靠",
+            "criterion": "dock_target",
+            "status": "recovering",
+            "attempts": 6,
+            "target_label": "A",
+            "verification": {
+              "state": "pending",
+              "current_target_visible": false,
+              "source": "awaiting_controller_stop_confirmation"
+            },
+            "pending_route": null
+          },
+          "recent_goals": [
+            {
+              "id": "A-1",
+              "description": "先转向观察环境，寻找第一阶段目标蓝球 A",
+              "criterion": "observe_target",
+              "status": "completed",
+              "verification": {
+                "state": "completed",
+                "current_target_visible": true,
+                "source": "current_rgbd_target_candidate"
+              }
+            },
+            {
+              "id": "A-2",
+              "description": "已看到蓝球A（前方约3.4米，略偏右），停靠到其中心0.82-1.18米并面向其停稳",
+              "criterion": "dock_target",
+              "status": "replaced",
+              "verification": {
+                "state": "pending",
+                "current_target_visible": false,
+                "source": "awaiting_controller_stop_confirmation"
+              },
+              "replacement_reason": "当前贴着柜体面无法看到A，先移动到开阔位置重新锁定A再停靠，目标仍为A"
+            }
+          ],
+          "last_target_sighting": {
+            "target_label": "A",
+            "image_id": "frame-00063",
+            "sim_time_s": 182.20000000014187,
+            "observer_pose": {
+              "x": 6.055563205958406,
+              "y": -4.345573064046181,
+              "yaw": 1.0291407429274428
+            },
+            "candidate": {
+              "pixel_uv": [
+                153,
+                184
+              ],
+              "camera_xyz_m": [
+                -1.8253532400118981,
+                0.04933387135167292,
+                3.4179508686065674
+              ],
+              "source": "task_label_color_rgbd_v1",
+              "status": "candidate_not_confirmed",
+              "coordinate_frame": "current_camera_optical"
+            },
+            "coordinates_at_sighting_only": true
+          },
+          "last_action": {
+            "tool": "scan",
+            "intention": "左转约0.55弧度，继续扫描寻找蓝球A（应朝向+0.5左右）",
+            "role": "primary",
+            "status": "ok",
+            "error_code": null,
+            "measured_displacement_m": 0.01,
+            "measured_yaw_change_rad": 0.493,
+            "made_progress": false,
+            "repeated_view": false
+          },
+          "action_count": 45,
+          "recovery_required": true,
+          "recovery_reason": "no_measured_progress",
+          "no_progress_actions": 4
+        }
+      },
+      "planner_errors": {},
+      "min_base_distance_to_goal_m": 3.4604994476909248,
+      "net_displacement_m": 2.9265365789950293,
+      "path_to_first_seen_m": 12.372268656302094
+    }
+  },
+  "native_call_ids": {
+    "scope": "episode",
+    "actions_checked": 101,
+    "unique_call_ids": 101,
+    "call_id_reuse_errors": 0
+  },
+  "videos": [
+    {
+      "file": "full.mp4",
+      "fps": 12.5,
+      "frames": 3690,
+      "duration_s": 295.2,
+      "sha256": "f0bd15c5c58533e49047ea81144845adac87d4b8811b0399a246ff82db60bbcd"
+    }
+  ],
+  "goal_points": 0,
+  "collision_count": 2,
+  "collision_penalty": 10,
+  "score": 0
+}

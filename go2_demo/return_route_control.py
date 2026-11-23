@@ -47,10 +47,11 @@ def _bounded(value, limit):
 class _Follower:
     target_label = 'B'
 
-    def __init__(self, harness, max_actions, on_action):
+    def __init__(self, harness, max_actions, on_action, *, call_id_prefix='route-control'):
         self.harness = harness
         self.max_actions = max_actions
         self.on_action = on_action
+        self.call_id_prefix = call_id_prefix
         self.params = RouteControlParameters()
         self.sensor = TaskLabelRGBD(task_targets('memory_ab_occluded_v1'))
         self.actions = []
@@ -62,7 +63,7 @@ class _Follower:
         if len(self.actions) >= self.max_actions:
             raise _End('budget_exhausted', 'native_action_limit')
         before = self.harness.observation()
-        call = ToolCall(f'route-control-{len(self.actions):03}', name, args)
+        call = ToolCall(f'{self.call_id_prefix}-{len(self.actions):03}', name, args)
         reply = self.harness.dispatch(call)
         after = self.harness.observation()
         entry = {'phase': self.phase, 'call_id': call.call_id, 'tool': name, 'args': args, 'reply': reply,

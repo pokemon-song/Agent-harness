@@ -45,7 +45,7 @@ class ReturnFollower(_Follower):
                 raise _End("replan", "current_depth_blocks_requested_translation")
         return super().act(name, **args)
 
-    def execute(self, name, args, turn):
+    def execute(self, name, args, turn, *, resume_endpoint=False):
         self.block = None
         self.phase = f"return-{turn}"
         start, completed = len(self.actions), len(self.completed)
@@ -55,10 +55,12 @@ class ReturnFollower(_Follower):
                 self.act("turn", yaw_rad=args["yaw_rad"])
             else:
                 pts = args["waypoints"]
-                for i, pt in enumerate(pts):
+                for i, pt in enumerate([] if resume_endpoint else pts):
                     self.go_to({"id": f"{turn}-{i}", **pt})
                 if args["after"] == "dock":
-                    self.dock(pts[-1].get("yaw"))
+                    # A sliced docking maneuver resumes from the current pose.
+                    # Replaying its entry waypoint/yaw would undo the approach.
+                    self.dock(None if resume_endpoint else pts[-1].get("yaw"))
                     status = "finish"
                 elif "yaw" in pts[-1]:
                     self.face(pts[-1]["yaw"], self.params.last_view_face_tolerance_rad)

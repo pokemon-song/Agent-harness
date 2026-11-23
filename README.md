@@ -4,13 +4,19 @@
 
 [固定 A 停靠状态的返程消融：直接阅读与按需记忆问答](docs/occluded-query.zh-CN.md)
 
+[当前有规划版本：持续子目标、完整上下文与碰撞扣分](docs/fresh-subgoal.zh-CN.md)
+
+当前 A/B 实验入口为 `python -m go2_demo.fresh_episode_run --navigation subgoal --handoff-context retain`：模型自主规划路点，执行器分段执行、检查进度并支持恢复；A→B 保留完整公开对话，碰撞记录扣分后继续。无额外记忆与按需记忆两组从起点独立运行，完整命令见上方说明。该实验入口使用 `deepseek-flash`，关闭思考，与下文通用 CLI 的配置不同。
+
+最近一次对照见 [r4 报告](results/fresh-subgoal-retain-24x18-s0-1024-r4/report.zh-CN.md)、[指标汇总](results/fresh-subgoal-retain-24x18-s0-1024-r4/summary.json)和 [有记忆组全程录像（A/B 标注，停稳段压缩）](results/fresh-subgoal-retain-24x18-s0-1024-r4/query/full-labeled-compressed.mp4)。本轮有记忆组通过、得分 95，无额外记忆组未通过、得分 0；但有记忆组没有调用外部记忆查询，不能将这次差异归因于记忆检索。
+
 一个在 **MuJoCo 中运行真实 Go2 关节动力学**的最小闭环：观察机载 RGB 图像 → 选取目标像素 → RGB-D 几何跟踪 → 调用短程移动工具 → 接收执行反馈 → 独立评分。
 
 现在可选择 **13 个新闭环场景**：接近不同颜色物体、辨别 A/B/C、绕过家具、穿过矩形或三角形门框。原始红色标记任务保留为 `red_marker`；两项低姿态爬行任务明确标为当前不支持。
 
-机器人闭环只通过 **开启思考的模型 API** 决策。默认使用支持图片与工具调用的 DeepSeek；模型自行选点、选择动作并声明完成。多轮工具调用保留并回传完整的 `reasoning_content`。
+通用 CLI（`python -m go2_demo`）通过 **开启思考的模型 API** 决策。默认使用支持图片与工具调用的 DeepSeek；模型自行选点、选择动作并声明完成。多轮工具调用保留并回传完整的 `reasoning_content`。
 
-低层复用固定版本的 Go2 预训练步态策略；无需安装 ROS、Isaac Sim，也无需先训练策略。首版只支持平地移动与转向，**不支持机身高度／俯仰控制**，不包含独立任务 Agent 或长期记忆模块。
+低层复用固定版本的 Go2 预训练步态策略；无需安装 ROS、Isaac Sim，也无需先训练策略。支持平地移动与转向，**不支持机身高度／俯仰控制**。长期记忆和持续子目标的实验实现见上方 A/B 文档。
 
 当前入口和场景说明见 [新场景测试](docs/scenarios.md)，实测记录见 [验证记录](docs/validation.md)。此前规则策略和非思考 API 的结果保留为历史记录，不作为当前思考模式的成绩。
 
@@ -95,7 +101,7 @@ python -m go2_demo --provider compatible --viewer --seed 0
 
 也可设置 `MODEL_API_KEY_FILE=/path/to/key.txt` 代替 `MODEL_API_KEY`；显式 `--api-key-file` 的优先级最高，其次是环境密钥和环境密钥文件。程序不会自动读取 `.env`。`MODEL_BASE_URL` 应包含服务商要求的兼容 API 前缀；程序会添加 `/chat/completions`。本地无鉴权服务可用服务所接受的非空占位 Key。
 
-当前运行入口只接受 API 方式，并固定开启思考。其他服务商的专用推理协议或仅流式返回的端点需要另外适配。QUARD 离线数据检查与单元测试继续保留，作为数据和接口验证。
+通用 CLI 只接受 API 方式，并固定开启思考。其他服务商的专用推理协议或仅流式返回的端点需要另外适配。独立 A/B 实验入口的模型与上下文配置以 [持续子目标说明](docs/fresh-subgoal.zh-CN.md)为准。QUARD 离线数据检查与单元测试继续保留，作为数据和接口验证。
 
 ## 看结果与运行测试
 
@@ -143,4 +149,4 @@ python -m go2_demo.quard --report runs/quard/report.json
 
 详细接口、指标和排错见 [docs/demo.md](docs/demo.md)。原有完整研究设计保存在 [docs/design-plan.md](docs/design-plan.md)，其中的后续模块仍是计划，不等同于已实现功能。
 
-参考：[RoboHarness](https://github.com/BinceQu/RoboHarness)、[Go2 控制器来源](https://github.com/wty-yy/go2_rl_lab/tree/24859ea57953624de8208ddc11b606ebfec5c99c)、[第三方说明](THIRD_PARTY_NOTICES.md)、[此前平台研究论文](../QUAR_VLA_ICRA_2027.pdf)。
+参考：[RoboHarness](https://github.com/BinceQu/RoboHarness)、[Go2 控制器来源](https://github.com/wty-yy/go2_rl_lab/tree/24859ea57953624de8208ddc11b606ebfec5c99c)、[第三方说明](THIRD_PARTY_NOTICES.md)。

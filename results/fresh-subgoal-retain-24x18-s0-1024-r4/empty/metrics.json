@@ -1,0 +1,284 @@
+{
+  "episode_id": "b1038ae8-d557-4161-8be2-06996df5c00e",
+  "mode": "empty",
+  "termination": "abort",
+  "detail": "已环绕场景约360°并绕行柜体前后，仅一次目击蓝球A（yaw≈1.03时约3.4米前方），此后多次移动与扫描均无法重新锁定A；当前紧邻柜体面、视野受限且反复受阻，无法稳定跟踪并完成0.82-1.18米面向停靠。",
+  "success": false,
+  "stages": {
+    "A": {
+      "termination": "abort",
+      "detail": "已环绕场景约360°并绕行柜体前后，仅一次目击蓝球A（yaw≈1.03时约3.4米前方），此后多次移动与扫描均无法重新锁定A；当前紧邻柜体面、视野受限且反复受阻，无法稳定跟踪并完成0.82-1.18米面向停靠。",
+      "stage": "A",
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 295.52000000068296,
+      "wall_seconds": 114.01265424900339,
+      "path_m": 21.34522661133149,
+      "planner_requests": 49,
+      "reader_requests": 0,
+      "total_requests": 49,
+      "known_usage": {
+        "prompt_tokens": 3033007,
+        "completion_tokens": 4462,
+        "total_tokens": 3037469
+      },
+      "unknown_usage_requests": 0,
+      "first_planner_target_candidate": {
+        "sim_time_s": 182.20000000014187,
+        "planner_decision": 31,
+        "image_id": "frame-00063"
+      },
+      "planner_tools": {
+        "set_subgoal": 3,
+        "scan": 29,
+        "follow_waypoints": 15,
+        "continue_subgoal": 1,
+        "abort": 1
+      },
+      "native_attempts": {
+        "turn": 62,
+        "move_relative": 39
+      },
+      "boundary_refusals": 0,
+      "depth_refusals": 2,
+      "task_state": {
+        "stage": "A",
+        "phase": "subgoal_execution",
+        "status": "recovery_required",
+        "active": {
+          "id": "A-3",
+          "description": "保持A为目标，前往开阔区重新目击蓝球A并以控制器停靠",
+          "criterion": "dock_target",
+          "status": "recovering",
+          "attempts": 6,
+          "target_label": "A",
+          "verification": {
+            "state": "pending",
+            "current_target_visible": false,
+            "source": "awaiting_controller_stop_confirmation"
+          },
+          "pending_route": null
+        },
+        "recent_goals": [
+          {
+            "id": "A-1",
+            "description": "先转向观察环境，寻找第一阶段目标蓝球 A",
+            "criterion": "observe_target",
+            "status": "completed",
+            "verification": {
+              "state": "completed",
+              "current_target_visible": true,
+              "source": "current_rgbd_target_candidate"
+            }
+          },
+          {
+            "id": "A-2",
+            "description": "已看到蓝球A（前方约3.4米，略偏右），停靠到其中心0.82-1.18米并面向其停稳",
+            "criterion": "dock_target",
+            "status": "replaced",
+            "verification": {
+              "state": "pending",
+              "current_target_visible": false,
+              "source": "awaiting_controller_stop_confirmation"
+            },
+            "replacement_reason": "当前贴着柜体面无法看到A，先移动到开阔位置重新锁定A再停靠，目标仍为A"
+          }
+        ],
+        "last_target_sighting": {
+          "target_label": "A",
+          "image_id": "frame-00063",
+          "sim_time_s": 182.20000000014187,
+          "observer_pose": {
+            "x": 6.055563205958406,
+            "y": -4.345573064046181,
+            "yaw": 1.0291407429274428
+          },
+          "candidate": {
+            "pixel_uv": [
+              153,
+              184
+            ],
+            "camera_xyz_m": [
+              -1.8253532400118981,
+              0.04933387135167292,
+              3.4179508686065674
+            ],
+            "source": "task_label_color_rgbd_v1",
+            "status": "candidate_not_confirmed",
+            "coordinate_frame": "current_camera_optical"
+          },
+          "coordinates_at_sighting_only": true
+        },
+        "last_action": {
+          "tool": "scan",
+          "intention": "左转约0.55弧度，继续扫描寻找蓝球A（应朝向+0.5左右）",
+          "role": "primary",
+          "status": "ok",
+          "error_code": null,
+          "measured_displacement_m": 0.01,
+          "measured_yaw_change_rad": 0.493,
+          "made_progress": false,
+          "repeated_view": false
+        },
+        "action_count": 45,
+        "recovery_required": true,
+        "recovery_reason": "no_measured_progress",
+        "no_progress_actions": 4
+      },
+      "context_stats": {
+        "enabled": true,
+        "retained_turns": 49,
+        "retained_messages": 147,
+        "retained_images": 49,
+        "outbound_turns": 49,
+        "outbound_images": 49,
+        "stage_transitions": 0,
+        "pending_turn": false
+      }
+    }
+  },
+  "total_requests": 49,
+  "final_sim_s": 296.1200000006858,
+  "final_base_xy_m": [
+    2.4377499388987025,
+    -1.6066245861150488
+  ],
+  "independent_evaluation": {
+    "success": false,
+    "goal_kind": "ordered_standoff",
+    "checkpoints": {
+      "A": {
+        "label": "A",
+        "target_xy_m": [
+          6.4,
+          0.0
+        ],
+        "base_xy_m": [
+          3.0440174159591873,
+          -0.8761033682803568
+        ],
+        "distance_to_target_center_m": 3.4684544420097896,
+        "heading_error_rad": 2.4403987607392192,
+        "speed_mps": 0.0158373991621941,
+        "abs_yaw_rate_radps": 0.023377973575810798,
+        "sim_time_s": 278.24000000060045,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": true,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "HEADING_OUT_OF_RANGE"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "stop_index": 95,
+        "achieved_at_checkpoint": false,
+        "passed": false
+      },
+      "B": {
+        "label": "B",
+        "target_xy_m": [
+          1.8,
+          0.6
+        ],
+        "base_xy_m": [
+          2.4377499388987025,
+          -1.6066245861150488
+        ],
+        "distance_to_target_center_m": 2.296936448535899,
+        "heading_error_rad": 2.0111906034445175,
+        "speed_mps": 0.006243407178460386,
+        "abs_yaw_rate_radps": 0.007177088509233132,
+        "sim_time_s": 296.1200000006858,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": true,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "HEADING_OUT_OF_RANGE",
+          "A_NOT_CONFIRMED_BEFORE_B"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "eligible": false,
+        "passed": false
+      }
+    },
+    "checkpoint_order": [
+      "A",
+      "B"
+    ],
+    "order_satisfied": false,
+    "premature_b_stops_ignored": 2,
+    "requires_finish": true,
+    "finish_enforced_by": "episode_runner",
+    "standoff_m": 1.0,
+    "distance_tolerance_m": 0.18,
+    "heading_tolerance_rad": 0.25,
+    "collision": true,
+    "fallen": false,
+    "stopped": true,
+    "source": "privileged_simulator_evaluator",
+    "collision_count": 2,
+    "collision_events": [
+      {
+        "object": "cabinet",
+        "sim_time_s": 227.27000000035707,
+        "geom_names": [
+          "memory_drawers_body"
+        ],
+        "base_xy_m": [
+          3.431207152665763,
+          -2.039213078689948
+        ]
+      },
+      {
+        "object": "cabinet",
+        "sim_time_s": 235.1480000003947,
+        "geom_names": [
+          "memory_drawers_body"
+        ],
+        "base_xy_m": [
+          3.2897299768715467,
+          -1.937750356581127
+        ]
+      }
+    ],
+    "cabinet_contact_count": 2,
+    "cabinet_contact_events": [
+      {
+        "object": "cabinet",
+        "sim_time_s": 227.27000000035707,
+        "geom_names": [
+          "memory_drawers_body"
+        ],
+        "base_xy_m": [
+          3.431207152665763,
+          -2.039213078689948
+        ]
+      },
+      {
+        "object": "cabinet",
+        "sim_time_s": 235.1480000003947,
+        "geom_names": [
+          "memory_drawers_body"
+        ],
+        "base_xy_m": [
+          3.2897299768715467,
+          -1.937750356581127
+        ]
+      }
+    ]
+  },
+  "final_stop": {
+    "status": "succeeded",
+    "error_code": null,
+    "speed_mps": 0.006243407178460386,
+    "yaw_rate_radps": 0.007177088509233132
+  },
+  "goal_points": 0,
+  "collision_count": 2,
+  "collision_penalty": 10,
+  "score": 0
+}

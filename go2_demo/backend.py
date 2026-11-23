@@ -81,7 +81,8 @@ class MujocoGo2Backend:
         if scenario is not None and scenario.nonterminal_contact_geoms and not self.stop_on_first_collision:
             result["cabinet_contact_ends_episode"] = False
         if scenario is not None and scenario.collision_penalty_points and not self.stop_on_first_collision:
-            result.update(collision_free_required=False, collision_penalty_points=scenario.collision_penalty_points)
+            result.update(collision_free_required=False, collision_penalty_points=scenario.collision_penalty_points,
+                          b_contact_ends_episode=False, other_scene_contacts_end_episode=False)
         if goal_kind == "passage":
             result["required_clearance_m"] = scenario.passage_clearance_m
         else:

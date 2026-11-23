@@ -5,7 +5,7 @@ import httpx
 import numpy as np
 import pytest
 
-from go2_demo.fresh_episode_planning import CONTACT_RULE, FreshEpisodePlanner, OUTBOUND_PROMPT, public_depth_sectors
+from go2_demo.fresh_episode_planning import CONTACT_RULE, FreshEpisodePlanner, LOCAL_NAVIGATION, OUTBOUND_PROMPT, public_depth_sectors
 from go2_demo.fresh_episode_run import TASK
 from go2_demo.paired_return_planning import PAIRED_TOOLS, SYSTEM_PROMPT
 from test_paired_return_planning import IMAGE, OBS, ROUTE
@@ -44,10 +44,38 @@ def test_both_stages_allow_continued_navigation_after_B_contact(memory_card):
     assert "蓝球 A" in outbound_tools["follow_waypoints"]["description"]
     assert returning["tools"] == PAIRED_TOOLS
     system, user = returning["messages"]
-    assert system["content"] == SYSTEM_PROMPT.replace("碰撞或跌倒会终止任务。", CONTACT_RULE)
+    assert system["content"] == SYSTEM_PROMPT.replace("碰撞或跌倒会终止任务。", CONTACT_RULE) + LOCAL_NAVIGATION
     public = json.loads(user["content"][0]["text"])
     assert public["recent_return_actions"] == [] and public["memory_card"] == memory_card
     assert "depth_sectors" not in public["observation"]
+
+
+def test_stagnation_with_observed_viewpoint_requires_a_different_choice():
+    obs = {"exploration": {"stalled": True, "target_visible": False, "viewpoints": [{"waypoint": {"x": .7, "y": .2}}]},
+           "memory_access": {"allowed": False, "intents": []}}
+    names = [t["function"]["name"] for t in FreshEpisodePlanner.available_tools("A", obs)]
+    assert set(names) == {"follow_waypoints", "abort", "explore_viewpoint"}
+    obs["exploration"]["viewpoints"] = []
+    assert "scan" in [t["function"]["name"] for t in FreshEpisodePlanner.available_tools("A", obs)]
+
+
+def test_real_motion_feedback_survives_a_string_of_queries(monkeypatch):
+    from go2_demo.types import Decision, ToolCall
+    model = FreshEpisodePlanner("https://api.deepseek.com", "deepseek-flash", "")
+    captured = {}
+
+    def pick(observation, image, tools, history, *, timeout_s):
+        captured.update(observation)
+        return Decision([ToolCall("move", "explore_viewpoint", {"index": 1})])
+
+    monkeypatch.setattr(model, "decide", pick)
+    obs = {**OBS, "exploration": {"stalled": True, "target_visible": False, "viewpoints": [{"waypoint": {"x": 1., "y": 0.}}]},
+           "memory_access": {"allowed": False, "intents": []}, "latest_memory_feedback": {"status": "unavailable"}}
+    history = [{"tool": "scan", "feedback": {"measured_yaw_change_rad": .5}}] + [{"tool": "memory_query"}] * 8
+    assert model.choose(obs, IMAGE, None, history, stage="A", timeout_s=1).name == "explore_viewpoint"
+    assert captured["recent_outbound_actions"] == history[:1]
+    assert captured["observation"]["latest_memory_feedback"] == {"status": "unavailable"}
+    model.close()
 
 
 def test_public_depth_bands_keep_left_right_distinct_and_missing_unknown():
