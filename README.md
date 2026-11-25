@@ -1,14 +1,67 @@
 # Go2 通用大模型＋视觉几何 Harness Demo
 
+## planning-v2：通用子任务与按需记忆
+
+本分支使用 `go2_demo.general_episode_run` 作为通用 Agent 入口。主模型负责目标、数字路点、恢复动作和记忆查询；默认由程序依据实测结果判断局部子任务完成、推进路线并标记需要恢复。任务是否真正通过仍由独立评分器判定。
+
+![当前项目架构](docs/images/project-architecture-measured.png)
+
+[架构与工作流说明](docs/general-agent.zh-CN.md) · [可编辑架构 SVG](docs/images/project-architecture-measured.svg)
+
+- 默认 `--subgoal-updates measured`；`agent` 保留为模型自主更新子任务的可选消融模式。
+- `--mode query` 启用事件记忆和按需 Reader；`empty` 关闭额外 Reader。两组均保留整轮图像、对话和工具反馈，不能把 `empty` 理解成完全没有上下文记忆。
+- 主决策模型同时承担规划，没有额外独立规划模型 API。Reader 仅按问题筛选已记录的公开事件，`memory.md` 是导出文件。
+- 连续错误次数默认不终止任务（`--max-consecutive-errors 0`）；总请求数、原生动作、时间和跌倒终止仍有效。碰撞记录并扣分后继续。
+- 通用核心不写死 A/B 阶段、颜色阈值检测、绕柜提示或返程专用检索类别；任务描述与完成条件在配置中声明。仍使用仿真里程计及既有边界保护，不代表真实机器人 SLAM 或真机实验已完成。
+
+安装项目依赖、按 `assets.lock.json` 获取资产后，在仓库根目录运行。密钥文件放在仓库之外，示例路径只需替换为自己的本地文件，不要将真实密钥写入命令或提交：
+
+```bash
+# 只检查配置，不启动仿真或调用模型
+python -m go2_demo.general_episode_run \
+  --task-config configs/general_agent/occluded_return.json --validate-only
+
+# 新建有记忆＋子任务的一轮运行；此命令会调用模型 API
+MUJOCO_GL=egl OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 PYTHONPATH=. \
+python -m go2_demo.general_episode_run \
+  --task-config configs/general_agent/occluded_return.json \
+  --subgoal-updates measured --mode query \
+  --provider deepseek --model deepseek-flash \
+  --api-key-file /path/to/key.txt --assets-dir assets \
+  --max-requests 1024 --max-reader-requests 16 \
+  --max-native-actions 460 --actions-per-slice 6 \
+  --max-sim-seconds 1880 --max-wall-seconds 4468 \
+  --max-consecutive-errors 0 \
+  --output runs/planning-v2-query-new
+```
+
+无外部记忆对照改为 `--mode empty` 并使用新的输出目录。单目标配置为 `configs/general_agent/single_object.json`。每轮记录原始请求图像、公开事件、实际轨迹、独立评分和录像姿态；可离线导出录像：
+
+```bash
+MUJOCO_GL=egl python -m go2_demo.general_video runs/planning-v2-query-new/capture
+
+python -m pytest tests/test_general_subgoals.py tests/test_general_agent.py \
+  tests/test_general_run.py tests/test_general_memory.py \
+  tests/test_general_execution.py tests/test_memory_maze_agent.py -q
+```
+
+录像导出需要可用的 FFmpeg。`scripts/check_general_agent_offline.py` 使用本地 MockTransport 和真实 MuJoCo，当前显式覆盖可选 `agent` 更新模式；它不评价模型识别能力，也不产生外部 API 请求。`scripts/archive_general_episode.py` 是高级 A/B 归档入口，要求事先冻结实验配置和源码，不是普通运行后的必要步骤。
+
+已有历史成功演示不能证明外部记忆收益：成功样例没有实际查询记忆；通用版的已有单轮结果也不足以证明稳定增益。本分支发布的是当前架构及可复现接口，旧实验分数应结合其冻结版本与实验条件解读。最新中断运行不作为完整失败成绩。
+
+## 历史入口与实验说明
+
+以下保留 `planning-v1` 及更早入口的使用说明；其中思考模式、预算和任务特化逻辑不等同于上面的通用入口。
+
 [A→B 遮挡导航复现说明、H0/H2 全程录像与评分记录](docs/occluded-handoff.zh-CN.md)
 
 [固定 A 停靠状态的返程消融：直接阅读与按需记忆问答](docs/occluded-query.zh-CN.md)
 
-[当前有规划版本：持续子目标、完整上下文与碰撞扣分](docs/fresh-subgoal.zh-CN.md)
+[planning-v1：持续子目标、完整上下文与碰撞扣分](docs/fresh-subgoal.zh-CN.md)
 
-当前 A/B 实验入口为 `python -m go2_demo.fresh_episode_run --navigation subgoal --handoff-context retain`：模型自主规划路点，执行器分段执行、检查进度并支持恢复；A→B 保留完整公开对话，碰撞记录扣分后继续。无额外记忆与按需记忆两组从起点独立运行，完整命令见上方说明。该实验入口使用 `deepseek-flash`，关闭思考，与下文通用 CLI 的配置不同。
+历史 planning-v1 的 A/B 实验入口为 `python -m go2_demo.fresh_episode_run --navigation subgoal --handoff-context retain`：模型自主规划路点，执行器分段执行、检查进度并支持恢复；A→B 保留完整公开对话，碰撞记录扣分后继续。无额外记忆与按需记忆两组从起点独立运行，完整命令见上方说明。该实验入口使用 `deepseek-flash`，关闭思考，与下文通用 CLI 的配置不同。
 
-最近一次对照见 [r4 报告](results/fresh-subgoal-retain-24x18-s0-1024-r4/report.zh-CN.md)、[指标汇总](results/fresh-subgoal-retain-24x18-s0-1024-r4/summary.json)和 [有记忆组全程录像（A/B 标注，停稳段压缩）](results/fresh-subgoal-retain-24x18-s0-1024-r4/query/full-labeled-compressed.mp4)。本轮有记忆组通过、得分 95，无额外记忆组未通过、得分 0；但有记忆组没有调用外部记忆查询，不能将这次差异归因于记忆检索。
+planning-v1 的历史对照见 [r4 报告](results/fresh-subgoal-retain-24x18-s0-1024-r4/report.zh-CN.md)、[指标汇总](results/fresh-subgoal-retain-24x18-s0-1024-r4/summary.json)和 [有记忆组全程录像（A/B 标注，停稳段压缩）](results/fresh-subgoal-retain-24x18-s0-1024-r4/query/full-labeled-compressed.mp4)。本轮有记忆组通过、得分 95，无额外记忆组未通过、得分 0；但有记忆组没有调用外部记忆查询，不能将这次差异归因于记忆检索。
 
 一个在 **MuJoCo 中运行真实 Go2 关节动力学**的最小闭环：观察机载 RGB 图像 → 选取目标像素 → RGB-D 几何跟踪 → 调用短程移动工具 → 接收执行反馈 → 独立评分。
 

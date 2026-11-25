@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1125" viewBox="0 0 2000 1125">
+<title>具身智能 Agent 项目架构：程序判定子任务完成</title>
+<desc>主决策模型负责目标、路线和动作。程序维护子任务状态，根据实测执行结果判断局部完成。按需记忆读者选择历史证据。Harness连接本地Go2控制和MuJoCo环境，最终任务由独立评分器判定。</desc>
+<defs>
+<marker id="blue" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M 1 1 L 11 6 L 1 11 Z" fill="#3976C9"/></marker>
+<marker id="teal" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M 1 1 L 11 6 L 1 11 Z" fill="#218677"/></marker>
+<marker id="gray" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M 1 1 L 11 6 L 1 11 Z" fill="#7C8B9E"/></marker>
+</defs>
+<rect width="2000" height="1125" fill="#FFFFFF"/>
+<text x="60" y="78" font-family="Noto Sans CJK SC, sans-serif" font-size="48" font-weight="700" fill="#172B43" text-anchor="start">具身智能 Agent 项目架构</text>
+<text x="62" y="124" font-family="Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#6A7A8E" text-anchor="start">当前版本：程序判定子任务完成  ·  Go2 / MuJoCo 仿真</text>
+<rect x="1260" y="57" width="26" height="26" rx="7" fill="#EDF4FF" stroke="#8FB3E7" stroke-width="1.6"/>
+<text x="1299" y="79" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="500" fill="#43546A" text-anchor="start">模型 API</text>
+<rect x="1495" y="57" width="26" height="26" rx="7" fill="#EFF9F6" stroke="#91C8BC" stroke-width="1.6"/>
+<text x="1534" y="79" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="500" fill="#43546A" text-anchor="start">本地程序</text>
+<rect x="1730" y="57" width="26" height="26" rx="7" fill="#F6F8FB" stroke="#D5DEE9" stroke-width="1.6"/>
+<text x="1769" y="79" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="500" fill="#43546A" text-anchor="start">评测与记录</text>
+<path d="M 60 159 H 1940" stroke="#E8EDF3" stroke-width="2"/>
+<rect x="60" y="220" width="290" height="160" rx="18" fill="#F6F8FB" stroke="#D5DEE9" stroke-width="1.6"/>
+<text x="88" y="265" font-family="Noto Sans CJK SC, sans-serif" font-size="28" font-weight="700" fill="#172B43" text-anchor="start">任务配置</text>
+<text x="88" y="310" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">任务指令与目标描述</text>
+<text x="88" y="348" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">顺序与完成标准</text>
+<rect x="60" y="450" width="290" height="210" rx="18" fill="#EFF9F6" stroke="#91C8BC" stroke-width="1.6"/>
+<text x="88" y="495" font-family="Noto Sans CJK SC, sans-serif" font-size="28" font-weight="700" fill="#186E61" text-anchor="start">公开观测接口</text>
+<text x="88" y="526" font-family="Noto Sans CJK SC, sans-serif" font-size="22" font-weight="500" fill="#218677" text-anchor="start">Harness 过滤与输出</text>
+<text x="88" y="568" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">RGB 图像与里程计</text>
+<text x="88" y="606" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">动作结果与验收状态</text>
+<text x="88" y="638" font-family="Noto Sans CJK SC, sans-serif" font-size="20" font-weight="400" fill="#6A7A8E" text-anchor="start">不提供目标真值坐标</text>
+<rect x="440" y="220" width="520" height="200" rx="18" fill="#EDF4FF" stroke="#8FB3E7" stroke-width="1.6"/>
+<text x="468" y="265" font-family="Noto Sans CJK SC, sans-serif" font-size="29" font-weight="700" fill="#244F88" text-anchor="start">主决策 / 规划 Agent</text>
+<rect x="844" y="237" width="92" height="29" rx="8" fill="#DDEAFF" stroke="none" stroke-width="1.6"/>
+<text x="890.0" y="258" font-family="Noto Sans CJK SC, sans-serif" font-size="16" font-weight="600" fill="#244F88" text-anchor="middle">模型 API</text>
+<text x="468" y="307" font-family="Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#43546A" text-anchor="start">任务理解 · 视觉定位 · 子任务规划</text>
+<text x="468" y="348" font-family="Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#43546A" text-anchor="start">路线选择 · 恢复动作 · 记忆查询</text>
+<text x="468" y="388" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#6A7A8E" text-anchor="start">同一主模型，保留整轮图像与对话</text>
+<rect x="440" y="500" width="520" height="170" rx="18" fill="#EFF9F6" stroke="#91C8BC" stroke-width="1.6"/>
+<text x="468" y="545" font-family="Noto Sans CJK SC, sans-serif" font-size="29" font-weight="700" fill="#186E61" text-anchor="start">子任务状态管理</text>
+<rect x="844" y="517" width="92" height="29" rx="8" fill="#DDF1EA" stroke="none" stroke-width="1.6"/>
+<text x="890.0" y="538" font-family="Noto Sans CJK SC, sans-serif" font-size="16" font-weight="600" fill="#186E61" text-anchor="middle">本地程序</text>
+<text x="468" y="581" font-family="Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#43546A" text-anchor="start">保存当前子任务与未完成路线</text>
+<text x="468" y="617" font-family="Noto Sans CJK SC, sans-serif" font-size="25" font-weight="400" fill="#43546A" text-anchor="start">实测判定完成 · 推进已完成路点</text>
+<text x="468" y="651" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">受阻或无进展时标记需要恢复</text>
+<rect x="440" y="760" width="520" height="200" rx="18" fill="#EFF9F6" stroke="#91C8BC" stroke-width="1.6"/>
+<text x="468" y="805" font-family="Noto Sans CJK SC, sans-serif" font-size="29" font-weight="700" fill="#186E61" text-anchor="start">Harness 与执行器</text>
+<rect x="844" y="777" width="92" height="29" rx="8" fill="#DDF1EA" stroke="none" stroke-width="1.6"/>
+<text x="890.0" y="798" font-family="Noto Sans CJK SC, sans-serif" font-size="16" font-weight="600" fill="#186E61" text-anchor="middle">本地程序</text>
+<text x="468" y="845" font-family="Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#43546A" text-anchor="start">工具校验 · RGB-D 几何与点追踪</text>
+<text x="468" y="885" font-family="Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#43546A" text-anchor="start">路线分段执行 · 深度阻挡检查</text>
+<text x="468" y="925" font-family="Noto Sans CJK SC, sans-serif" font-size="24" font-weight="400" fill="#43546A" text-anchor="start">转换为移动、转向和停止动作</text>
+<rect x="60" y="760" width="290" height="200" rx="18" fill="#EFF9F6" stroke="#91C8BC" stroke-width="1.6"/>
+<text x="88" y="805" font-family="Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#186E61" text-anchor="start">Go2 控制与环境</text>
+<text x="88" y="844" font-family="Noto Sans CJK SC, sans-serif" font-size="22" font-weight="400" fill="#43546A" text-anchor="start">本地预训练步态网络</text>
+<text x="88" y="883" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">关节控制</text>
+<text x="88" y="923" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">MuJoCo 物理仿真</text>
+<path d="M 350 300 L 440 300" fill="none" stroke="#7C8B9E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#gray)"/>
+<path d="M 350 525 L 385 525 L 385 350 L 440 350" fill="none" stroke="#218677" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#teal)"/>
+<text x="372" y="438" font-family="Noto Sans CJK SC, sans-serif" font-size="18" font-weight="500" fill="#218677" text-anchor="middle" transform="rotate(-90 372 438)">观测</text>
+<path d="M 440 385 L 410 385 L 410 812 L 440 812" fill="none" stroke="#3976C9" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#blue)"/>
+<text x="397" y="711" font-family="Noto Sans CJK SC, sans-serif" font-size="20" font-weight="600" fill="#3976C9" text-anchor="middle" transform="rotate(-90 397 711)">工具调用</text>
+<path d="M 570 420 L 570 500" fill="none" stroke="#3976C9" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#blue)"/>
+<text x="550" y="468" font-family="Noto Sans CJK SC, sans-serif" font-size="20" font-weight="500" fill="#3976C9" text-anchor="end">目标 / 路线</text>
+<path d="M 825 500 L 825 420" fill="none" stroke="#218677" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#teal)"/>
+<text x="841" y="468" font-family="Noto Sans CJK SC, sans-serif" font-size="20" font-weight="500" fill="#218677" text-anchor="start">状态 / 剩余路线</text>
+<path d="M 700 760 L 700 670" fill="none" stroke="#218677" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#teal)"/>
+<text x="720" y="719" font-family="Noto Sans CJK SC, sans-serif" font-size="20" font-weight="500" fill="#218677" text-anchor="start">实测进度 / 阻挡 / 跟踪反馈</text>
+<path d="M 440 860 L 350 860" fill="none" stroke="#218677" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#teal)"/>
+<text x="395" y="845" font-family="Noto Sans CJK SC, sans-serif" font-size="18" font-weight="500" fill="#218677" text-anchor="middle">运动指令</text>
+<path d="M 205 760 L 205 660" fill="none" stroke="#218677" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#teal)"/>
+<text x="221" y="718" font-family="Noto Sans CJK SC, sans-serif" font-size="20" font-weight="500" fill="#218677" text-anchor="start">传感与运动反馈</text>
+<rect x="1080" y="220" width="860" height="450" rx="20" fill="#FAFCFE" stroke="#DCE5EF" stroke-width="1.6"/>
+<text x="1110" y="258" font-family="Noto Sans CJK SC, sans-serif" font-size="29" font-weight="700" fill="#172B43" text-anchor="start">按需记忆</text>
+<text x="1280" y="258" font-family="Noto Sans CJK SC, sans-serif" font-size="21" font-weight="400" fill="#6A7A8E" text-anchor="start">主模型提出问题时才调用 Reader</text>
+<rect x="1140" y="355" width="300" height="145" rx="18" fill="#EFF9F6" stroke="#91C8BC" stroke-width="1.6"/>
+<text x="1168" y="400" font-family="Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#186E61" text-anchor="start">历史事件库</text>
+<text x="1168" y="438" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">程序筛选相关公开事件</text>
+<text x="1168" y="478" font-family="Noto Sans CJK SC, sans-serif" font-size="20" font-weight="400" fill="#6A7A8E" text-anchor="start">memory.md 仅为导出</text>
+<rect x="1500" y="355" width="340" height="145" rx="18" fill="#EDF4FF" stroke="#8FB3E7" stroke-width="1.6"/>
+<text x="1528" y="400" font-family="Noto Sans CJK SC, sans-serif" font-size="27" font-weight="700" fill="#244F88" text-anchor="start">记忆 Reader</text>
+<rect x="1724" y="372" width="92" height="29" rx="8" fill="#DDEAFF" stroke="none" stroke-width="1.6"/>
+<text x="1770.0" y="393" font-family="Noto Sans CJK SC, sans-serif" font-size="16" font-weight="600" fill="#244F88" text-anchor="middle">模型 API</text>
+<text x="1528" y="438" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">按问题选择证据</text>
+<text x="1528" y="478" font-family="Noto Sans CJK SC, sans-serif" font-size="22" font-weight="400" fill="#43546A" text-anchor="start">简要回答＋事件编号</text>
+<path d="M 960 285 L 1660 285 L 1660 355" fill="none" stroke="#3976C9" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#blue)"/>
+<text x="1280" y="318" font-family="Noto Sans CJK SC, sans-serif" font-size="22" font-weight="500" fill="#3976C9" text-anchor="middle">描述需要的历史信息</text>
+<path d="M 1440 425 L 1500 425" fill="none" stroke="#218677" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#teal)"/>
+<text x="1470" y="412" font-family="Noto Sans CJK SC, sans-serif" font-size="17" font-weight="500" fill="#218677" text-anchor="middle">候选</text>
+<rect x="1140" y="540" width="300" height="42" rx="10" fill="#F0F4F8" stroke="#DFE6EF" stroke-width="1.6"/>
+<text x="1290" y="568" font-family="Noto Sans CJK SC, sans-serif" font-size="21" font-weight="500" fill="#43546A" text-anchor="middle">公开观测与动作反馈</text>
+<path d="M 1280 540 L 1280 500" fill="none" stroke="#218677" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#teal)"/>
+<text x="1297" y="526" font-family="Noto Sans CJK SC, sans-serif" font-size="17" font-weight="500" fill="#218677" text-anchor="start">自动写入</text>
+<path d="M 1660 500 L 1660 625 L 1010 625 L 1010 370 L 960 370" fill="none" stroke="#3976C9" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#blue)" stroke-dasharray="8 7"/>
+<text x="1450" y="611" font-family="Noto Sans CJK SC, sans-serif" font-size="21" font-weight="500" fill="#3976C9" text-anchor="middle">程序回填原始证据＋简要解释</text>
+<text x="1080" y="726" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="600" fill="#6A7A8E" text-anchor="start">实验支撑</text>
+<rect x="1080" y="760" width="400" height="200" rx="18" fill="#F6F8FB" stroke="#D5DEE9" stroke-width="1.6"/>
+<text x="1108" y="805" font-family="Noto Sans CJK SC, sans-serif" font-size="28" font-weight="700" fill="#172B43" text-anchor="start">独立任务评分</text>
+<text x="1108" y="844" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">距离、朝向、停稳及顺序</text>
+<text x="1108" y="882" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">碰撞扣分 · finish 验收</text>
+<text x="1108" y="924" font-family="Noto Sans CJK SC, sans-serif" font-size="22" font-weight="400" fill="#6A7A8E" text-anchor="start">只回传验收布尔值</text>
+<rect x="1520" y="760" width="420" height="200" rx="18" fill="#F6F8FB" stroke="#D5DEE9" stroke-width="1.6"/>
+<text x="1548" y="805" font-family="Noto Sans CJK SC, sans-serif" font-size="28" font-weight="700" fill="#172B43" text-anchor="start">实验记录与复现</text>
+<text x="1548" y="844" font-family="Noto Sans CJK SC, sans-serif" font-size="22" font-weight="400" fill="#43546A" text-anchor="start">模型请求 / 工具 / 错误 / 反馈</text>
+<text x="1548" y="882" font-family="Noto Sans CJK SC, sans-serif" font-size="23" font-weight="400" fill="#43546A" text-anchor="start">指标 · 轨迹 · 完整录像</text>
+<text x="1548" y="924" font-family="Noto Sans CJK SC, sans-serif" font-size="22" font-weight="400" fill="#6A7A8E" text-anchor="start">冻结源码与实验配置</text>
+<path d="M 205 960 L 205 1005 L 1280 1005 L 1280 960" fill="none" stroke="#7C8B9E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#gray)"/>
+<text x="720" y="992" font-family="Noto Sans CJK SC, sans-serif" font-size="21" font-weight="500" fill="#7C8B9E" text-anchor="middle">评分真值（不提供给主模型）</text>
+<rect x="60" y="1045" width="1880" height="55" rx="12" fill="#F4F7FB" stroke="none" stroke-width="1.6"/>
+<text x="1000" y="1082" font-family="Noto Sans CJK SC, sans-serif" font-size="25" font-weight="600" fill="#172B43" text-anchor="middle">局部子任务完成 ≠ 整体任务通过    ·    当前为仿真验证架构</text>
+</svg>
