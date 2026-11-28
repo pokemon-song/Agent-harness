@@ -1,0 +1,611 @@
+{
+  "arm": "query",
+  "raw_run_directory": "runs/fresh-independent-ab-24x18-s0/query",
+  "raw_sha256": {
+    "events.jsonl": "b5508dd50ac5b4fdf797426941ea1427e52e3dd82527507b42e2da03243aa0ca",
+    "trajectory.jsonl": "0d5e29483667b75a64457e3049b86171ac3c66fe52e675da0dd4899adbc1d85c",
+    "video/capture.json": "549dff6465d7bd487d760b1443c288cfd12e3e02f387eb8a3500d456e587fe0f",
+    "manifest.json": "ae1feda4902d7fdc27d897077406252cae50b674f5d66653b3b31d1145914e83",
+    "metrics.json": "b0e60eebc4f4bb84c33ddf0fbbd990dd1918031b851c64c0bb7b46d4072a0ae7"
+  },
+  "episode_id": "dd57fc42-263d-492e-9727-8d3399205a34",
+  "initial_world_xy_m": [
+    -0.0015189879768713888,
+    0.006109811166518342
+  ],
+  "initial_observation_png_sha256": "e016dfae926a0116892d1d47a4320416ce1d73673390c182f91a6f436aff455e",
+  "initial_visible_labels": [
+    "B"
+  ],
+  "outbound_choice_trace_sha256": "525a46b7efa9a92665865924ae85cc7d7c439865add9130d05abebc81bdef6b8",
+  "A_handoff_events": 0,
+  "poses_sha256": "3eebfbce57085ba134e416b85b958be30076b4cfd450d93e16296b0b3de97288",
+  "model_mjb_sha256": "d1092317bbafaa39c9dae4cd370da65aec8b3dfb404fff944ae75cefc9b4a409",
+  "sample_count": 9098,
+  "own_outbound_documents_sha256": "741862aef4eeaa18bb493e4875cc0873e0020aeeb29800b3a8d74159540ad6e8",
+  "own_outbound_document_paths": [
+    "targets/target-B.md",
+    "route/leg-01.md",
+    "route/leg-02.md",
+    "handoff/last-observation.md"
+  ],
+  "terminal_score": {
+    "A": {
+      "label": "A",
+      "target_xy_m": [
+        6.4,
+        0.0
+      ],
+      "base_xy_m": [
+        0.13585727955739765,
+        0.07259204460428775
+      ],
+      "distance_to_target_center_m": 6.264563322931127,
+      "heading_error_rad": 1.0250963924891106,
+      "speed_mps": 0.023252661051331426,
+      "abs_yaw_rate_radps": 0.005275398645667791,
+      "sim_time_s": 26.89999999999597,
+      "stop_confirmed": true,
+      "stopped": true,
+      "collision": false,
+      "fallen": false,
+      "criteria_pass": false,
+      "failure_reasons": [
+        "DISTANCE_OUT_OF_RANGE",
+        "HEADING_OUT_OF_RANGE"
+      ],
+      "source": "privileged_simulator_evaluator",
+      "stop_index": 10,
+      "achieved_at_checkpoint": false,
+      "passed": false
+    },
+    "B": null
+  },
+  "stage_details": {
+    "A": {
+      "termination": "abort",
+      "detail": "经过多轮往返与多次记忆查询，始终未目击蓝球 A；当前视野中央仅见绿方块 B（距离约 2 米），A 无任何候选或位置证据。继续在同一区域重复扫描只会获得相似空地，无法在缺少 A 观测的情况下可靠接近并完成 1.0±0.18 米/0.25 弧度的停稳要求，故终止本轮。",
+      "planner_requests": 149,
+      "reader_requests": 97,
+      "all_requests": 246,
+      "known_usage": {
+        "prompt_tokens": 528062,
+        "completion_tokens": 14864,
+        "total_tokens": 542926
+      },
+      "unknown_usage_requests": 0,
+      "planner_error_codes": {
+        "MODEL_PROTOCOL_ERROR": 9
+      },
+      "protocol_error_details": {
+        "Choose exactly one outbound tool.": 9
+      },
+      "planner_tool_counts": {
+        "scan": 36,
+        "memory_query": 97,
+        "follow_waypoints": 6,
+        "abort": 1
+      },
+      "successive_question_longest_run": 12,
+      "native_attempts": 67,
+      "native_tool_counts": {
+        "turn": 58,
+        "move_relative": 9
+      },
+      "native_reply_status_counts": {
+        "succeeded": 66,
+        "timed_out": 1
+      },
+      "native_error_codes": {
+        "MOTION_TIMEOUT": 1
+      },
+      "measured_path_by_native_tool_m": {
+        "turn": 3.10296124346408,
+        "move_relative": 3.771714599790998
+      },
+      "max_displacement_from_stage_start_m": 2.545262057384937,
+      "boundary_gate_refusals": 0,
+      "depth_gate_refusals": 0,
+      "actual_contacts": [],
+      "first_target_candidate": null,
+      "closest_target_center_m": 6.256879048291248,
+      "closest_target_sim_s": 24.379999999997366,
+      "closest_target_world_xy_m": [
+        0.14379982619089435,
+        0.09216729450790083
+      ],
+      "endpoint_target_distance_m": 6.862431069146648,
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 182.34000000014254,
+      "active_sim_s": 181.34000000014254,
+      "recorded_wall_s": 619.7834657689964,
+      "start_world_xy_m": [
+        -0.0015189879768713888,
+        0.006109811166518342
+      ],
+      "end_world_xy_m": [
+        -0.1275503087180232,
+        2.117556881395266
+      ],
+      "net_displacement_m": 2.1152051021556564,
+      "measured_path_m": 6.874675843255079,
+      "first_input_history_turns": 0,
+      "first_input_has_memory_card": false,
+      "first_input_visible_labels": [
+        "B"
+      ],
+      "first_model_choice": {
+        "index": 1,
+        "tool": "scan",
+        "arguments": {
+          "yaw_rad": 0.5
+        }
+      },
+      "last_model_choice": {
+        "index": 149,
+        "tool": "abort",
+        "arguments": {
+          "reason": "经过多轮往返与多次记忆查询，始终未目击蓝球 A；当前视野中央仅见绿方块 B（距离约 2 米），A 无任何候选或位置证据。继续在同一区域重复扫描只会获得相似空地，无法在缺少 A 观测的情况下可靠接近并完成 1.0±0.18 米/0.25 弧度的停稳要求，故终止本轮。"
+        }
+      },
+      "last_planner_frame": "frames/A-149-frame-00068.png",
+      "last_depth_valid_fractions": {
+        "left": 0.939,
+        "center": 0.733,
+        "right": 0.029
+      },
+      "last_depth_refusal": null,
+      "first_native_action": {
+        "tool": "turn",
+        "args": {
+          "yaw_rad": 0.5
+        },
+        "time_before": 1.0000000000000007,
+        "time_after": 3.219999999999867
+      },
+      "planner_inputs_with_card": 143,
+      "memory_query_statuses": {
+        "ok": 89,
+        "unavailable": 8
+      },
+      "observations_with_B_candidate": 49
+    }
+  },
+  "episode": {
+    "episode_id": "dd57fc42-263d-492e-9727-8d3399205a34",
+    "passed": false,
+    "termination": "abort",
+    "termination_detail": "经过多轮往返与多次记忆查询，始终未目击蓝球 A；当前视野中央仅见绿方块 B（距离约 2 米），A 无任何候选或位置证据。继续在同一区域重复扫描只会获得相似空地，无法在缺少 A 观测的情况下可靠接近并完成 1.0±0.18 米/0.25 弧度的停稳要求，故终止本轮。",
+    "A_confirmed_at_checkpoint": false,
+    "A_final_score_passed": false,
+    "B_stage_started": false,
+    "B_final_score_passed": null,
+    "B_first_candidate": null,
+    "B_final_distance_m": null,
+    "finish_succeeded": false,
+    "A_first_candidate": null,
+    "A_min_distance_m": 6.256879048291248,
+    "collision": false,
+    "contacts": [],
+    "fallen": false,
+    "stages": {
+      "A": {
+        "planner_requests": 149,
+        "reader_requests": 97,
+        "all_requests": 246,
+        "native_attempts": 67,
+        "measured_path_m": 6.874675843255079,
+        "net_displacement_m": 2.1152051021556564,
+        "boundary_gate_refusals": 0,
+        "depth_gate_refusals": 0,
+        "actual_contacts": []
+      },
+      "B": null
+    },
+    "all_requests": 246,
+    "all_native_attempts": 67,
+    "episode_path_including_final_settle_m": 6.878096404558658,
+    "final_settle_path_m": 0.0034205613035789696,
+    "episode_net_displacement_m": 2.1182878947584323,
+    "final_world_xy_m": [
+      -0.12626879009760913,
+      2.120721144710096
+    ],
+    "actual_sim_elapsed_s": 181.9400000001454,
+    "return_handoff_sim_s": null
+  },
+  "room_geometry": {
+    "compiled_model": {
+      "previous_sha256": "00559b136dcc2bffa52be42c8e911f52359c8f23a9cc495fb0686793ea96ef31",
+      "current_sha256": "d1092317bbafaa39c9dae4cd370da65aec8b3dfb404fff944ae75cefc9b4a409",
+      "previous_floor": {
+        "name": "floor",
+        "type": "mjGEOM_BOX",
+        "center": [
+          0.0,
+          0.0,
+          -0.1
+        ],
+        "size": [
+          8.0,
+          6.0,
+          0.1
+        ],
+        "quaternion": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rgba": [
+          0.5,
+          0.5,
+          0.5,
+          1.0
+        ],
+        "friction": [
+          1.0,
+          0.005,
+          0.0001
+        ],
+        "group": 0,
+        "contact_type": 1,
+        "contact_affinity": 1,
+        "body": "world"
+      },
+      "current_floor": {
+        "name": "floor",
+        "type": "mjGEOM_BOX",
+        "center": [
+          0.0,
+          0.0,
+          -0.1
+        ],
+        "size": [
+          12.0,
+          9.0,
+          0.1
+        ],
+        "quaternion": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rgba": [
+          0.5,
+          0.5,
+          0.5,
+          1.0
+        ],
+        "friction": [
+          1.0,
+          0.005,
+          0.0001
+        ],
+        "group": 0,
+        "contact_type": 1,
+        "contact_affinity": 1,
+        "body": "world"
+      },
+      "shared_world_objects": {
+        "scenario_target": {
+          "name": "scenario_target",
+          "type": "mjGEOM_SPHERE",
+          "center": [
+            6.4,
+            0.0,
+            0.12
+          ],
+          "size": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.03999999910593033,
+            0.11999999731779099,
+            0.8500000238418579,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_goal_b": {
+          "name": "memory_goal_b",
+          "type": "mjGEOM_BOX",
+          "center": [
+            1.8,
+            0.6,
+            0.2
+          ],
+          "size": [
+            0.08,
+            0.18,
+            0.2
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.03999999910593033,
+            0.75,
+            0.10000000149011612,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawers_body": {
+          "name": "memory_drawers_body",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.7999999999999994,
+            0.0,
+            1.0
+          ],
+          "size": [
+            0.22,
+            2.0,
+            1.0
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.550000011920929,
+            0.33000001311302185,
+            0.14000000059604645,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawer_handle_0": {
+          "name": "memory_drawer_handle_0",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.57,
+            0.0,
+            0.4285714285714285
+          ],
+          "size": [
+            0.02,
+            0.8484848484848485,
+            0.07142857142857142
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.05999999865889549,
+            0.07000000029802322,
+            0.07999999821186066,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawer_handle_1": {
+          "name": "memory_drawer_handle_1",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.57,
+            0.0,
+            1.0357142857142858
+          ],
+          "size": [
+            0.02,
+            0.8484848484848485,
+            0.07142857142857142
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.05999999865889549,
+            0.07000000029802322,
+            0.07999999821186066,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawer_handle_2": {
+          "name": "memory_drawer_handle_2",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.57,
+            0.0,
+            1.6428571428571428
+          ],
+          "size": [
+            0.02,
+            0.8484848484848485,
+            0.07142857142857142
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.05999999865889549,
+            0.07000000029802322,
+            0.07999999821186066,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        }
+      },
+      "compiled_scene_extent_m": 1.23314,
+      "near_far_clip_m": [
+        0.01233139972437173,
+        24.662799999999997
+      ],
+      "extent_and_camera_clip_equal_previous": true,
+      "static_nonground_geometries_match_previous": true,
+      "static_geometry_source": "Actual MuJoCo MJB per arm, against the corresponding previous capture digest."
+    },
+    "trajectory_clearance": {
+      "full_episode_including_final_stop": {
+        "base_center": {
+          "current_24x18": {
+            "min_signed_clearance_m": 6.451337161113951,
+            "nearest_edge": "+y",
+            "sim_time_s": 110.89999999992294,
+            "outside_at_any_sample": false
+          },
+          "previous_16x12_on_current_trajectory": {
+            "min_signed_clearance_m": 3.4513371611139516,
+            "nearest_edge": "+y",
+            "sim_time_s": 110.89999999992294,
+            "outside_at_any_sample": false
+          }
+        },
+        "torso_surface": {
+          "current_24x18": {
+            "min_signed_clearance_m": 6.155695134619522,
+            "nearest_edge": "+y",
+            "sim_time_s": 110.87999999992299,
+            "outside_at_any_sample": false
+          },
+          "previous_16x12_on_current_trajectory": {
+            "min_signed_clearance_m": 3.155695134619522,
+            "nearest_edge": "+y",
+            "sim_time_s": 110.87999999992299,
+            "outside_at_any_sample": false
+          }
+        },
+        "all_collision_surfaces": {
+          "current_24x18": {
+            "min_signed_clearance_m": 6.100717753650688,
+            "nearest_edge": "+y",
+            "sim_time_s": 123.3599999998939,
+            "outside_at_any_sample": false
+          },
+          "previous_16x12_on_current_trajectory": {
+            "min_signed_clearance_m": 3.100717753650688,
+            "nearest_edge": "+y",
+            "sim_time_s": 123.3599999998939,
+            "outside_at_any_sample": false
+          }
+        }
+      },
+      "A": {
+        "base_center": {
+          "current_24x18": {
+            "min_signed_clearance_m": 6.451337161113951,
+            "nearest_edge": "+y",
+            "sim_time_s": 110.89999999992294,
+            "outside_at_any_sample": false
+          },
+          "previous_16x12_on_current_trajectory": {
+            "min_signed_clearance_m": 3.4513371611139516,
+            "nearest_edge": "+y",
+            "sim_time_s": 110.89999999992294,
+            "outside_at_any_sample": false
+          }
+        },
+        "torso_surface": {
+          "current_24x18": {
+            "min_signed_clearance_m": 6.155695134619522,
+            "nearest_edge": "+y",
+            "sim_time_s": 110.87999999992299,
+            "outside_at_any_sample": false
+          },
+          "previous_16x12_on_current_trajectory": {
+            "min_signed_clearance_m": 3.155695134619522,
+            "nearest_edge": "+y",
+            "sim_time_s": 110.87999999992299,
+            "outside_at_any_sample": false
+          }
+        },
+        "all_collision_surfaces": {
+          "current_24x18": {
+            "min_signed_clearance_m": 6.100717753650688,
+            "nearest_edge": "+y",
+            "sim_time_s": 123.3599999998939,
+            "outside_at_any_sample": false
+          },
+          "previous_16x12_on_current_trajectory": {
+            "min_signed_clearance_m": 3.100717753650688,
+            "nearest_edge": "+y",
+            "sim_time_s": 123.3599999998939,
+            "outside_at_any_sample": false
+          }
+        }
+      }
+    },
+    "geometry_reconstruction": {
+      "torso_colliders": [
+        "base_box",
+        "base_cyl1",
+        "base_sphere1"
+      ],
+      "whole_robot_collider_count": 27
+    }
+  }
+}

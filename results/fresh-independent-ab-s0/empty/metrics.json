@@ -1,0 +1,134 @@
+{
+  "episode_id": "bbb90d1f-c58b-4015-b8a6-72a773037909",
+  "mode": "empty",
+  "termination": "budget_exhausted",
+  "detail": "native_action_limit",
+  "success": false,
+  "stages": {
+    "A": {
+      "termination": "budget_exhausted",
+      "detail": "native_action_limit",
+      "stage": "A",
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 308.82000000074646,
+      "wall_seconds": 573.737185152997,
+      "path_m": 9.16317727101797,
+      "planner_requests": 115,
+      "reader_requests": 0,
+      "total_requests": 115,
+      "known_usage": {
+        "prompt_tokens": 293583,
+        "completion_tokens": 5375,
+        "total_tokens": 298958
+      },
+      "unknown_usage_requests": 0,
+      "first_planner_target_candidate": null,
+      "planner_tools": {
+        "memory_query": 30,
+        "scan": 67,
+        "follow_waypoints": 10
+      },
+      "native_attempts": {
+        "turn": 106,
+        "move_relative": 9
+      },
+      "boundary_refusals": 0,
+      "depth_refusals": 1
+    }
+  },
+  "total_requests": 115,
+  "final_sim_s": 309.4200000007493,
+  "final_base_xy_m": [
+    0.6188986625735691,
+    1.4915557311420768
+  ],
+  "independent_evaluation": {
+    "success": false,
+    "goal_kind": "ordered_standoff",
+    "checkpoints": {
+      "A": {
+        "label": "A",
+        "target_xy_m": [
+          6.4,
+          0.0
+        ],
+        "base_xy_m": [
+          1.2801182536195805,
+          0.6949439132115853
+        ],
+        "distance_to_target_center_m": 5.166830376490915,
+        "heading_error_rad": 1.977286066520762,
+        "speed_mps": 0.006778523884488816,
+        "abs_yaw_rate_radps": 0.007014513298785959,
+        "sim_time_s": 196.64000000021082,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "HEADING_OUT_OF_RANGE"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "stop_index": 73,
+        "achieved_at_checkpoint": false,
+        "passed": false
+      },
+      "B": {
+        "label": "B",
+        "target_xy_m": [
+          1.8,
+          0.6
+        ],
+        "base_xy_m": [
+          0.6188986625735691,
+          1.4915557311420768
+        ],
+        "distance_to_target_center_m": 1.4798216078307505,
+        "heading_error_rad": 2.1536600229213025,
+        "speed_mps": 0.007916908999384157,
+        "abs_yaw_rate_radps": 0.009465403518559463,
+        "sim_time_s": 309.4200000007493,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "HEADING_OUT_OF_RANGE",
+          "A_NOT_CONFIRMED_BEFORE_B"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "eligible": false,
+        "passed": false
+      }
+    },
+    "checkpoint_order": [
+      "A",
+      "B"
+    ],
+    "order_satisfied": false,
+    "premature_b_stops_ignored": 2,
+    "requires_finish": true,
+    "finish_enforced_by": "episode_runner",
+    "standoff_m": 1.0,
+    "distance_tolerance_m": 0.18,
+    "heading_tolerance_rad": 0.25,
+    "collision": false,
+    "fallen": false,
+    "stopped": true,
+    "source": "privileged_simulator_evaluator",
+    "collision_count": 0,
+    "collision_events": [],
+    "cabinet_contact_count": 0,
+    "cabinet_contact_events": []
+  },
+  "final_stop": {
+    "status": "succeeded",
+    "error_code": null,
+    "speed_mps": 0.007916908999384157,
+    "yaw_rate_radps": 0.009465403518559463
+  }
+}

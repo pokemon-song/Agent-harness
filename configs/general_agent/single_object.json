@@ -1,0 +1,9 @@
+{
+  "task": {
+    "id": "single_object_approach",
+    "instruction": "找到红色方块，接近并面向它停稳，满足要求后调用 finish。",
+    "targets": [{"target_id": "inspection_object", "description": "红色方块"}],
+    "requirements": "机身距目标中心约 1 米，容差 0.18 米，朝向误差不超过 0.25 rad，并停稳。几何工具测量可见表面点，不能当成目标中心。碰撞记录并扣分后继续，跌倒终止。"
+  },
+  "environment": {"scenario": "go_to_red_cube", "floor_size_m": [24, 18]}
+}

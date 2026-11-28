@@ -1,0 +1,27 @@
+{
+  "file": "full.mp4",
+  "sha256": "b85e19fd8e4cca0d10b5339955c58d53e0a53e12aeefb2b4a789fd1abf6719c3",
+  "frame_count": 1330,
+  "fps": 12.5,
+  "duration_s": 106.4,
+  "decoded_all_frames": true,
+  "initial_and_final_states_included": true,
+  "source": {
+    "sample_count": 5315,
+    "start_s": 1.0000000000000007,
+    "end_s": 107.27999999993138,
+    "handoff_s": null,
+    "model_sha256": "d1092317bbafaa39c9dae4cd370da65aec8b3dfb404fff944ae75cefc9b4a409",
+    "poses_sha256": "a2f08b6b4989205bdef0140c244b7afe65981f339ff06704f37940dba575c8e9",
+    "mujoco_version": "3.2.5",
+    "timebase": "simulation_seconds",
+    "physics_sampling": "initial and every executed control step",
+    "return_label": "QUERY | LIVE RETURN TO B",
+    "outbound_label": "LIVE SEARCH FOR A | QUERY"
+  },
+  "render_settings": {
+    "offscreen_multisamples": 0,
+    "shadows": false,
+    "reflections": false
+  }
+}

@@ -1,0 +1,528 @@
+{
+  "experiment": "fresh-independent-ab-double-s0",
+  "driver_git_commit": "16c62c2c4490700ff57646e855505ef915c673f1",
+  "task": "memory_ab_occluded_v1",
+  "seed": 0,
+  "replicates_per_arm": 1,
+  "model": "deepseek-flash",
+  "comparison": "三次分别初始化仿真器，从相同起点自主搜索 A；到 A 后同一仿真实例返 B。",
+  "evidence": {
+    "distinct_episode_ids": true,
+    "all_started_with_empty_memory": true,
+    "archive_inputs_per_arm": [],
+    "identical_first_observation_png": true,
+    "first_input_history_turns_per_arm": 0,
+    "verified_driver_sha256": {
+      "go2_demo/fresh_episode_run.py": "0449ec8c25e80402709a928d594b37c1d0949d87ae54a3c80f33142abf1bffa8",
+      "go2_demo/fresh_episode_planning.py": "fe5c4b94cf8073e2b817b6f2fb6000042ac1af4457b963fb395de9b17d31672e",
+      "go2_demo/fresh_episode_memory.py": "b3c399d1dc0f954de540f80204137005ae3d48fb968dac3275a49df20f5b5233",
+      "go2_demo/ordered_evaluation.py": "4821540761d24c0bd998fe34621cb6d976df24cdd033f7b13c0cb41c67d88111",
+      "go2_demo/paired_return_run.py": "15ee73f316b714c599f2df7ea189cbf79a6b9e6ec9ba27f90212e06179c1f55e",
+      "go2_demo/return_route_control.py": "0a86ef6eac4a56c1db386b79294fe405ba003ae3b6d624687e3878c0512c55be",
+      "go2_demo/short_step_clearance.py": "37e6d3d374bcc5e4f7e4fd929d52457c0ca118c5ecda4adc0c19139592716681",
+      "go2_demo/occluded_handoff.py": "c2e681a043bf41809763c4f150c5a0ecd79ccd7185a6bcd270b5639de34aac02"
+    },
+    "outbound_comparisons": [
+      {
+        "arms": [
+          "empty",
+          "ledger"
+        ],
+        "first_differing_successful_outbound_choice_ordinal": 1,
+        "identical_outbound_choices_and_arguments": false
+      },
+      {
+        "arms": [
+          "empty",
+          "query"
+        ],
+        "first_differing_successful_outbound_choice_ordinal": 1,
+        "identical_outbound_choices_and_arguments": false
+      },
+      {
+        "arms": [
+          "ledger",
+          "query"
+        ],
+        "first_differing_successful_outbound_choice_ordinal": 1,
+        "identical_outbound_choices_and_arguments": false
+      }
+    ]
+  },
+  "measurement": {
+    "path": "逐条使用模拟器基座世界坐标的水平位移累加。各段至本段终止，整轮另含终末验证制动。",
+    "net_displacement": "起终点基座水平直线距离。",
+    "A_first_candidate": "规划器当前 RGB-D 首次看到蓝色 A 候选的决策。几何停靠由独立评分器判定。",
+    "A_min_distance": "从起点到 A 阶段结束，逐控制采样计算基座距 A 中心的最小水平距离。",
+    "stages": "B 为 null 表示没有进入返程。原始评分器仍例行测量结束姿态相对 B 的几何关系。",
+    "blocking": "boundary_gate_refusals 为场地边界门控；depth_gate_refusals 为当前深度拒绝移动。真实接触取自物理引擎碰撞事件。",
+    "initialization": "初始图像、零里程计和空历史由首个事件验证。各自的出发决策与网络请求按独立事件流复核。",
+    "score": "A_confirmed_at_checkpoint 记录历史达标停靠；A_final_score_passed 另受后续全局碰撞/跌倒影响。",
+    "limits": "每种配置仅跑一次 seed 0。不同去程的返程起始姿态可能不同，无法据此估计平均成功率。",
+    "old_caps_prefix": "在本轮事件流分别定位第 128 个模型请求 / 第 115 个原生动作，并记录首次超出任一项之前已完成的所有原生动作和已经呈给规划器的候选。还原采用实际事件顺序，未假设在旧配额下模型会生成相同决策。墙钟及仿真时间另列全段是否超过旧上限。"
+  },
+  "arms": {
+    "empty": {
+      "episode_id": "0d27bfce-e4f0-4d6e-bd87-a744cc6c3e10",
+      "passed": false,
+      "termination": "abort",
+      "termination_detail": "当前机身被橙色墙体与近处绿方块夹住，右侧间隙不足以通行；左前方为大面积黑色未知区域，深度带确认中央约2米、右侧约1.4米处有遮挡。上一行走因可见障碍阻挡机身足迹被判重规划，扫描后仍无可行通道证据，无法安全寻找蓝球A。",
+      "A_confirmed_at_checkpoint": false,
+      "A_final_score_passed": false,
+      "B_stage_started": false,
+      "B_final_score_passed": null,
+      "B_first_candidate": null,
+      "B_final_distance_m": null,
+      "finish_succeeded": false,
+      "A_first_candidate": null,
+      "A_min_distance_m": 4.5293130166527025,
+      "collision": false,
+      "contacts": [],
+      "fallen": false,
+      "stages": {
+        "A": {
+          "planner_requests": 43,
+          "reader_requests": 0,
+          "all_requests": 43,
+          "native_attempts": 45,
+          "measured_path_m": 5.694000579520319,
+          "net_displacement_m": 1.3763360604022292,
+          "boundary_gate_refusals": 0,
+          "depth_gate_refusals": 1,
+          "actual_contacts": []
+        },
+        "B": null
+      },
+      "all_requests": 43,
+      "all_native_attempts": 45,
+      "episode_path_including_final_settle_m": 5.698622480311947,
+      "final_settle_path_m": 0.004621900791628268,
+      "episode_net_displacement_m": 1.372015360924608,
+      "final_world_xy_m": [
+        1.29785083054588,
+        0.44663702408898265
+      ],
+      "actual_sim_elapsed_s": 125.0199999998877,
+      "return_handoff_sim_s": null
+    },
+    "ledger": {
+      "episode_id": "255188b3-aa5a-448f-bcec-bf13cef5629e",
+      "passed": false,
+      "termination": "abort",
+      "termination_detail": "已严重偏离任务：本轮大量动作被用于重复查询记忆卡（多次返回同一批路点E003/E024/E027/E037/E054），且出现协议错误；当前画面仅见大片未知黑暗区与右侧棕色墙/障碍物，深度扇区显示左、中方向近4米无可用近距离信息、右侧1.9米处有障碍，未见蓝球A或绿方块B。记忆卡中的唯一目击是绿方块B（E051），A从未被观测到，目标证据target_evidence为空。继续在未知黑暗区盲目前行有碰撞或跌出可通行区域的风险，因此终止并说明证据不足。",
+      "A_confirmed_at_checkpoint": false,
+      "A_final_score_passed": false,
+      "B_stage_started": false,
+      "B_final_score_passed": null,
+      "B_first_candidate": null,
+      "B_final_distance_m": null,
+      "finish_succeeded": false,
+      "A_first_candidate": null,
+      "A_min_distance_m": 5.875523464451263,
+      "collision": false,
+      "contacts": [],
+      "fallen": false,
+      "stages": {
+        "A": {
+          "planner_requests": 141,
+          "reader_requests": 0,
+          "all_requests": 141,
+          "native_attempts": 40,
+          "measured_path_m": 2.4447504428151046,
+          "net_displacement_m": 0.8739808063930347,
+          "boundary_gate_refusals": 0,
+          "depth_gate_refusals": 0,
+          "actual_contacts": []
+        },
+        "B": null
+      },
+      "all_requests": 141,
+      "all_native_attempts": 40,
+      "episode_path_including_final_settle_m": 2.448496685063815,
+      "final_settle_path_m": 0.00374624224871004,
+      "episode_net_displacement_m": 0.8775750520293549,
+      "final_world_xy_m": [
+        0.5625784797321819,
+        0.6783687039069258
+      ],
+      "actual_sim_elapsed_s": 104.0799999999365,
+      "return_handoff_sim_s": null
+    },
+    "query": {
+      "episode_id": "36b3aea1-0704-43b9-9cd1-6c88aded520f",
+      "passed": false,
+      "termination": "abort",
+      "termination_detail": "当前 RGB 图像除空地板外全为黑色（无遮挡物端部、无可通行空间、无目标候选），depth_sectors 三个扇区有效比例均为 0，极端连续 scan 后视角中依然无任何结构信息。上一轮 scan 后里程计 yaw 在 0.97 与 1.43 间反复，缺乏可导航的视觉与深度证据，无法安全选择新视点或确认通道可通行，故终止以免盲目行走造成碰撞。",
+      "A_confirmed_at_checkpoint": false,
+      "A_final_score_passed": false,
+      "B_stage_started": false,
+      "B_final_score_passed": null,
+      "B_first_candidate": null,
+      "B_final_distance_m": null,
+      "finish_succeeded": false,
+      "A_first_candidate": null,
+      "A_min_distance_m": 6.166121089847228,
+      "collision": false,
+      "contacts": [],
+      "fallen": false,
+      "stages": {
+        "A": {
+          "planner_requests": 35,
+          "reader_requests": 13,
+          "all_requests": 48,
+          "native_attempts": 16,
+          "measured_path_m": 0.9889351099760012,
+          "net_displacement_m": 0.2905854043992457,
+          "boundary_gate_refusals": 0,
+          "depth_gate_refusals": 0,
+          "actual_contacts": []
+        },
+        "B": null
+      },
+      "all_requests": 48,
+      "all_native_attempts": 16,
+      "episode_path_including_final_settle_m": 0.9985540732326761,
+      "final_settle_path_m": 0.009618963256674821,
+      "episode_net_displacement_m": 0.29693788366961016,
+      "final_world_xy_m": [
+        0.17477083108009742,
+        0.24505333264188317
+      ],
+      "actual_sim_elapsed_s": 47.080000000012795,
+      "return_handoff_sim_s": null
+    }
+  },
+  "comparison_to_previous": {
+    "previous_experiment": "fresh-independent-ab-s0",
+    "previous_driver_git_commit": "1e3907a359f93daa13d9c0fbdc2f06b221ecb94a",
+    "previous_summary_sha256": "1cabdfbdefe90984bd10282717cd3e2f5da22336bb20120963c555bd4e65f3ea",
+    "per_stage_limits": {
+      "api_limit_per_stage": {
+        "previous": 128,
+        "current": 256
+      },
+      "max_native_per_stage": {
+        "previous": 115,
+        "current": 230
+      },
+      "max_sim_s_per_stage": {
+        "previous": 470.0,
+        "current": 940
+      },
+      "max_wall_s_per_stage": {
+        "previous": 1117.0,
+        "current": 2234
+      }
+    },
+    "arms": {
+      "empty": {
+        "previous": {
+          "all_requests": 115,
+          "A_planner_requests": 115,
+          "A_reader_requests": 0,
+          "B_stage_started": false,
+          "A_confirmed": false,
+          "B_passed": null,
+          "episode_passed": false,
+          "termination": "budget_exhausted",
+          "detail": "native_action_limit",
+          "A_first_candidate": null,
+          "A_closest_m": 5.150587915220323,
+          "A_net_m": 1.6064659216746806,
+          "A_path_m": 9.163177271017982,
+          "A_end_distance_m": 5.964841289674149,
+          "A_protocol_errors": 8,
+          "A_planner_tool_counts": {
+            "memory_query": 30,
+            "scan": 67,
+            "follow_waypoints": 10
+          },
+          "A_native_by_tool": {
+            "turn": 106,
+            "move_relative": 9
+          },
+          "A_native_total": 115,
+          "A_boundary_refusals": 0,
+          "A_depth_refusals": 1,
+          "collision": false,
+          "contacts": [],
+          "fallen": false
+        },
+        "current": {
+          "all_requests": 43,
+          "A_planner_requests": 43,
+          "A_reader_requests": 0,
+          "B_stage_started": false,
+          "A_confirmed": false,
+          "B_passed": null,
+          "episode_passed": false,
+          "termination": "abort",
+          "detail": "当前机身被橙色墙体与近处绿方块夹住，右侧间隙不足以通行；左前方为大面积黑色未知区域，深度带确认中央约2米、右侧约1.4米处有遮挡。上一行走因可见障碍阻挡机身足迹被判重规划，扫描后仍无可行通道证据，无法安全寻找蓝球A。",
+          "A_first_candidate": null,
+          "A_closest_m": 4.5293130166527025,
+          "A_net_m": 1.3763360604022292,
+          "A_path_m": 5.694000579520319,
+          "A_end_distance_m": 5.117469812278095,
+          "A_protocol_errors": 4,
+          "A_planner_tool_counts": {
+            "scan": 23,
+            "follow_waypoints": 4,
+            "memory_query": 11,
+            "abort": 1
+          },
+          "A_native_by_tool": {
+            "turn": 37,
+            "move_relative": 8
+          },
+          "A_native_total": 45,
+          "A_boundary_refusals": 0,
+          "A_depth_refusals": 1,
+          "collision": false,
+          "contacts": [],
+          "fallen": false
+        },
+        "within_current_A_stage": {
+          "old_limits": {
+            "requests": 128,
+            "native_actions": 115
+          },
+          "first_old_limit_reached": null,
+          "at_old_request_count": null,
+          "at_old_native_count": null,
+          "before_first_operation_above_either_old_limit": null,
+          "change_from_old_prefix": null,
+          "at_A_stage_end": {
+            "planner_requests": 43,
+            "reader_requests": 0,
+            "all_requests": 43,
+            "native_attempts": 45,
+            "planner_index": 43,
+            "sim_time_s": 125.4199999998891,
+            "has_seen_A_candidate": false,
+            "A_confirmed": false,
+            "closest_A_m": 4.5293130166527025,
+            "end_distance_A_m": 5.117469812278095
+          },
+          "passed_old_sim_limit": false,
+          "passed_old_wall_limit": false
+        }
+      },
+      "ledger": {
+        "previous": {
+          "all_requests": 128,
+          "A_planner_requests": 128,
+          "A_reader_requests": 0,
+          "B_stage_started": false,
+          "A_confirmed": false,
+          "B_passed": null,
+          "episode_passed": false,
+          "termination": "budget_exhausted",
+          "detail": "shared_api_limit",
+          "A_first_candidate": null,
+          "A_closest_m": 6.074979284992118,
+          "A_net_m": 0.3636943943144231,
+          "A_path_m": 2.5305737307847957,
+          "A_end_distance_m": 6.183110498237842,
+          "A_protocol_errors": 15,
+          "A_planner_tool_counts": {
+            "scan": 36,
+            "memory_query": 75,
+            "follow_waypoints": 2
+          },
+          "A_native_by_tool": {
+            "turn": 42,
+            "move_relative": 1
+          },
+          "A_native_total": 43,
+          "A_boundary_refusals": 0,
+          "A_depth_refusals": 0,
+          "collision": false,
+          "contacts": [],
+          "fallen": false
+        },
+        "current": {
+          "all_requests": 141,
+          "A_planner_requests": 141,
+          "A_reader_requests": 0,
+          "B_stage_started": false,
+          "A_confirmed": false,
+          "B_passed": null,
+          "episode_passed": false,
+          "termination": "abort",
+          "detail": "已严重偏离任务：本轮大量动作被用于重复查询记忆卡（多次返回同一批路点E003/E024/E027/E037/E054），且出现协议错误；当前画面仅见大片未知黑暗区与右侧棕色墙/障碍物，深度扇区显示左、中方向近4米无可用近距离信息、右侧1.9米处有障碍，未见蓝球A或绿方块B。记忆卡中的唯一目击是绿方块B（E051），A从未被观测到，目标证据target_evidence为空。继续在未知黑暗区盲目前行有碰撞或跌出可通行区域的风险，因此终止并说明证据不足。",
+          "A_first_candidate": null,
+          "A_closest_m": 5.875523464451263,
+          "A_net_m": 0.8739808063930347,
+          "A_path_m": 2.4447504428151046,
+          "A_end_distance_m": 5.87953704443551,
+          "A_protocol_errors": 22,
+          "A_planner_tool_counts": {
+            "scan": 28,
+            "memory_query": 87,
+            "follow_waypoints": 3,
+            "abort": 1
+          },
+          "A_native_by_tool": {
+            "turn": 38,
+            "move_relative": 2
+          },
+          "A_native_total": 40,
+          "A_boundary_refusals": 0,
+          "A_depth_refusals": 0,
+          "collision": false,
+          "contacts": [],
+          "fallen": false
+        },
+        "within_current_A_stage": {
+          "old_limits": {
+            "requests": 128,
+            "native_actions": 115
+          },
+          "first_old_limit_reached": "requests",
+          "at_old_request_count": {
+            "planner_requests": 128,
+            "reader_requests": 0,
+            "all_requests": 128,
+            "native_attempts": 39,
+            "planner_index": 128,
+            "sim_time_s": 101.61999999994457,
+            "has_seen_A_candidate": false,
+            "A_confirmed": false,
+            "closest_A_m": 5.875523464451263,
+            "end_distance_A_m": 5.899440745820219
+          },
+          "at_old_native_count": null,
+          "before_first_operation_above_either_old_limit": {
+            "first_additional_operation": "planner_input",
+            "limited_resource": "requests",
+            "last_allowed": {
+              "planner_requests": 128,
+              "reader_requests": 0,
+              "all_requests": 128,
+              "native_attempts": 39,
+              "planner_index": 128,
+              "sim_time_s": 101.61999999994457,
+              "has_seen_A_candidate": false,
+              "A_confirmed": false,
+              "closest_A_m": 5.875523464451263,
+              "end_distance_A_m": 5.899440745820219
+            }
+          },
+          "change_from_old_prefix": {
+            "additional_planner_requests": 13,
+            "additional_reader_requests": 0,
+            "additional_native_attempts": 1,
+            "improvement_best_distance_m": 0.0,
+            "A_first_seen_during_extra": false,
+            "A_first_confirmed_during_extra": false
+          },
+          "at_A_stage_end": {
+            "planner_requests": 141,
+            "reader_requests": 0,
+            "all_requests": 141,
+            "native_attempts": 40,
+            "planner_index": 141,
+            "sim_time_s": 104.4799999999379,
+            "has_seen_A_candidate": false,
+            "A_confirmed": false,
+            "closest_A_m": 5.875523464451263,
+            "end_distance_A_m": 5.87953704443551
+          },
+          "passed_old_sim_limit": false,
+          "passed_old_wall_limit": false
+        }
+      },
+      "query": {
+        "previous": {
+          "all_requests": 128,
+          "A_planner_requests": 89,
+          "A_reader_requests": 39,
+          "B_stage_started": false,
+          "A_confirmed": false,
+          "B_passed": null,
+          "episode_passed": false,
+          "termination": "budget_exhausted",
+          "detail": "shared_api_limit",
+          "A_first_candidate": null,
+          "A_closest_m": 6.345984627318113,
+          "A_net_m": 0.4504885935917639,
+          "A_path_m": 1.8117042594538355,
+          "A_end_distance_m": 6.424205727050234,
+          "A_protocol_errors": 17,
+          "A_planner_tool_counts": {
+            "memory_query": 40,
+            "scan": 31,
+            "follow_waypoints": 1
+          },
+          "A_native_by_tool": {
+            "turn": 31
+          },
+          "A_native_total": 31,
+          "A_boundary_refusals": 0,
+          "A_depth_refusals": 0,
+          "collision": false,
+          "contacts": [],
+          "fallen": false
+        },
+        "current": {
+          "all_requests": 48,
+          "A_planner_requests": 35,
+          "A_reader_requests": 13,
+          "B_stage_started": false,
+          "A_confirmed": false,
+          "B_passed": null,
+          "episode_passed": false,
+          "termination": "abort",
+          "detail": "当前 RGB 图像除空地板外全为黑色（无遮挡物端部、无可通行空间、无目标候选），depth_sectors 三个扇区有效比例均为 0，极端连续 scan 后视角中依然无任何结构信息。上一轮 scan 后里程计 yaw 在 0.97 与 1.43 间反复，缺乏可导航的视觉与深度证据，无法安全选择新视点或确认通道可通行，故终止以免盲目行走造成碰撞。",
+          "A_first_candidate": null,
+          "A_closest_m": 6.166121089847228,
+          "A_net_m": 0.2905854043992457,
+          "A_path_m": 0.9889351099760012,
+          "A_end_distance_m": 6.22778678984089,
+          "A_protocol_errors": 5,
+          "A_planner_tool_counts": {
+            "scan": 14,
+            "memory_query": 13,
+            "follow_waypoints": 2,
+            "abort": 1
+          },
+          "A_native_by_tool": {
+            "turn": 15,
+            "move_relative": 1
+          },
+          "A_native_total": 16,
+          "A_boundary_refusals": 0,
+          "A_depth_refusals": 0,
+          "collision": false,
+          "contacts": [],
+          "fallen": false
+        },
+        "within_current_A_stage": {
+          "old_limits": {
+            "requests": 128,
+            "native_actions": 115
+          },
+          "first_old_limit_reached": null,
+          "at_old_request_count": null,
+          "at_old_native_count": null,
+          "before_first_operation_above_either_old_limit": null,
+          "change_from_old_prefix": null,
+          "at_A_stage_end": {
+            "planner_requests": 35,
+            "reader_requests": 13,
+            "all_requests": 48,
+            "native_attempts": 16,
+            "planner_index": 35,
+            "sim_time_s": 47.48000000001206,
+            "has_seen_A_candidate": false,
+            "A_confirmed": false,
+            "closest_A_m": 6.166121089847228,
+            "end_distance_A_m": 6.22778678984089
+          },
+          "passed_old_sim_limit": false,
+          "passed_old_wall_limit": false
+        }
+      }
+    }
+  }
+}

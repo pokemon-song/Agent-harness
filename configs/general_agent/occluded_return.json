@@ -1,0 +1,16 @@
+{
+  "task": {
+    "id": "occluded_return",
+    "instruction": "先找到蓝球并合格停靠，再返回绿方块并合格停靠。请自行根据观测选择路径。完成后调用 finish。",
+    "targets": [
+      {"target_id": "first_object", "description": "蓝色球体，首先需要到达的目标"},
+      {"target_id": "return_object", "description": "绿色方块，完成第一个目标后需要返回的目标"}
+    ],
+    "requirements": "依次在距两个目标中心 0.82–1.18 米、朝向误差不超过 0.25 rad 时确认停稳。前一个目标未通过时，后一个目标不计分。表面追踪点不等于物体中心。环境仅反馈验收是否通过。碰撞记录并扣分后继续，跌倒终止。"
+  },
+  "environment": {
+    "scenario": "memory_ab_occluded_v1",
+    "floor_size_m": [24, 18],
+    "checkpoint_target_ids": {"A": "first_object", "B": "return_object"}
+  }
+}

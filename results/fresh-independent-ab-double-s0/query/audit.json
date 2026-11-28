@@ -1,0 +1,238 @@
+{
+  "arm": "query",
+  "raw_run_directory": "runs/fresh-independent-ab-double-s0/query",
+  "raw_sha256": {
+    "events.jsonl": "8190d442146414bb24e8c4b220e92a3669c9ee73ff04affec5005fb7ae5337de",
+    "trajectory.jsonl": "25bbc51e8f3b05794c2c08dfb9666086e6bb1e4db755ea3c9a48d3c69f5c32d1",
+    "video/capture.json": "b004053eccf52fbf8f8ffa721957537d2071c6d9d2b8620c57b4ab6c35e8e5d3",
+    "manifest.json": "304bee1ea329bb944001678f0990898f5f5d197005cbdcc39c88231a087c5e2d",
+    "metrics.json": "370b9f041dac9e01a4543c25892808497a294531cd4d775f27e02857a244e42a"
+  },
+  "episode_id": "36b3aea1-0704-43b9-9cd1-6c88aded520f",
+  "initial_world_xy_m": [
+    -0.0015189879768713853,
+    0.006109811166518344
+  ],
+  "initial_observation_png_sha256": "c66b51e01e7ed1b5899940754d9c862c5ac5e1aa61c5f62aeafb20ffb8a6b546",
+  "initial_visible_labels": [
+    "B"
+  ],
+  "outbound_choice_trace_sha256": "9b93f0a6bc7f453cef5c74f558ef1bbd052b80bb4b72dd9883f67059ddcb321b",
+  "A_handoff_events": 0,
+  "poses_sha256": "7a1fbf80751a8f46e7686695a600648e7dd35d794d98caf59b3ab9557ba0de22",
+  "model_mjb_sha256": "00559b136dcc2bffa52be42c8e911f52359c8f23a9cc495fb0686793ea96ef31",
+  "sample_count": 2355,
+  "own_outbound_documents_sha256": "8d80de847d92402de819d358b9784d1e4fda38507e73229bd68d05528c4cdde0",
+  "own_outbound_document_paths": [
+    "targets/target-B.md",
+    "route/leg-01.md",
+    "handoff/last-observation.md"
+  ],
+  "terminal_score": {
+    "A": {
+      "label": "A",
+      "target_xy_m": [
+        6.4,
+        0.0
+      ],
+      "base_xy_m": [
+        0.22558920969552476,
+        0.19940711841664543
+      ],
+      "distance_to_target_center_m": 6.177629950580042,
+      "heading_error_rad": 0.678253991255666,
+      "speed_mps": 0.012349093236904274,
+      "abs_yaw_rate_radps": 0.0029525763117930976,
+      "sim_time_s": 35.25999999999713,
+      "stop_confirmed": true,
+      "stopped": true,
+      "collision": false,
+      "fallen": false,
+      "criteria_pass": false,
+      "failure_reasons": [
+        "DISTANCE_OUT_OF_RANGE",
+        "HEADING_OUT_OF_RANGE"
+      ],
+      "source": "privileged_simulator_evaluator",
+      "stop_index": 12,
+      "achieved_at_checkpoint": false,
+      "passed": false
+    },
+    "B": null
+  },
+  "stage_details": {
+    "A": {
+      "termination": "abort",
+      "detail": "当前 RGB 图像除空地板外全为黑色（无遮挡物端部、无可通行空间、无目标候选），depth_sectors 三个扇区有效比例均为 0，极端连续 scan 后视角中依然无任何结构信息。上一轮 scan 后里程计 yaw 在 0.97 与 1.43 间反复，缺乏可导航的视觉与深度证据，无法安全选择新视点或确认通道可通行，故终止以免盲目行走造成碰撞。",
+      "planner_requests": 35,
+      "reader_requests": 13,
+      "all_requests": 48,
+      "known_usage": {
+        "prompt_tokens": 107731,
+        "completion_tokens": 2644,
+        "total_tokens": 110375
+      },
+      "unknown_usage_requests": 0,
+      "planner_error_codes": {
+        "MODEL_PROTOCOL_ERROR": 5
+      },
+      "protocol_error_details": {
+        "Choose exactly one outbound tool.": 5
+      },
+      "planner_tool_counts": {
+        "scan": 14,
+        "memory_query": 13,
+        "follow_waypoints": 2,
+        "abort": 1
+      },
+      "successive_question_longest_run": 6,
+      "native_attempts": 16,
+      "native_tool_counts": {
+        "turn": 15,
+        "move_relative": 1
+      },
+      "native_reply_status_counts": {
+        "succeeded": 16
+      },
+      "native_error_codes": {},
+      "measured_path_by_native_tool_m": {
+        "turn": 0.7576508587827551,
+        "move_relative": 0.23128425119324622
+      },
+      "max_displacement_from_stage_start_m": 0.31189896276371093,
+      "boundary_gate_refusals": 0,
+      "depth_gate_refusals": 0,
+      "actual_contacts": [],
+      "first_target_candidate": null,
+      "closest_target_center_m": 6.166121089847228,
+      "closest_target_sim_s": 34.69999999999644,
+      "closest_target_world_xy_m": [
+        0.23704697873004957,
+        0.1976343904242046
+      ],
+      "endpoint_target_distance_m": 6.22778678984089,
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 47.48000000001206,
+      "active_sim_s": 46.48000000001206,
+      "recorded_wall_s": 105.50194714200188,
+      "start_world_xy_m": [
+        -0.0015189879768713853,
+        0.006109811166518344
+      ],
+      "end_world_xy_m": [
+        0.17667302606843502,
+        0.23564735358681713
+      ],
+      "net_displacement_m": 0.2905854043992457,
+      "measured_path_m": 0.9889351099760012,
+      "first_input_history_turns": 0,
+      "first_input_has_memory_card": false,
+      "first_input_visible_labels": [
+        "B"
+      ],
+      "first_model_choice": {
+        "index": 1,
+        "tool": "scan",
+        "arguments": {
+          "yaw_rad": -0.5
+        }
+      },
+      "last_model_choice": {
+        "index": 35,
+        "tool": "abort",
+        "arguments": {
+          "reason": "当前 RGB 图像除空地板外全为黑色（无遮挡物端部、无可通行空间、无目标候选），depth_sectors 三个扇区有效比例均为 0，极端连续 scan 后视角中依然无任何结构信息。上一轮 scan 后里程计 yaw 在 0.97 与 1.43 间反复，缺乏可导航的视觉与深度证据，无法安全选择新视点或确认通道可通行，故终止以免盲目行走造成碰撞。"
+        }
+      },
+      "last_planner_frame": "frames/A-035-frame-00017.png",
+      "last_depth_valid_fractions": {
+        "left": 0.0,
+        "center": 0.0,
+        "right": 0.0
+      },
+      "last_depth_refusal": null,
+      "first_native_action": {
+        "tool": "turn",
+        "args": {
+          "yaw_rad": -0.5
+        },
+        "time_before": 1.0000000000000007,
+        "time_after": 3.299999999999858
+      },
+      "planner_inputs_with_card": 32,
+      "memory_query_statuses": {
+        "ok": 12,
+        "unavailable": 1
+      },
+      "observations_with_B_candidate": 32
+    }
+  },
+  "episode": {
+    "episode_id": "36b3aea1-0704-43b9-9cd1-6c88aded520f",
+    "passed": false,
+    "termination": "abort",
+    "termination_detail": "当前 RGB 图像除空地板外全为黑色（无遮挡物端部、无可通行空间、无目标候选），depth_sectors 三个扇区有效比例均为 0，极端连续 scan 后视角中依然无任何结构信息。上一轮 scan 后里程计 yaw 在 0.97 与 1.43 间反复，缺乏可导航的视觉与深度证据，无法安全选择新视点或确认通道可通行，故终止以免盲目行走造成碰撞。",
+    "A_confirmed_at_checkpoint": false,
+    "A_final_score_passed": false,
+    "B_stage_started": false,
+    "B_final_score_passed": null,
+    "B_first_candidate": null,
+    "B_final_distance_m": null,
+    "finish_succeeded": false,
+    "A_first_candidate": null,
+    "A_min_distance_m": 6.166121089847228,
+    "collision": false,
+    "contacts": [],
+    "fallen": false,
+    "stages": {
+      "A": {
+        "planner_requests": 35,
+        "reader_requests": 13,
+        "all_requests": 48,
+        "native_attempts": 16,
+        "measured_path_m": 0.9889351099760012,
+        "net_displacement_m": 0.2905854043992457,
+        "boundary_gate_refusals": 0,
+        "depth_gate_refusals": 0,
+        "actual_contacts": []
+      },
+      "B": null
+    },
+    "all_requests": 48,
+    "all_native_attempts": 16,
+    "episode_path_including_final_settle_m": 0.9985540732326761,
+    "final_settle_path_m": 0.009618963256674821,
+    "episode_net_displacement_m": 0.29693788366961016,
+    "final_world_xy_m": [
+      0.17477083108009742,
+      0.24505333264188317
+    ],
+    "actual_sim_elapsed_s": 47.080000000012795,
+    "return_handoff_sim_s": null
+  },
+  "current_run_at_old_caps_A": {
+    "old_limits": {
+      "requests": 128,
+      "native_actions": 115
+    },
+    "first_old_limit_reached": null,
+    "at_old_request_count": null,
+    "at_old_native_count": null,
+    "before_first_operation_above_either_old_limit": null,
+    "change_from_old_prefix": null,
+    "at_A_stage_end": {
+      "planner_requests": 35,
+      "reader_requests": 13,
+      "all_requests": 48,
+      "native_attempts": 16,
+      "planner_index": 35,
+      "sim_time_s": 47.48000000001206,
+      "has_seen_A_candidate": false,
+      "A_confirmed": false,
+      "closest_A_m": 6.166121089847228,
+      "end_distance_A_m": 6.22778678984089
+    },
+    "passed_old_sim_limit": false,
+    "passed_old_wall_limit": false
+  }
+}

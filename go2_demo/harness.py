@@ -35,10 +35,11 @@ _ROBOT_FIELDS = {"body_height_m", "body_pitch_rad", "body_roll_rad", "speed_mps"
 
 _CALIBRATION_TEXT_FIELDS = {"camera_frame", "body_frame", "optical_axes", "body_axes"}
 _COMPLETION_TEXT_FIELDS = {"goal_kind", "reference_body"}
-_COMPLETION_BOOL_FIELDS = {"stop_required", "collision_free_required"}
+_COMPLETION_BOOL_FIELDS = {"stop_required", "collision_free_required", "cabinet_contact_ends_episode",
+                           "b_contact_ends_episode", "other_scene_contacts_end_episode"}
 _COMPLETION_NUMBER_FIELDS = {
     "required_clearance_m", "standoff_m", "distance_tolerance_m",
-    "heading_tolerance_rad", "max_stopped_speed_mps", "max_stopped_yaw_rate_radps",
+    "heading_tolerance_rad", "max_stopped_speed_mps", "max_stopped_yaw_rate_radps", "collision_penalty_points",
 }
 
 
@@ -179,9 +180,15 @@ class Harness:
                 self.refresh()
                 result = self._result(call, image_id=self.frame.frame_id)
             elif call.name in {"move_relative", "turn", "stop"}:
-                data = getattr(self.backend, call.name)(**call.arguments)
+                data = None
+                if call.name == "move_relative":
+                    from .experimental_boundary_gate import experimental_boundary_gate
+                    data = experimental_boundary_gate(getattr(self.backend, "scenario", None),
+                                                       self.frame.base_xy_yaw, **call.arguments)
+                if data is None:
+                    data = getattr(self.backend, call.name)(**call.arguments)
+                    self.refresh()
                 result = {**self._result(call), **data}
-                self.refresh()
             else:
                 stopped = self.backend.stop()
                 self.refresh()

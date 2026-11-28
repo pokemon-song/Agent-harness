@@ -1,0 +1,135 @@
+{
+  "episode_id": "255188b3-aa5a-448f-bcec-bf13cef5629e",
+  "mode": "ledger",
+  "termination": "abort",
+  "detail": "已严重偏离任务：本轮大量动作被用于重复查询记忆卡（多次返回同一批路点E003/E024/E027/E037/E054），且出现协议错误；当前画面仅见大片未知黑暗区与右侧棕色墙/障碍物，深度扇区显示左、中方向近4米无可用近距离信息、右侧1.9米处有障碍，未见蓝球A或绿方块B。记忆卡中的唯一目击是绿方块B（E051），A从未被观测到，目标证据target_evidence为空。继续在未知黑暗区盲目前行有碰撞或跌出可通行区域的风险，因此终止并说明证据不足。",
+  "success": false,
+  "stages": {
+    "A": {
+      "termination": "abort",
+      "detail": "已严重偏离任务：本轮大量动作被用于重复查询记忆卡（多次返回同一批路点E003/E024/E027/E037/E054），且出现协议错误；当前画面仅见大片未知黑暗区与右侧棕色墙/障碍物，深度扇区显示左、中方向近4米无可用近距离信息、右侧1.9米处有障碍，未见蓝球A或绿方块B。记忆卡中的唯一目击是绿方块B（E051），A从未被观测到，目标证据target_evidence为空。继续在未知黑暗区盲目前行有碰撞或跌出可通行区域的风险，因此终止并说明证据不足。",
+      "stage": "A",
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 104.4799999999379,
+      "wall_seconds": 418.69884220899985,
+      "path_m": 2.444750442815105,
+      "planner_requests": 141,
+      "reader_requests": 0,
+      "total_requests": 141,
+      "known_usage": {
+        "prompt_tokens": 363468,
+        "completion_tokens": 8105,
+        "total_tokens": 371573
+      },
+      "unknown_usage_requests": 0,
+      "first_planner_target_candidate": null,
+      "planner_tools": {
+        "scan": 28,
+        "memory_query": 87,
+        "follow_waypoints": 3,
+        "abort": 1
+      },
+      "native_attempts": {
+        "turn": 38,
+        "move_relative": 2
+      },
+      "boundary_refusals": 0,
+      "depth_refusals": 0
+    }
+  },
+  "total_requests": 141,
+  "final_sim_s": 105.0799999999365,
+  "final_base_xy_m": [
+    0.5625784797321819,
+    0.6783687039069258
+  ],
+  "independent_evaluation": {
+    "success": false,
+    "goal_kind": "ordered_standoff",
+    "checkpoints": {
+      "A": {
+        "label": "A",
+        "target_xy_m": [
+          6.4,
+          0.0
+        ],
+        "base_xy_m": [
+          0.5625784797321819,
+          0.6783687039069258
+        ],
+        "distance_to_target_center_m": 5.876706058986293,
+        "heading_error_rad": 0.8428290687557611,
+        "speed_mps": 0.002372011329899661,
+        "abs_yaw_rate_radps": 0.005218247155582742,
+        "sim_time_s": 105.0799999999365,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "HEADING_OUT_OF_RANGE"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "stop_index": 41,
+        "achieved_at_checkpoint": false,
+        "passed": false
+      },
+      "B": {
+        "label": "B",
+        "target_xy_m": [
+          1.8,
+          0.6
+        ],
+        "base_xy_m": [
+          0.5625784797321819,
+          0.6783687039069258
+        ],
+        "distance_to_target_center_m": 1.2399006704466167,
+        "heading_error_rad": 0.7903854609474361,
+        "speed_mps": 0.002372011329899661,
+        "abs_yaw_rate_radps": 0.005218247155582742,
+        "sim_time_s": 105.0799999999365,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "HEADING_OUT_OF_RANGE",
+          "A_NOT_CONFIRMED_BEFORE_B"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "eligible": false,
+        "passed": false
+      }
+    },
+    "checkpoint_order": [
+      "A",
+      "B"
+    ],
+    "order_satisfied": false,
+    "premature_b_stops_ignored": 0,
+    "requires_finish": true,
+    "finish_enforced_by": "episode_runner",
+    "standoff_m": 1.0,
+    "distance_tolerance_m": 0.18,
+    "heading_tolerance_rad": 0.25,
+    "collision": false,
+    "fallen": false,
+    "stopped": true,
+    "source": "privileged_simulator_evaluator",
+    "collision_count": 0,
+    "collision_events": [],
+    "cabinet_contact_count": 0,
+    "cabinet_contact_events": []
+  },
+  "final_stop": {
+    "status": "succeeded",
+    "error_code": null,
+    "speed_mps": 0.002372011329899661,
+    "yaw_rate_radps": 0.005218247155582742
+  }
+}

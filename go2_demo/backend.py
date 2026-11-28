@@ -51,6 +51,8 @@ class MujocoGo2Backend:
     height = 360
     dt = 0.002
     decimation = 10
+    contact_separation_s = 0.3
+    stop_on_first_collision = False
     joint_names = [f"{leg}_{joint}_joint" for leg in ("FL", "FR", "RL", "RR") for joint in ("hip", "thigh", "calf")]
 
     @property
@@ -73,6 +75,14 @@ class MujocoGo2Backend:
         result = {"goal_kind": goal_kind, "reference_body": "base",
                   "stop_required": True, "collision_free_required": True,
                   "max_stopped_speed_mps": 0.12, "max_stopped_yaw_rate_radps": 0.25}
+        if self.stop_on_first_collision and self._permitted_contact_ids:
+            result.update(collision_free_required=False, b_contact_ends_episode=False,
+                          other_scene_contacts_end_episode=True)
+        if scenario is not None and scenario.nonterminal_contact_geoms and not self.stop_on_first_collision:
+            result["cabinet_contact_ends_episode"] = False
+        if scenario is not None and scenario.collision_penalty_points and not self.stop_on_first_collision:
+            result.update(collision_free_required=False, collision_penalty_points=scenario.collision_penalty_points,
+                          b_contact_ends_episode=False, other_scene_contacts_end_episode=False)
         if goal_kind == "passage":
             result["required_clearance_m"] = scenario.passage_clearance_m
         else:
@@ -102,23 +112,33 @@ class MujocoGo2Backend:
                               contype="0", conaffinity="0")
                 count += 1
 
-    def __init__(self, asset_dir: Path, seed: int = 0, viewer: bool = False, scenario=None):
+    def __init__(self, asset_dir: Path, seed: int = 0, viewer: bool = False, scenario=None,
+                 *, stop_on_first_collision: bool = False, continue_on_b_contact: bool = False):
         self.asset_dir = Path(asset_dir).resolve()
         self.scenario = scenario
         if scenario is not None and not scenario.supported:
             raise ValueError(f"UNSUPPORTED_CAPABILITY: {scenario.unsupported_reason}")
+        if continue_on_b_contact and not (stop_on_first_collision and scenario and scenario.goal_kind == "ordered_standoff"):
+            raise ValueError("The B contact exception requires an ordered A/B task with first-contact termination.")
         self.task_instruction = (scenario.instruction if scenario is not None else
                                  "找到红色标记，移动到距离标记约 1 米的位置，朝向标记并停止，然后调用 finish。距离按机身参考点到标记的水平距离理解。")
         self.deadline_monotonic: float | None = None
         self.sim_deadline_s: float | None = None
         self._viewer = None
         self._renderer = None
+        self._recording = None
         self._stopping = False
         self._frame_counter = 0
         self.trajectory: list[dict] = []
         self._fallen_ever = False
         self._collision_steps = 0
+        self.stop_on_first_collision = stop_on_first_collision
         self._collided_geom_ids: set[int] = set()
+        self._cabinet_contact_steps = 0
+        self._score_only_collisions = bool(scenario and scenario.collision_penalty_points and not stop_on_first_collision)
+        self._last_contact_time: dict[str, float] = {}
+        self.collision_events: list[dict] = []
+        self.cabinet_contact_events: list[dict] = []
         self.default_angles = np.array([0.1, 0.8, -1.5, -0.1, 0.8, -1.5, 0.1, 1.0, -1.5, -0.1, 1.0, -1.5], dtype=np.float32)
         self.last_action = np.zeros(12, dtype=np.float32)
         self._verify_assets()
@@ -135,6 +155,17 @@ class MujocoGo2Backend:
         self._floor_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_GEOM, "floor")
         self._environment_geom_ids = {mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_GEOM, name)
                                       for name in self._environment_geom_names}
+        self._permitted_contact_ids = {self.model.geom("memory_goal_b").id} if continue_on_b_contact else set()
+        self._cabinet_geom_names = {self.model.geom(name).id: name
+                                    for name in (scenario.nonterminal_contact_geoms if scenario else ())}
+        self._contact_object_names = {}
+        if self._score_only_collisions or self._cabinet_geom_names or stop_on_first_collision:
+            for name in self._environment_geom_names:
+                geom_id = self.model.geom(name).id
+                if geom_id in self._cabinet_geom_names:
+                    self._contact_object_names[geom_id] = "cabinet"
+                elif self._score_only_collisions or stop_on_first_collision:
+                    self._contact_object_names[geom_id] = {"scenario_target": "A", "memory_goal_b": "B"}.get(name, name)
         self._qpos_ids = np.array([self.model.jnt_qposadr[mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, name)] for name in self.joint_names])
         self._dof_ids = np.array([self.model.jnt_dofadr[mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, name)] for name in self.joint_names])
         policy_bytes = (self.asset_dir / "go2_rl_lab/deploy/pre_train/go2/go2_cts_150k.pt").read_bytes()
@@ -151,6 +182,11 @@ class MujocoGo2Backend:
         self._fallen_ever = False
         self._collision_steps = 0
         self.trajectory.clear()
+        self._ordered_evaluator = None
+        if scenario is not None and scenario.goal_kind == "ordered_standoff":
+            from .ordered_evaluation import OrderedStandoffEvaluator
+            second = next(item for item in scenario.objects if item.name == "memory_goal_b")
+            self._ordered_evaluator = OrderedStandoffEvaluator(self._target_xy, second.position[:2])
         self._renderer = mujoco.Renderer(self.model, height=self.height, width=self.width)
         if viewer:
             from mujoco import viewer as viewer_module
@@ -188,7 +224,14 @@ class MujocoGo2Backend:
         ET.SubElement(asset, "material", name="floor_material", texture="floor_texture", texrepeat="12 12", texuniform="true", reflectance="0")
         world = root.find("worldbody")
         ET.SubElement(world, "light", pos="0 0 4", dir="0 0 -1", diffuse="0.8 0.8 0.8", directional="true")
-        ET.SubElement(world, "geom", name="floor", type="plane", size="10 10 .1", material="floor_material", friction="1 .005 .0001")
+        floor_size = getattr(self.scenario, "floor_half_size_m", None)
+        if floor_size is None:
+            ET.SubElement(world, "geom", name="floor", type="plane", size="10 10 .1", material="floor_material", friction="1 .005 .0001")
+        else:
+            # The finite platform's top is at z=0.
+            ET.SubElement(world, "geom", name="floor", type="box", pos="0 0 -.1",
+                          size=f"{floor_size[0]} {floor_size[1]} .1",
+                          material="floor_material", friction="1 .005 .0001")
         if self.scenario is None:
             target_x, target_y = self._target_xy
             ET.SubElement(world, "geom", name="red_target", type="box", pos=f"{target_x} {target_y} .5", size=".08 .20 .5", rgba=".85 .035 .025 1", friction="1 .005 .0001")
@@ -248,7 +291,51 @@ class MujocoGo2Backend:
         # This state enters API observations and must remain a native JSON bool.
         return bool(not np.isfinite(self.data.qpos).all() or position[2] < 0.16 or rotation[2, 2] < 0.55)
 
+    def _record_contacts(self) -> None:
+        touched = {int(geom) for contact in self.data.contact for geom in (contact.geom1, contact.geom2)
+                   if geom in self._environment_geom_ids}
+        self._collision_steps += int(bool(touched))
+        self._collided_geom_ids.update(touched)
+        if touched and self.collision_terminated:
+            # mj_step integrates qpos last. Synchronize derived transforms for the
+            # recorded contact pose without taking another physical step.
+            mujoco.mj_forward(self.model, self.data)
+        if not touched or not self._contact_object_names:
+            return
+        if touched.intersection(self._cabinet_geom_names):
+            self._cabinet_contact_steps += 1
+        objects = {}
+        for geom in touched:
+            name = self._contact_object_names.get(geom)
+            if name is not None:
+                objects.setdefault(name, []).append(geom)
+        now = float(self.data.time)
+        for name in sorted(objects):
+            previous = self._last_contact_time.get(name)
+            self._last_contact_time[name] = now
+            # Brief separations during one footfall or a scrape belong to the same contact.
+            if previous is not None and now - previous <= self.contact_separation_s:
+                continue
+            event = {"object": name, "sim_time_s": now,
+                     "geom_names": sorted(self.model.geom(geom).name for geom in objects[name]),
+                     "base_xy_m": self.data.xpos[self._base_id, :2].tolist()}
+            self.collision_events.append(event)
+            if name == "cabinet":
+                self.cabinet_contact_events.append(event)
+
+    @property
+    def collision_terminated(self) -> bool:
+        return self.stop_on_first_collision and not self._collided_geom_ids.issubset(self._permitted_contact_ids)
+
+    @property
+    def _terminal_collision(self) -> bool:
+        if self.stop_on_first_collision:
+            return self.collision_terminated
+        return not self._score_only_collisions and not self._collided_geom_ids.issubset(self._cabinet_geom_names)
+
     def _step_control(self, command: np.ndarray, *, record: bool = True) -> None:
+        if self.collision_terminated:
+            return
         started = time.monotonic()
         _, _, rotation = self._base_pose()
         observation = np.concatenate((
@@ -269,17 +356,15 @@ class MujocoGo2Backend:
             self.data.ctrl[:] = 20.0 * (target - self.data.qpos[self._qpos_ids]) - 0.5 * self.data.qvel[self._dof_ids]
             mujoco.mj_step(self.model, self.data)
             if record:
-                touched = False
-                for contact in self.data.contact:
-                    for geom_id in (int(contact.geom1), int(contact.geom2)):
-                        if geom_id in self._environment_geom_ids:
-                            touched = True
-                            self._collided_geom_ids.add(geom_id)
-                self._collision_steps += int(touched)
+                self._record_contacts()
+                if self.collision_terminated:
+                    break
         if record:
             self._fallen_ever |= self._fallen()
             position, yaw, _ = self._base_pose()
             self.trajectory.append({"sim_time_s": float(self.data.time), "base_xyz_m": position.tolist(), "yaw_rad": yaw, "velocity_world_mps": self.data.qvel[:3].tolist(), "command": command.tolist(), "fallen": self._fallen_ever, "collision_steps": self._collision_steps})
+            if self._recording is not None:
+                self._recording.sample()
         if self._viewer is not None:
             if not self._viewer.is_running():
                 closed_viewer, self._viewer = self._viewer, None
@@ -292,6 +377,8 @@ class MujocoGo2Backend:
 
     def _advance_zero(self, seconds: float, *, record: bool = True) -> None:
         for _ in range(math.ceil(seconds / (self.dt * self.decimation))):
+            if self.collision_terminated:
+                break
             self._step_control(np.zeros(3, dtype=np.float32), record=record)
 
     def capture(self) -> SensorFrame:
@@ -319,6 +406,8 @@ class MujocoGo2Backend:
         target_xy = start_pos[:2] + initial_rotation @ translation
         target_yaw = wrap_angle(start_yaw + turn_rad)
         initial_sim_time = float(self.data.time)
+        collision_steps_before = self._collision_steps
+        cabinet_steps_before = self._cabinet_contact_steps
         status, error = "timed_out", "MOTION_TIMEOUT"
         while self.data.time - initial_sim_time < timeout_s:
             if self.deadline_monotonic is not None and time.monotonic() >= self.deadline_monotonic:
@@ -330,7 +419,7 @@ class MujocoGo2Backend:
             if self._fallen_ever or self._fallen():
                 status, error = "failed", "ROBOT_FELL"
                 break
-            if self._collision_steps:
+            if self._terminal_collision:
                 status, error = "failed", "COLLISION"
                 break
             position, yaw, _ = self._base_pose()
@@ -351,11 +440,16 @@ class MujocoGo2Backend:
         heading_error = abs(wrap_angle(target_yaw - final_yaw))
         if status == "succeeded" and (position_error > 0.10 or heading_error > 0.10 or stop_result["status"] != "succeeded"):
             status, error = "failed", "DID_NOT_SETTLE_AT_TARGET"
-        if self._fallen_ever:
+        if self._fallen_ever and not self.collision_terminated:
             status, error = "failed", "ROBOT_FELL"
-        elif self._collision_steps:
+        elif self._terminal_collision:
             status, error = "failed", "COLLISION"
-        return {"status": status, "error_code": error, "measured": {"translation_start_frame_m": (initial_rotation.T @ (final_position[:2]-start_pos[:2])).tolist(), "yaw_delta_rad": wrap_angle(final_yaw-start_yaw), "position_error_m": position_error, "heading_error_rad": heading_error, "elapsed_sim_s": float(self.data.time-initial_sim_time)}, "stop": stop_result}
+        result = {"status": status, "error_code": error, "measured": {"translation_start_frame_m": (initial_rotation.T @ (final_position[:2]-start_pos[:2])).tolist(), "yaw_delta_rad": wrap_angle(final_yaw-start_yaw), "position_error_m": position_error, "heading_error_rad": heading_error, "elapsed_sim_s": float(self.data.time-initial_sim_time)}, "stop": stop_result}
+        if self._cabinet_contact_steps > cabinet_steps_before:
+            result["cabinet_contact"] = True
+        if self._collision_steps > collision_steps_before and (self._score_only_collisions or self._permitted_contact_ids):
+            result["collision"] = True
+        return result
 
     def move_relative(self, forward_m: float, lateral_m: float, timeout_s: float = 8.0) -> dict:
         values = np.array([forward_m, lateral_m], dtype=float)
@@ -373,6 +467,8 @@ class MujocoGo2Backend:
         if self._viewer is not None and not self._viewer.is_running():
             closed_viewer, self._viewer = self._viewer, None
             closed_viewer.close()
+        cabinet_steps_before = getattr(self, "_cabinet_contact_steps", None)
+        collision_steps_before = getattr(self, "_collision_steps", 0)
         self._stopping = True
         try:
             self._advance_zero(0.6)
@@ -380,12 +476,46 @@ class MujocoGo2Backend:
             self._stopping = False
         speed = float(np.linalg.norm(self.data.qvel[:2]))
         angular_speed = abs(float(self.data.qvel[5]))
+        if self.collision_terminated:
+            return {"status": "failed", "error_code": "COLLISION", "speed_mps": speed,
+                    "yaw_rate_radps": angular_speed}
         stopped = speed < 0.12 and angular_speed < 0.25 and not self._fallen_ever
-        return {"status": "succeeded" if stopped else "failed", "error_code": None if stopped else "STOP_NOT_CONFIRMED", "speed_mps": speed, "yaw_rate_radps": angular_speed}
+        evaluator = getattr(self, "_ordered_evaluator", None)
+        if evaluator is not None:
+            evaluator.note_stop(self._ordered_score_sample(bool(stopped)))
+        result = {"status": "succeeded" if stopped else "failed", "error_code": None if stopped else "STOP_NOT_CONFIRMED", "speed_mps": speed, "yaw_rate_radps": angular_speed}
+        if cabinet_steps_before is not None and self._cabinet_contact_steps > cabinet_steps_before:
+            result["cabinet_contact"] = True
+        if self._collision_steps > collision_steps_before and (self._score_only_collisions or self._permitted_contact_ids):
+            result["collision"] = True
+        return result
+
+    def _ordered_score_sample(self, stop_confirmed: bool) -> dict:
+        """Privileged scorer input. Never returned by tools/capture/observation."""
+        position, yaw, _ = self._base_pose()
+        sample = {"base_xy_m": position[:2].tolist(), "yaw_rad": float(yaw),
+                "speed_mps": float(np.linalg.norm(self.data.qvel[:2])),
+                "abs_yaw_rate_radps": abs(float(self.data.qvel[5])),
+                "sim_time_s": float(self.data.time), "stop_confirmed": stop_confirmed,
+                "collision": bool(self._collision_steps), "fallen": bool(self._fallen_ever)}
+        if getattr(self, "_score_only_collisions", False) or (
+                sample["collision"] and self.stop_on_first_collision and not self.collision_terminated):
+            sample["collision_penalty_only"] = True
+        return sample
 
     def evaluate(self, standoff_m: float = 1.0, tolerance_m: float = 0.18) -> dict:
         """Privileged state: only the independent evaluator may consume this result."""
         scenario = getattr(self, "scenario", None)
+        if scenario is not None and scenario.goal_kind == "ordered_standoff":
+            evaluator = self._ordered_evaluator
+            result = evaluator.evaluate(self._ordered_score_sample(True))
+            if self._score_only_collisions or self.stop_on_first_collision:
+                result["collision_count"] = len(self.collision_events)
+                result["collision_events"] = list(self.collision_events)
+            if self._cabinet_geom_names:
+                result["cabinet_contact_count"] = len(self.cabinet_contact_events)
+                result["cabinet_contact_events"] = list(self.cabinet_contact_events)
+            return result
         if scenario is not None:
             standoff_m, tolerance_m = scenario.standoff_m, scenario.distance_tolerance_m
         position, yaw, _ = self._base_pose()
@@ -416,6 +546,8 @@ class MujocoGo2Backend:
                 "sim_time_s": float(self.data.time), "source": "privileged_simulator_evaluator", **passage}
 
     def close(self) -> None:
+        if getattr(self, "_recording", None) is not None:
+            self._recording.finish()
         if self._viewer is not None:
             self._viewer.close()
             self._viewer = None

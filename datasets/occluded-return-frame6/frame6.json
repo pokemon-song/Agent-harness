@@ -1,0 +1,110 @@
+{
+  "source_run": "paired-query-s0-first-contact/query",
+  "task": "去程在蓝球 A 处停稳，现开始返回找绿方块 B。两段共用出发时的里程计坐标系。在首次运动和完成前，先使用提供的记忆工具取得去程公开记录。当前记忆内容会保留至下次读取或查询。历史观测只代表当时的位置；结合当前 RGB、跟踪点几何、实测里程计，自主绕开柜子寻找并重新确认 B。机身距 B 中心 0.82–1.18 米、朝向误差不超过 0.25 rad 时调用 stop，再调用 finish。首次与场景物体发生碰撞即终止。每次决策只选择一个工具。",
+  "memory": {
+    "mode": "query",
+    "revision": "c5de5e6ed796ad4728787ff60d87bd7406747ef0a14cd77c3c0e0398ac12d04e",
+    "documents": [
+      "handoff/last-observation.md",
+      "route/leg-01.md",
+      "route/leg-02.md",
+      "route/leg-03.md",
+      "targets/target-A.md",
+      "targets/target-B.md"
+    ],
+    "current": {
+      "question": "去程公开记录：从出发点到蓝球 A 的路线、各段里程计位置，以及绿方块 B 的位置和目标记录（targets/target-B.md、route/leg-01~03、handoff/last-observation）",
+      "support": "partial",
+      "evidence": [
+        {
+          "path": "route/leg-01.md",
+          "id": "E007",
+          "excerpt": "去程步 0 / frame-00001 / t=1.00s：实测机身里程计 x=0.000, y=0.000 m，yaw=0.000 rad；同一去程起点坐标系，x 向前、y 向左。"
+        },
+        {
+          "path": "route/leg-03.md",
+          "id": "E019",
+          "excerpt": "去程步 105 / frame-00053 / t=102.74s：实测机身里程计 x=7.426, y=-4.661 m，yaw=1.373 rad；同一去程起点坐标系，x 向前、y 向左。"
+        },
+        {
+          "path": "targets/target-B.md",
+          "id": "E006",
+          "excerpt": "去程步 1 / frame-00001 / t=1.00s：目标 B（绿方块）同色区域上的有效 RGB-D 跟踪点 point-001，机身前/左=(1.735,0.742) m；结合实测机身里程计，目标可见表面在去程起点坐标系约 (1.735,0.742) m。表面点与物体中心可能有偏差。"
+        }
+      ]
+    }
+  },
+  "turns": [
+    {
+      "frame": "frame-00065",
+      "observation_sha256": "a8024baae2da3600364e687e9fce3cd9f3d276426205268e97605362662f7f5a",
+      "call": {
+        "call_id": "call_00_04xXfMHNsuDmQWvWdHfN4144",
+        "name": "memory_query",
+        "arguments": {
+          "question": "去程公开记录：从出发点到蓝球 A 的路线、各段里程计位置，以及绿方块 B 的位置和目标记录（targets/target-B.md、route/leg-01~03、handoff/last-observation）"
+        }
+      },
+      "results_sha256": "091e0410dcdcc1a2a67b5767b5b4a0087a361266b34b0b4795b03e8a10e6f5b3"
+    },
+    {
+      "frame": "frame-00065",
+      "observation_sha256": "3e69a25627e00c180df433a18c12e1ab7c845b38bbae6124d402fd2c2db36513",
+      "call": {
+        "call_id": "call_00_Z0YQ6GrDXlKCj1R1PpV61238",
+        "name": "track_point",
+        "arguments": {
+          "image_id": "frame-00065",
+          "u": 80,
+          "v": 170
+        }
+      },
+      "results_sha256": "741cd6e492d5bc117436b3317e9ad57d10657c5ff9cda57b7ae49c3b223d0c6b"
+    },
+    {
+      "frame": "frame-00065",
+      "observation_sha256": "55daa8e3fb7681d28dc45fedf48080360a1207605c977284a7050a026fad2389",
+      "call": {
+        "call_id": "call_00_eLvpM1BAoGlyLs440Tlc1283",
+        "name": "track_point",
+        "arguments": {
+          "image_id": "frame-00065",
+          "u": 175,
+          "v": 205
+        }
+      },
+      "results_sha256": "483722b07024e1b393096616dcbece2d538894d8a55490d9a058eb98e12fd8b8"
+    },
+    {
+      "frame": "frame-00065",
+      "observation_sha256": "66798490e06e6554be9865e600055286e2d8273575035bd8afae43b1780b5f25",
+      "call": {
+        "call_id": "call_00_SRyZqkAA4ZuAyfCd4EK47270",
+        "name": "turn",
+        "arguments": {
+          "yaw_rad": 0.6
+        }
+      },
+      "results_sha256": "8bfd644c6f9a7ccf456514b4032707235429ad892e196194e9aade9c1ccabf91"
+    },
+    {
+      "frame": "frame-00066",
+      "observation_sha256": "158681094d9abdb0b0aea090f7386cdd4c247ef6dc936b2d59371595eda55ebc",
+      "call": {
+        "call_id": "call_00_CjBoBSiqsTvSprsVDN568284",
+        "name": "track_point",
+        "arguments": {
+          "image_id": "frame-00066",
+          "u": 380,
+          "v": 150
+        }
+      },
+      "results_sha256": "4a704f7b8701dcaca1df7c8f963b8840d89681425ad3cfe752e42ae2e4b5c84e"
+    },
+    {
+      "frame": "frame-00066",
+      "observation_sha256": "ba709c1b96d249d191fe23a1891f346b7613fdf4b2fb7290dca22145a6f8030c"
+    }
+  ],
+  "history_sha256": "4b7f67a8440d33f151905e51b6b26435ab11430f5ab12defe5a2ab11098d8a33"
+}

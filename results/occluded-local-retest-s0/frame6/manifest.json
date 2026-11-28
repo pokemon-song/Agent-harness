@@ -1,0 +1,29 @@
+{
+  "pairs": 5,
+  "max_output_tokens": 8192,
+  "api_timeout_s": 90,
+  "model": "deepseek-flash",
+  "per_trial_requests": 1,
+  "planner_retries": 0,
+  "history_representation": "identical public observations, actions and results in one user message",
+  "immutable_public_input_sha256": "ad93689ffa5a2efafd85a6806eaa6c2fd97c0bef30b2691e7c90cf73b170550b",
+  "system_sha256": "8369895989dae36d383ea651e7f1863d221cc39df55b2106c635cd55ccea307b",
+  "tools_sha256": "a2f5dc634d86d737f55402e6305cb863df1faecff2c8c39b32a56997f49cf0e6",
+  "physics": {
+    "source_run": "paired-query-s0-first-contact/query",
+    "historical_planner_decision": 6,
+    "checked_public_observations": 6,
+    "checked_prior_tool_results": 5,
+    "frame_id": "frame-00066",
+    "sim_time_s": 133.1999999999079,
+    "rgb_sha256": "74fded877c8a6741116f02b4e5af48683f5b2623e081c7049ab2b9d3adca8f0a",
+    "public_history_sha256": "4b7f67a8440d33f151905e51b6b26435ab11430f5ab12defe5a2ab11098d8a33",
+    "public_observation_sha256": "ba709c1b96d249d191fe23a1891f346b7613fdf4b2fb7290dca22145a6f8030c",
+    "sensor_observation_sha256": "8bdeb383d5259131d2633d04d01715ecd9c779e50730e062fbefd3e083b14d24",
+    "qpos_sha256": "d2f130b8cfaa3dadace34202f702c7b8065437e3ebefd64da2a71bb5ccd0c08c",
+    "qvel_sha256": "3519ecca910caecc45e022a70ed940bf8892a0de15dd7a5ce5903235f38dc2b5",
+    "documents_sha256": "c5de5e6ed796ad4728787ff60d87bd7406747ef0a14cd77c3c0e0398ac12d04e",
+    "history_format": "Five public observations, calls and tool receipts. Provider reasoning and assistant text were not archived.",
+    "outbound_trajectory_sha256": "57eaf06c53727ed1ebea9f2b8980aea88720c1da6c6a9f20ba861008605c89e4"
+  }
+}

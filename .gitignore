@@ -12,3 +12,14 @@ __pycache__/
 assets/
 data/
 runs/
+
+# Local API credentials and authentication material (all directories)
+qwenapi.txt
+*api*.txt
+*API*.txt
+*secret*.txt
+*credential*.json
+*credentials*.json
+*.pem
+*.key
+*.env

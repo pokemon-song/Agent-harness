@@ -1,0 +1,26 @@
+{
+  "file": "full.mp4",
+  "sha256": "b36bce83fd33e315764126ac5bb8863e51aeeba1a3c4af1ac9b1dfbf63daf693",
+  "frame_count": 3150,
+  "fps": 12.5,
+  "duration_s": 252.0,
+  "decoded_all_frames": true,
+  "initial_and_final_states_included": true,
+  "source": {
+    "sample_count": 12594,
+    "start_s": 1.0000000000000007,
+    "end_s": 252.86000000047926,
+    "handoff_s": 130.1399999998933,
+    "model_sha256": "00559b136dcc2bffa52be42c8e911f52359c8f23a9cc495fb0686793ea96ef31",
+    "poses_sha256": "7dfab4443752a1975655755d874f403b3173adb9ff2792f60522f1f77fb19824",
+    "mujoco_version": "3.2.5",
+    "timebase": "simulation_seconds",
+    "physics_sampling": "initial and every executed control step",
+    "return_label": "EMPTY | MODEL + SHARED CONTROLLER"
+  },
+  "render_settings": {
+    "offscreen_multisamples": 0,
+    "shadows": false,
+    "reflections": false
+  }
+}

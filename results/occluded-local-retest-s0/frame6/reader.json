@@ -1,0 +1,22 @@
+{
+  "outcome": {
+    "tool": "memory_query",
+    "status": "succeeded",
+    "cache_hit": false
+  },
+  "usage": {
+    "requests": 1,
+    "responses": 1,
+    "known_usage": {
+      "prompt_tokens": 2695,
+      "completion_tokens": 530,
+      "total_tokens": 3225
+    },
+    "unknown_usage_requests": 0,
+    "usage_complete": true,
+    "cache_hits": 0,
+    "reads": 0,
+    "queries": 1,
+    "errors": 0
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "file": "full.mp4",
+  "sha256": "b144f3e81f93dee1d47da5ca78172aaa32c8c7ae704946722d167dc9387175bd",
+  "frame_count": 1302,
+  "fps": 12.5,
+  "duration_s": 104.16,
+  "decoded_all_frames": true,
+  "initial_and_final_states_included": true,
+  "source": {
+    "sample_count": 5205,
+    "start_s": 1.0000000000000007,
+    "end_s": 105.0799999999365,
+    "handoff_s": null,
+    "model_sha256": "00559b136dcc2bffa52be42c8e911f52359c8f23a9cc495fb0686793ea96ef31",
+    "poses_sha256": "7137b311794d3b3b48f582fb13ae293dffbdb4504bb2792b83319111830db24c",
+    "mujoco_version": "3.2.5",
+    "timebase": "simulation_seconds",
+    "physics_sampling": "initial and every executed control step",
+    "return_label": "LEDGER | LIVE RETURN TO B",
+    "outbound_label": "LIVE SEARCH FOR A | LEDGER"
+  },
+  "render_settings": {
+    "offscreen_multisamples": 0,
+    "shadows": false,
+    "reflections": false
+  }
+}

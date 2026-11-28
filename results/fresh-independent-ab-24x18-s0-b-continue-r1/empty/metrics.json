@@ -1,0 +1,134 @@
+{
+  "episode_id": "44cbdd67-6f04-488b-8dae-c72ddd6fa84b",
+  "mode": "empty",
+  "termination": "abort",
+  "detail": "当前图像被大面积绿色平面遮挡（疑为贴地或近距绿方块 B 或遮挡物），depth_sectors 中心最近深度仅约 0.34 米，机身前方几乎无可见通行空间；蓝球 A 尚未目击，继续前进有碰撞风险，故终止。",
+  "success": false,
+  "stages": {
+    "A": {
+      "termination": "abort",
+      "detail": "当前图像被大面积绿色平面遮挡（疑为贴地或近距绿方块 B 或遮挡物），depth_sectors 中心最近深度仅约 0.34 米，机身前方几乎无可见通行空间；蓝球 A 尚未目击，继续前进有碰撞风险，故终止。",
+      "stage": "A",
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 93.37999999996377,
+      "wall_seconds": 46.05528961100208,
+      "path_m": 3.300685307811618,
+      "planner_requests": 41,
+      "reader_requests": 0,
+      "total_requests": 41,
+      "known_usage": {
+        "prompt_tokens": 107328,
+        "completion_tokens": 1882,
+        "total_tokens": 109210
+      },
+      "unknown_usage_requests": 0,
+      "first_planner_target_candidate": null,
+      "planner_tools": {
+        "scan": 24,
+        "memory_query": 11,
+        "follow_waypoints": 2,
+        "abort": 1
+      },
+      "native_attempts": {
+        "turn": 30,
+        "move_relative": 4
+      },
+      "boundary_refusals": 0,
+      "depth_refusals": 0
+    }
+  },
+  "total_requests": 41,
+  "final_sim_s": 93.97999999996237,
+  "final_base_xy_m": [
+    1.7727269928599136,
+    0.06059798792072437
+  ],
+  "independent_evaluation": {
+    "success": false,
+    "goal_kind": "ordered_standoff",
+    "checkpoints": {
+      "A": {
+        "label": "A",
+        "target_xy_m": [
+          6.4,
+          0.0
+        ],
+        "base_xy_m": [
+          1.8218080040551703,
+          -0.055746383710303216
+        ],
+        "distance_to_target_center_m": 4.5785313814617545,
+        "heading_error_rad": 0.5869535045609307,
+        "speed_mps": 0.0057612468553155,
+        "abs_yaw_rate_radps": 0.036853151674394916,
+        "sim_time_s": 78.31999999999887,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "HEADING_OUT_OF_RANGE"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "stop_index": 28,
+        "achieved_at_checkpoint": false,
+        "passed": false
+      },
+      "B": {
+        "label": "B",
+        "target_xy_m": [
+          1.8,
+          0.6
+        ],
+        "base_xy_m": [
+          1.7727269928599136,
+          0.06059798792072437
+        ],
+        "distance_to_target_center_m": 0.5400910548728188,
+        "heading_error_rad": 0.030848760536237974,
+        "speed_mps": 0.007158715175160572,
+        "abs_yaw_rate_radps": 0.03268373653894424,
+        "sim_time_s": 93.97999999996237,
+        "stop_confirmed": true,
+        "stopped": true,
+        "collision": false,
+        "fallen": false,
+        "criteria_pass": false,
+        "failure_reasons": [
+          "DISTANCE_OUT_OF_RANGE",
+          "A_NOT_CONFIRMED_BEFORE_B"
+        ],
+        "source": "privileged_simulator_evaluator",
+        "eligible": false,
+        "passed": false
+      }
+    },
+    "checkpoint_order": [
+      "A",
+      "B"
+    ],
+    "order_satisfied": false,
+    "premature_b_stops_ignored": 4,
+    "requires_finish": true,
+    "finish_enforced_by": "episode_runner",
+    "standoff_m": 1.0,
+    "distance_tolerance_m": 0.18,
+    "heading_tolerance_rad": 0.25,
+    "collision": false,
+    "fallen": false,
+    "stopped": true,
+    "source": "privileged_simulator_evaluator",
+    "collision_count": 0,
+    "collision_events": [],
+    "cabinet_contact_count": 0,
+    "cabinet_contact_events": []
+  },
+  "final_stop": {
+    "status": "succeeded",
+    "error_code": null,
+    "speed_mps": 0.007158715175160572,
+    "yaw_rate_radps": 0.03268373653894424
+  }
+}

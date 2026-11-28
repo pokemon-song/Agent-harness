@@ -1,0 +1,197 @@
+{
+  "arm": "query",
+  "raw_run_directory": "runs/fresh-independent-ab-s0/query",
+  "raw_sha256": {
+    "events.jsonl": "a4d8ffb0cba88062074f73e11df5f8abc0c48299eab1cad03b58ed1e38e0d7d9",
+    "trajectory.jsonl": "8725c68c4cb0e5928fb22e420cb74659420147a0e188fb5dab3ce25d59ad85ac",
+    "video/capture.json": "2b76ca698dcbd3f0b29ce816b7e1865a6d7db6f64380b7a3f0a45758e69fda88",
+    "manifest.json": "671ab5c0b8cab4faee7e3f6e9a2f77cdd53b0d38524a1c46091416aef9ffa290",
+    "metrics.json": "dabbd864a122ed506b758ed0ee64143597a38d2c96f1ba46a46c70bde825d741"
+  },
+  "episode_id": "9c0fec25-bf6e-4943-a589-0d057599fc7f",
+  "initial_world_xy_m": [
+    -0.0015189879768713866,
+    0.006109811166518341
+  ],
+  "initial_observation_png_sha256": "c66b51e01e7ed1b5899940754d9c862c5ac5e1aa61c5f62aeafb20ffb8a6b546",
+  "initial_visible_labels": [
+    "B"
+  ],
+  "outbound_choice_trace_sha256": "0aa27bd6a922a0cd48d6e5e442672258eeb380ebdd595e75fb141f698903d1b7",
+  "A_handoff_events": 0,
+  "poses_sha256": "88d66d19b90c9143230f93d8f041d7c80096b2bffb345a1048368b1dd1ad784f",
+  "model_mjb_sha256": "00559b136dcc2bffa52be42c8e911f52359c8f23a9cc495fb0686793ea96ef31",
+  "sample_count": 4010,
+  "own_outbound_documents_sha256": "f0f03a0872cb42b88979741cd86adf4365fb08fee8885f20c498730abedccedc",
+  "own_outbound_document_paths": [
+    "targets/target-B.md",
+    "route/leg-01.md",
+    "handoff/last-observation.md"
+  ],
+  "terminal_score": {
+    "A": {
+      "label": "A",
+      "target_xy_m": [
+        6.4,
+        0.0
+      ],
+      "base_xy_m": [
+        0.044750778428690116,
+        0.043439658021175984
+      ],
+      "distance_to_target_center_m": 6.355397680096167,
+      "heading_error_rad": 1.124915761791255,
+      "speed_mps": 0.0495358388441894,
+      "abs_yaw_rate_radps": 0.013402223021851224,
+      "sim_time_s": 16.320000000001833,
+      "stop_confirmed": true,
+      "stopped": true,
+      "collision": false,
+      "fallen": false,
+      "criteria_pass": false,
+      "failure_reasons": [
+        "DISTANCE_OUT_OF_RANGE",
+        "HEADING_OUT_OF_RANGE"
+      ],
+      "source": "privileged_simulator_evaluator",
+      "stop_index": 6,
+      "achieved_at_checkpoint": false,
+      "passed": false
+    },
+    "B": null
+  },
+  "stage_details": {
+    "A": {
+      "termination": "budget_exhausted",
+      "detail": "shared_api_limit",
+      "planner_requests": 89,
+      "reader_requests": 39,
+      "all_requests": 128,
+      "known_usage": {
+        "prompt_tokens": 271331,
+        "completion_tokens": 6888,
+        "total_tokens": 278219
+      },
+      "unknown_usage_requests": 0,
+      "planner_error_codes": {
+        "MODEL_PROTOCOL_ERROR": 17
+      },
+      "protocol_error_details": {
+        "Choose exactly one outbound tool.": 17
+      },
+      "planner_tool_counts": {
+        "memory_query": 40,
+        "scan": 31,
+        "follow_waypoints": 1
+      },
+      "successive_question_longest_run": 4,
+      "native_attempts": 31,
+      "native_tool_counts": {
+        "turn": 31
+      },
+      "native_reply_status_counts": {
+        "succeeded": 31
+      },
+      "native_error_codes": {},
+      "measured_path_by_native_tool_m": {
+        "turn": 1.8117042594538357
+      },
+      "max_displacement_from_stage_start_m": 0.45048859359176396,
+      "boundary_gate_refusals": 0,
+      "depth_gate_refusals": 0,
+      "actual_contacts": [],
+      "first_target_candidate": null,
+      "closest_target_center_m": 6.345984627318113,
+      "closest_target_sim_s": 16.680000000001634,
+      "closest_target_world_xy_m": [
+        0.054205739497397855,
+        0.04915377432128926
+      ],
+      "endpoint_target_distance_m": 6.424205727050234,
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 80.5799999999936,
+      "active_sim_s": 79.5799999999936,
+      "recorded_wall_s": 620.3319826959996,
+      "start_world_xy_m": [
+        -0.0015189879768713866,
+        0.006109811166518341
+      ],
+      "end_world_xy_m": [
+        -0.007962172011789904,
+        0.45655232507453924
+      ],
+      "net_displacement_m": 0.4504885935917639,
+      "measured_path_m": 1.8117042594538355,
+      "first_input_history_turns": 0,
+      "first_input_has_memory_card": false,
+      "first_input_visible_labels": [
+        "B"
+      ],
+      "first_model_choice": {
+        "index": 1,
+        "tool": "memory_query",
+        "arguments": {
+          "question": "本轮是否已看到蓝球 A 的候选或路线记忆？"
+        }
+      },
+      "first_native_action": {
+        "tool": "turn",
+        "args": {
+          "yaw_rad": 0.6
+        },
+        "time_before": 1.0000000000000007,
+        "time_after": 3.3399999999998538
+      },
+      "planner_inputs_with_card": 85,
+      "memory_query_statuses": {
+        "unavailable": 5,
+        "ok": 32,
+        "error": 3
+      },
+      "observations_with_B_candidate": 31
+    }
+  },
+  "episode": {
+    "episode_id": "9c0fec25-bf6e-4943-a589-0d057599fc7f",
+    "passed": false,
+    "termination": "budget_exhausted",
+    "termination_detail": "shared_api_limit",
+    "A_confirmed_at_checkpoint": false,
+    "A_final_score_passed": false,
+    "B_stage_started": false,
+    "B_final_score_passed": null,
+    "B_first_candidate": null,
+    "B_final_distance_m": null,
+    "finish_succeeded": false,
+    "A_first_candidate": null,
+    "A_min_distance_m": 6.345984627318113,
+    "collision": false,
+    "contacts": [],
+    "fallen": false,
+    "stages": {
+      "A": {
+        "planner_requests": 89,
+        "reader_requests": 39,
+        "all_requests": 128,
+        "native_attempts": 31,
+        "measured_path_m": 1.8117042594538355,
+        "net_displacement_m": 0.4504885935917639,
+        "boundary_gate_refusals": 0,
+        "depth_gate_refusals": 0,
+        "actual_contacts": []
+      },
+      "B": null
+    },
+    "all_requests": 128,
+    "all_native_attempts": 31,
+    "episode_path_including_final_settle_m": 1.8197500208040687,
+    "final_settle_path_m": 0.008045761350233202,
+    "episode_net_displacement_m": 0.45595380588592377,
+    "final_world_xy_m": [
+      -0.0022912063437569965,
+      0.4620629631247568
+    ],
+    "actual_sim_elapsed_s": 80.1799999999922,
+    "return_handoff_sim_s": null
+  }
+}

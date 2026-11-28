@@ -1,0 +1,807 @@
+{
+  "arm": "query",
+  "raw_run_directory": "runs/fresh-independent-ab-24x18-s0-b-continue-1024-r1/query",
+  "raw_sha256": {
+    "events.jsonl": "591df947c1b1ce7850923353af0d5249fd6c6b18fb509b450592c47e5763b51d",
+    "trajectory.jsonl": "a12431c82eefb512c1fe496df8befeb1dd5aac641ab9021a23773c6a3dab4e17",
+    "video/capture.json": "bd22de682188f9b959c647456cff6cb8811f37122d99fa5277f531e72c18cef2",
+    "manifest.json": "aea244fe2436c1cff44ceb3c03fb879168cd58bbc7876c6591dc091def60a2a9",
+    "metrics.json": "8524f6609d32111426ce422f1848d9771b98a21c79db5475c6da300a580e0869"
+  },
+  "episode_id": "10f91bcc-34c5-472f-8172-491739b7182c",
+  "initial_world_xy_m": [
+    -0.0015189879768713866,
+    0.006109811166518341
+  ],
+  "initial_observation_png_sha256": "e016dfae926a0116892d1d47a4320416ce1d73673390c182f91a6f436aff455e",
+  "initial_visible_labels": [
+    "B"
+  ],
+  "outbound_choice_trace_sha256": "06d7b565c49620ab279421c9440f2726bea5323cfcdf877e5e078828ce81e309",
+  "A_handoff_events": 0,
+  "poses_sha256": "fb6f58d39bea9b18050a7361c4a2087363a93fbc65915fd43a3f4a6d842c873b",
+  "model_mjb_sha256": "d1092317bbafaa39c9dae4cd370da65aec8b3dfb404fff944ae75cefc9b4a409",
+  "sample_count": 18054,
+  "own_outbound_documents_sha256": "0678b7c7e0a65a626376c464445e77cb72d4dcca17b0f8dc0bee39335cf04e7a",
+  "own_outbound_document_paths": [
+    "targets/target-B.md",
+    "route/leg-01.md",
+    "route/leg-02.md",
+    "handoff/last-observation.md"
+  ],
+  "terminal_score": {
+    "A": {
+      "label": "A",
+      "target_xy_m": [
+        6.4,
+        0.0
+      ],
+      "base_xy_m": [
+        1.8600589387355784,
+        1.6759372723445982
+      ],
+      "distance_to_target_center_m": 4.839403948895832,
+      "heading_error_rad": 1.2769708277478677,
+      "speed_mps": 0.03820131091642594,
+      "abs_yaw_rate_radps": 0.022554866931013176,
+      "sim_time_s": 336.32000000087777,
+      "stop_confirmed": true,
+      "stopped": true,
+      "collision": false,
+      "fallen": false,
+      "criteria_pass": false,
+      "failure_reasons": [
+        "DISTANCE_OUT_OF_RANGE",
+        "HEADING_OUT_OF_RANGE"
+      ],
+      "source": "privileged_simulator_evaluator",
+      "stop_index": 125,
+      "achieved_at_checkpoint": false,
+      "passed": false
+    },
+    "B": null
+  },
+  "stage_details": {
+    "A": {
+      "termination": "budget_exhausted",
+      "detail": "shared_api_limit",
+      "planner_requests": 590,
+      "reader_requests": 434,
+      "all_requests": 1024,
+      "known_usage": {
+        "prompt_tokens": 2267066,
+        "completion_tokens": 66047,
+        "total_tokens": 2333113
+      },
+      "unknown_usage_requests": 0,
+      "planner_error_codes": {
+        "MODEL_PROTOCOL_ERROR": 49
+      },
+      "protocol_error_details": {
+        "Choose exactly one outbound tool.": 49
+      },
+      "planner_tool_counts": {
+        "scan": 102,
+        "memory_query": 434,
+        "follow_waypoints": 5
+      },
+      "successive_question_longest_run": 64,
+      "native_attempts": 135,
+      "native_tool_counts": {
+        "turn": 124,
+        "move_relative": 11
+      },
+      "native_reply_status_counts": {
+        "succeeded": 134,
+        "timed_out": 1
+      },
+      "native_error_codes": {
+        "MOTION_TIMEOUT": 1
+      },
+      "measured_path_by_native_tool_m": {
+        "turn": 6.751853462428268,
+        "move_relative": 4.189354265877873
+      },
+      "max_displacement_from_stage_start_m": 2.59806507014703,
+      "boundary_gate_refusals": 0,
+      "depth_gate_refusals": 0,
+      "actual_contacts": [],
+      "first_target_candidate": null,
+      "closest_target_center_m": 4.827152744778114,
+      "closest_target_sim_s": 341.9600000009047,
+      "closest_target_world_xy_m": [
+        1.8900944361608298,
+        1.7210913475674003
+      ],
+      "endpoint_target_distance_m": 4.925329116649745,
+      "start_sim_s": 1.0000000000000007,
+      "end_sim_s": 361.4600000009978,
+      "active_sim_s": 360.4600000009978,
+      "recorded_wall_s": 874.6349885560048,
+      "start_world_xy_m": [
+        -0.0015189879768713866,
+        0.006109811166518341
+      ],
+      "end_world_xy_m": [
+        1.8322363855524733,
+        1.8423904227516548
+      ],
+      "net_displacement_m": 2.5951079465855034,
+      "measured_path_m": 10.941207728306141,
+      "first_input_history_turns": 0,
+      "first_input_has_memory_card": false,
+      "first_input_visible_labels": [
+        "B"
+      ],
+      "first_model_choice": {
+        "index": 1,
+        "tool": "scan",
+        "arguments": {
+          "yaw_rad": 0.6
+        }
+      },
+      "last_model_choice": {
+        "index": 590,
+        "tool": "memory_query",
+        "arguments": {
+          "question": "本轮完整探索路线：各航点坐标、朝向，以及沿途看到的地标（遮挡物端部、通道、可通行方向）和 A/B 目击详情？蓝球A是否曾目击？"
+        }
+      },
+      "last_planner_frame": "frames/A-590-frame-00136.png",
+      "last_depth_valid_fractions": {
+        "left": 0.636,
+        "center": 0.336,
+        "right": 0.051
+      },
+      "last_depth_refusal": null,
+      "first_native_action": {
+        "tool": "turn",
+        "args": {
+          "yaw_rad": 0.6
+        },
+        "time_before": 1.0000000000000007,
+        "time_after": 3.3399999999998538
+      },
+      "planner_inputs_with_card": 587,
+      "memory_query_statuses": {
+        "ok": 398,
+        "unavailable": 36
+      },
+      "observations_with_B_candidate": 227,
+      "first_target_candidate_context": null
+    }
+  },
+  "episode": {
+    "episode_id": "10f91bcc-34c5-472f-8172-491739b7182c",
+    "passed": false,
+    "termination": "budget_exhausted",
+    "termination_detail": "shared_api_limit",
+    "A_confirmed_at_checkpoint": false,
+    "A_final_score_passed": false,
+    "B_stage_started": false,
+    "B_final_score_passed": null,
+    "B_first_candidate": null,
+    "B_final_distance_m": null,
+    "finish_succeeded": false,
+    "A_first_candidate": null,
+    "A_min_distance_m": 4.827152744778114,
+    "collision": false,
+    "contacts": [],
+    "fallen": false,
+    "stages": {
+      "A": {
+        "planner_requests": 590,
+        "reader_requests": 434,
+        "all_requests": 1024,
+        "native_attempts": 135,
+        "measured_path_m": 10.941207728306141,
+        "net_displacement_m": 2.5951079465855034,
+        "boundary_gate_refusals": 0,
+        "depth_gate_refusals": 0,
+        "actual_contacts": []
+      },
+      "B": null
+    },
+    "all_requests": 1024,
+    "all_native_attempts": 135,
+    "episode_path_including_final_settle_m": 10.945328568976569,
+    "final_settle_path_m": 0.00412084067042748,
+    "episode_net_displacement_m": 2.5965306501003105,
+    "final_world_xy_m": [
+      1.8305334230068702,
+      1.8460976862132539
+    ],
+    "actual_sim_elapsed_s": 361.0600000010007,
+    "return_handoff_sim_s": null
+  },
+  "static_frame_runs": {
+    "A": {
+      "longest_same_frame_and_pose": {
+        "first_planner_index": 369,
+        "last_planner_index": 435,
+        "planner_requests": 67,
+        "frame_id": "frame-00110",
+        "frame_png_sha256": "8b41917f624bef3a6cf44543fe08a10966477480fac70541b71cf46139cf894b",
+        "local_xy_m": [
+          1.7452554388251704,
+          1.5940352921809138
+        ],
+        "yaw_rad": -1.1839025989679623,
+        "memory_query_choices": 64,
+        "reader_requests": 64,
+        "tools": {
+          "memory_query": 64,
+          "scan": 1
+        },
+        "planner_errors": {
+          "MODEL_PROTOCOL_ERROR": 2
+        },
+        "memory_answer_statuses": {
+          "ok": 55,
+          "unavailable": 9
+        }
+      },
+      "longest_uninterrupted_memory_queries_same_frame": {
+        "first_planner_index": 393,
+        "last_planner_index": 433,
+        "planner_requests": 41,
+        "frame_id": "frame-00110",
+        "frame_png_sha256": "8b41917f624bef3a6cf44543fe08a10966477480fac70541b71cf46139cf894b",
+        "local_xy_m": [
+          1.7452554388251704,
+          1.5940352921809138
+        ],
+        "yaw_rad": -1.1839025989679623,
+        "memory_query_choices": 41,
+        "reader_requests": 41,
+        "tools": {
+          "memory_query": 41
+        },
+        "planner_errors": {},
+        "memory_answer_statuses": {
+          "ok": 33,
+          "unavailable": 8
+        }
+      }
+    }
+  },
+  "request_limit_progress": {
+    "A": {
+      "reference_limit": 256,
+      "current_run_exceeded_reference": true,
+      "at_request_256": {
+        "planner_requests": 157,
+        "reader_requests": 99,
+        "total_requests": 256,
+        "native_attempts": 55,
+        "native_physical_actions": 55,
+        "sim_time_s": 144.53999999996205,
+        "world_xy_m": [
+          1.5914321186841485,
+          1.5465521178978978
+        ],
+        "elapsed_sim_s": 143.53999999996205,
+        "measured_path_m": 5.071369517893552,
+        "end_distance_to_goal_m": 5.051153187401556,
+        "closest_goal_distance_m": 5.051153187401556,
+        "first_goal_sighting": null,
+        "goal_stop_recorded_by_this_time": false
+      },
+      "before_request_257": {
+        "planner_requests": 157,
+        "reader_requests": 99,
+        "total_requests": 256,
+        "native_attempts": 55,
+        "native_physical_actions": 55,
+        "sim_time_s": 144.53999999996205,
+        "world_xy_m": [
+          1.5914321186841485,
+          1.5465521178978978
+        ],
+        "elapsed_sim_s": 143.53999999996205,
+        "measured_path_m": 5.071369517893552,
+        "end_distance_to_goal_m": 5.051153187401556,
+        "closest_goal_distance_m": 5.051153187401556,
+        "first_goal_sighting": null,
+        "goal_stop_recorded_by_this_time": false
+      },
+      "stage_terminal": {
+        "planner_requests": 590,
+        "reader_requests": 434,
+        "total_requests": 1024,
+        "native_attempts": 135,
+        "native_physical_actions": 135,
+        "sim_time_s": 361.4600000009978,
+        "world_xy_m": [
+          1.8322363855524733,
+          1.8423904227516548
+        ],
+        "elapsed_sim_s": 360.4600000009978,
+        "measured_path_m": 10.94120772830612,
+        "end_distance_to_goal_m": 4.925329116649745,
+        "closest_goal_distance_m": 4.827152744778114,
+        "first_goal_sighting": null,
+        "goal_stop_recorded_by_this_time": false
+      },
+      "extra_window": {
+        "planner_requests": 433,
+        "reader_requests": 335,
+        "total_requests": 768,
+        "native_attempts": 80,
+        "native_physical_actions": 80,
+        "native_tools": {
+          "turn": 75,
+          "move_relative": 5
+        },
+        "planner_choices": {
+          "memory_query": 335,
+          "scan": 61,
+          "follow_waypoints": 2
+        },
+        "planner_errors": {
+          "MODEL_PROTOCOL_ERROR": 35
+        },
+        "elapsed_sim_s": 216.92000000103576,
+        "measured_path_m": 5.869838210412568,
+        "net_displacement_m": 0.3814537947913689,
+        "min_distance_during_extra_window_m": 4.827152744778114,
+        "min_at_sim_time_s": 341.9600000009047,
+        "improvement_of_best_distance_m": 0.2240004426234421,
+        "first_goal_sighting_during_extra": false,
+        "goal_stop_recorded_during_extra": false
+      }
+    }
+  },
+  "B_contact_followup": {
+    "B_contact_count": 0,
+    "non_B_contact_objects": [],
+    "physical_closest_B_base_distance_m": 0.8607417016721571,
+    "physical_closest_B_sim_time_s": 171.8800000000926,
+    "final_B_center_distance_m_for_geometry_only": 1.246471713881443,
+    "physics_steps_with_any_contact": 0,
+    "B_contacts": [],
+    "B_rule_exercised": false,
+    "B_standoff_achieved_at_final_scored_checkpoint": false,
+    "B_score_eligible": false,
+    "B_stage_started": false,
+    "premature_stops_at_B_ignored_by_evaluator": 3,
+    "final_termination": "budget_exhausted",
+    "final_detail": "shared_api_limit"
+  },
+  "room_geometry": {
+    "compiled_model": {
+      "previous_sha256": "d1092317bbafaa39c9dae4cd370da65aec8b3dfb404fff944ae75cefc9b4a409",
+      "current_sha256": "d1092317bbafaa39c9dae4cd370da65aec8b3dfb404fff944ae75cefc9b4a409",
+      "previous_floor": {
+        "name": "floor",
+        "type": "mjGEOM_BOX",
+        "center": [
+          0.0,
+          0.0,
+          -0.1
+        ],
+        "size": [
+          12.0,
+          9.0,
+          0.1
+        ],
+        "quaternion": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rgba": [
+          0.5,
+          0.5,
+          0.5,
+          1.0
+        ],
+        "friction": [
+          1.0,
+          0.005,
+          0.0001
+        ],
+        "group": 0,
+        "contact_type": 1,
+        "contact_affinity": 1,
+        "body": "world"
+      },
+      "current_floor": {
+        "name": "floor",
+        "type": "mjGEOM_BOX",
+        "center": [
+          0.0,
+          0.0,
+          -0.1
+        ],
+        "size": [
+          12.0,
+          9.0,
+          0.1
+        ],
+        "quaternion": [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rgba": [
+          0.5,
+          0.5,
+          0.5,
+          1.0
+        ],
+        "friction": [
+          1.0,
+          0.005,
+          0.0001
+        ],
+        "group": 0,
+        "contact_type": 1,
+        "contact_affinity": 1,
+        "body": "world"
+      },
+      "shared_world_objects": {
+        "scenario_target": {
+          "name": "scenario_target",
+          "type": "mjGEOM_SPHERE",
+          "center": [
+            6.4,
+            0.0,
+            0.12
+          ],
+          "size": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.03999999910593033,
+            0.11999999731779099,
+            0.8500000238418579,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_goal_b": {
+          "name": "memory_goal_b",
+          "type": "mjGEOM_BOX",
+          "center": [
+            1.8,
+            0.6,
+            0.2
+          ],
+          "size": [
+            0.08,
+            0.18,
+            0.2
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.03999999910593033,
+            0.75,
+            0.10000000149011612,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawers_body": {
+          "name": "memory_drawers_body",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.7999999999999994,
+            0.0,
+            1.0
+          ],
+          "size": [
+            0.22,
+            2.0,
+            1.0
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.550000011920929,
+            0.33000001311302185,
+            0.14000000059604645,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawer_handle_0": {
+          "name": "memory_drawer_handle_0",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.57,
+            0.0,
+            0.4285714285714285
+          ],
+          "size": [
+            0.02,
+            0.8484848484848485,
+            0.07142857142857142
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.05999999865889549,
+            0.07000000029802322,
+            0.07999999821186066,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawer_handle_1": {
+          "name": "memory_drawer_handle_1",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.57,
+            0.0,
+            1.0357142857142858
+          ],
+          "size": [
+            0.02,
+            0.8484848484848485,
+            0.07142857142857142
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.05999999865889549,
+            0.07000000029802322,
+            0.07999999821186066,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        },
+        "memory_drawer_handle_2": {
+          "name": "memory_drawer_handle_2",
+          "type": "mjGEOM_BOX",
+          "center": [
+            3.57,
+            0.0,
+            1.6428571428571428
+          ],
+          "size": [
+            0.02,
+            0.8484848484848485,
+            0.07142857142857142
+          ],
+          "quaternion": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rgba": [
+            0.05999999865889549,
+            0.07000000029802322,
+            0.07999999821186066,
+            1.0
+          ],
+          "friction": [
+            1.0,
+            0.005,
+            0.0001
+          ],
+          "group": 0,
+          "contact_type": 1,
+          "contact_affinity": 1,
+          "body": "world"
+        }
+      },
+      "compiled_scene_extent_m": 1.23314,
+      "near_far_clip_m": [
+        0.01233139972437173,
+        24.662799999999997
+      ],
+      "extent_and_camera_clip_equal_previous": true,
+      "static_nonground_geometries_match_previous": true,
+      "static_geometry_source": "Actual MuJoCo MJB per arm, against the corresponding previous capture digest."
+    },
+    "trajectory_clearance": {
+      "full_episode_including_final_stop": {
+        "base_center": {
+          "current_24x18": {
+            "min_signed_clearance_m": 7.153902313786746,
+            "nearest_edge": "+y",
+            "sim_time_s": 362.0600000010007,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 4.153902313786746,
+            "nearest_edge": "+y",
+            "sim_time_s": 362.0600000010007,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        },
+        "torso_surface": {
+          "current_24x18": {
+            "min_signed_clearance_m": 6.836192785343588,
+            "nearest_edge": "+y",
+            "sim_time_s": 359.52000000098855,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 3.8361927853435875,
+            "nearest_edge": "+y",
+            "sim_time_s": 359.52000000098855,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        },
+        "all_collision_surfaces": {
+          "current_24x18": {
+            "min_signed_clearance_m": 6.836192785343588,
+            "nearest_edge": "+y",
+            "sim_time_s": 359.52000000098855,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 3.8361927853435875,
+            "nearest_edge": "+y",
+            "sim_time_s": 359.52000000098855,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        }
+      },
+      "A": {
+        "base_center": {
+          "current_24x18": {
+            "min_signed_clearance_m": 7.157609577248345,
+            "nearest_edge": "+y",
+            "sim_time_s": 361.4600000009978,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 4.157609577248345,
+            "nearest_edge": "+y",
+            "sim_time_s": 361.4600000009978,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        },
+        "torso_surface": {
+          "current_24x18": {
+            "min_signed_clearance_m": 6.836192785343588,
+            "nearest_edge": "+y",
+            "sim_time_s": 359.52000000098855,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 3.8361927853435875,
+            "nearest_edge": "+y",
+            "sim_time_s": 359.52000000098855,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        },
+        "all_collision_surfaces": {
+          "current_24x18": {
+            "min_signed_clearance_m": 6.836192785343588,
+            "nearest_edge": "+y",
+            "sim_time_s": 359.52000000098855,
+            "outside_at_any_sample": false
+          },
+          "reference_16x12_with_current_trajectory": {
+            "min_signed_clearance_m": 3.8361927853435875,
+            "nearest_edge": "+y",
+            "sim_time_s": 359.52000000098855,
+            "outside_at_any_sample": false,
+            "first_outside_sample_sim_s": null,
+            "extent_outside_by_edge_m": {
+              "-x": 0.0,
+              "+x": 0.0,
+              "-y": 0.0,
+              "+y": 0.0
+            }
+          }
+        }
+      }
+    },
+    "geometry_reconstruction": {
+      "torso_colliders": [
+        "base_box",
+        "base_cyl1",
+        "base_sphere1"
+      ],
+      "whole_robot_collider_count": 27
+    }
+  }
+}
