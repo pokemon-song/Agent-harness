@@ -1,0 +1,17 @@
+{
+  "events": [
+    {"kind":"observation","step":0,"observation_id":"f0","data":{"target_ids":["B"],"grounded_targets":[{"target_id":"B","valid":true,"relative_xy_m":[1.8,0.6],"identity_basis":"model_proposed"}]}},
+    {"kind":"observation","step":1,"observation_id":"f1","data":{"target_ids":["distractor"],"grounded_targets":[{"target_id":"distractor","valid":true}]}},
+    {"kind":"action","step":2,"observation_id":"f2","data":{"requested_tool":"follow_waypoints","feedback":{"status":"replan","error_code":"current_depth_blocks_requested_translation"}}},
+    {"kind":"observation","step":3,"observation_id":"f3","data":{"target_ids":["B"],"grounded_targets":[{"target_id":"B","valid":false}]}},
+    {"kind":"observation","step":4,"observation_id":"f4","data":{"target_ids":["B"],"grounded_targets":[{"target_id":"B","valid":true,"relative_xy_m":[0.8,0.3]}]}}
+  ],
+  "cases": [
+    {"id":"L01","description":"目标 B 的历史观测","question":"B 的观测有哪些？","event_types":["observation"],"target_ids":["B"],"selection":"all","expected":["E000001","E000004","E000005"]},
+    {"id":"L02","description":"干扰目标隔离","question":"干扰物的观测有哪些？","event_types":["observation"],"target_ids":["distractor"],"selection":"all","expected":["E000002"]},
+    {"id":"L03","description":"受阻动作回忆","question":"之前的动作反馈是什么？","event_types":["action"],"selection":"all","expected":["E000003"]},
+    {"id":"L04","description":"未见目标","question":"C 在哪里？","target_ids":["C"],"selection":"all","expected":[]},
+    {"id":"L05","description":"最新观测的选择接口","question":"B 最新的观测是什么？","event_types":["observation"],"target_ids":["B"],"selection":"latest","expected":["E000005"]},
+    {"id":"L06","description":"目标 ID 精确匹配","question":"小写 b 在哪里？","target_ids":["b"],"selection":"all","expected":[]}
+  ]
+}
